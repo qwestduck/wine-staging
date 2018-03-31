@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 # Plot dependency graph for Staging patches.
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     all_patches = load_patchsets()
     graph = Digraph(comment='Patch dependencies')
 
-    for i, patch in all_patches.iteritems():
+    for i, patch in all_patches.items():
         if patch.disabled: continue
         for j in patch.depends:
             graph.edge(patch.name, all_patches[j].name)
