@@ -1,5 +1,5 @@
 From 398d7d355ea877e60b446ebe106cfef87ce40ff2 Mon Sep 17 00:00:00 2001
-From: William Panlener <wpanlener@gmail.com>
+From: Andrew Comminos <andrew@comminos.com>
 Date: Fri, 30 Mar 2018 18:31:43 -0500
 Subject: [PATCH 8/9] wined3d: Add DISABLE_PBA envvar, some PBA cleanup.
 

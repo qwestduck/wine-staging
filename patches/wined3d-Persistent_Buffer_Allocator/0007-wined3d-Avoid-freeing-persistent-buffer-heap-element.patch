@@ -1,5 +1,5 @@
 From 2efc6c590149d4f3070a00dc55595fbdc1d1a2db Mon Sep 17 00:00:00 2001
-From: William Panlener <wpanlener@gmail.com>
+From: Andrew Comminos <andrew@comminos.com>
 Date: Fri, 30 Mar 2018 18:22:02 -0500
 Subject: [PATCH 7/9] wined3d: Avoid freeing persistent buffer heap elements
  during use.

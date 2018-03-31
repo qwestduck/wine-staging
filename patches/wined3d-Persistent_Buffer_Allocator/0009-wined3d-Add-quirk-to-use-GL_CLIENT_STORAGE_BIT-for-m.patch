@@ -1,5 +1,5 @@
 From d12c686079d9ae59f7f6c7bab7e25db30dd54174 Mon Sep 17 00:00:00 2001
-From: William Panlener <wpanlener@gmail.com>
+From: Andrew Comminos <andrew@comminos.com>
 Date: Fri, 30 Mar 2018 18:32:31 -0500
 Subject: [PATCH 9/9] wined3d: Add quirk to use GL_CLIENT_STORAGE_BIT for mesa.
 

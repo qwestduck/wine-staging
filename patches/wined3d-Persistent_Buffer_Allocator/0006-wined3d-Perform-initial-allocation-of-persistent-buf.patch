@@ -1,5 +1,5 @@
 From 9227b7bd04ce0ac91e1a607499de358b76aa5e2c Mon Sep 17 00:00:00 2001
-From: William Panlener <wpanlener@gmail.com>
+From: Andrew Comminos <andrew@comminos.com>
 Date: Fri, 30 Mar 2018 18:20:49 -0500
 Subject: [PATCH 6/9] wined3d: Perform initial allocation of persistent buffers
  asynchronously.
