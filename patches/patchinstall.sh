@@ -1915,6 +1915,13 @@ if test "$enable_winedevice_Default_Drivers" -eq 1; then
 	enable_dxva2_Video_Decoder=1
 fi
 
+if test "$enable_wined3d_Persistent_Buffer_Allocator" -eq 1; then
+	if test "$enable_wined3d_CSMT_Main" -gt 1; then
+		abort "Patchset wined3d-CSMT_Main disabled, but wined3d-Persistent_Buffer_Allocator depends on that."
+	fi
+	enable_wined3d_CSMT_Main=1
+fi
+
 if test "$enable_wined3d_Indexed_Vertex_Blending" -eq 1; then
 	if test "$enable_wined3d_WINED3D_RS_COLORWRITEENABLE" -gt 1; then
 		abort "Patchset wined3d-WINED3D_RS_COLORWRITEENABLE disabled, but wined3d-Indexed_Vertex_Blending depends on that."
@@ -8143,37 +8150,6 @@ if test "$enable_wined3d_Dual_Source_Blending" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset wined3d-Persistent_Buffer_Allocator
-# |
-# | Modified files:
-# |   *	dlls/wined3d/buffer.c, dlls/wined3d/buffer_heap.c, dlls/wined3d/context.c, dlls/wined3d/cs.c,
-# | 	dlls/wined3d/device.c, dlls/wined3d/directx.c, dlls/wined3d/Makefile.in, dlls/wined3d/query.c,
-# | 	dlls/wined3d/resource.c, dlls/wined3d/state.c, dlls/wined3d/texture.c, dlls/wined3d/utils.c,
-# | 	dlls/wined3d/wined3d_gl.h, dlls/wined3d/wined3d_private.h
-# |
-if test "$enable_wined3d_Persistent_Buffer_Allocator" -eq 1; then
-	patch_apply wined3d-Persistent_Buffer_Allocator/0001-wined3d-Initial-implementation-of-a-persistent-mappe.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0002-wined3d-Add-support-for-backing-dynamic-wined3d_buff.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0003-wined3d-Use-ARB_multi_bind-to-speed-up-UBO-updates.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0004-wined3d-Use-GL_CLIENT_STORAGE_BIT-for-persistent-map.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0005-wined3d-Disable-persistently-mapped-shader-resource-.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0006-wined3d-Perform-initial-allocation-of-persistent-buf.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0007-wined3d-Avoid-freeing-persistent-buffer-heap-element.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0008-wined3d-Add-DISABLE_PBA-envvar-some-PBA-cleanup.patch
-	patch_apply wined3d-Persistent_Buffer_Allocator/0009-wined3d-Add-quirk-to-use-GL_CLIENT_STORAGE_BIT-for-m.patch
-	(
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Initial implementation of a persistent mapped buffer allocator.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Add support for backing dynamic wined3d_buffer objects by a persistent map.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Use ARB_multi_bind to speed up UBO updates.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Use GL_CLIENT_STORAGE_BIT for persistent mappings.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Disable persistently mapped shader resource buffers.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Perform initial allocation of persistent buffers asynchronously.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Avoid freeing persistent buffer heap elements during use.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Add DISABLE_PBA envvar, some PBA cleanup.", 1 },';
-		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Add quirk to use GL_CLIENT_STORAGE_BIT for mesa.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset wined3d-QUERY_Stubs
 # |
 # | This patchset fixes the following Wine bugs:
@@ -8287,6 +8263,41 @@ if test "$enable_wined3d_Indexed_Vertex_Blending" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "d3d9/tests: Check MaxVertexBlendMatrixIndex capability.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Report correct number of blend matrices when software vertex processing is used.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Track updates of vertex blend matrices separately.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wined3d-Persistent_Buffer_Allocator
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	d3d11-ID3D11Texture1D_Rebased, d3d11-Deferred_Context, d3d9-Tests, ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type,
+# | 	ntdll-DllRedirects, wined3d-Accounting, wined3d-DXTn, d3d11-Depth_Bias, wined3d-Viewports, wined3d-Dual_Source_Blending,
+# | 	wined3d-QUERY_Stubs, wined3d-Silence_FIXMEs, wined3d-UAV_Counters, wined3d-CSMT_Main
+# |
+# | Modified files:
+# |   *	dlls/wined3d/Makefile.in, dlls/wined3d/buffer.c, dlls/wined3d/buffer_heap.c, dlls/wined3d/context.c, dlls/wined3d/cs.c,
+# | 	dlls/wined3d/device.c, dlls/wined3d/directx.c, dlls/wined3d/query.c, dlls/wined3d/resource.c, dlls/wined3d/state.c,
+# | 	dlls/wined3d/texture.c, dlls/wined3d/utils.c, dlls/wined3d/wined3d_gl.h, dlls/wined3d/wined3d_private.h
+# |
+if test "$enable_wined3d_Persistent_Buffer_Allocator" -eq 1; then
+	patch_apply wined3d-Persistent_Buffer_Allocator/0001-wined3d-Initial-implementation-of-a-persistent-mappe.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0002-wined3d-Add-support-for-backing-dynamic-wined3d_buff.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0003-wined3d-Use-ARB_multi_bind-to-speed-up-UBO-updates.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0004-wined3d-Use-GL_CLIENT_STORAGE_BIT-for-persistent-map.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0005-wined3d-Disable-persistently-mapped-shader-resource-.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0006-wined3d-Perform-initial-allocation-of-persistent-buf.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0007-wined3d-Avoid-freeing-persistent-buffer-heap-element.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0008-wined3d-Add-DISABLE_PBA-envvar-some-PBA-cleanup.patch
+	patch_apply wined3d-Persistent_Buffer_Allocator/0009-wined3d-Add-quirk-to-use-GL_CLIENT_STORAGE_BIT-for-m.patch
+	(
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Initial implementation of a persistent mapped buffer allocator.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Add support for backing dynamic wined3d_buffer objects by a persistent map.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Use ARB_multi_bind to speed up UBO updates.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Use GL_CLIENT_STORAGE_BIT for persistent mappings.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Disable persistently mapped shader resource buffers.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Perform initial allocation of persistent buffers asynchronously.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Avoid freeing persistent buffer heap elements during use.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Add DISABLE_PBA envvar, some PBA cleanup.", 1 },';
+		printf '%s\n' '+    { "Andrew Comminos", "wined3d: Add quirk to use GL_CLIENT_STORAGE_BIT for mesa.", 1 },';
 	) >> "$patchlist"
 fi
 

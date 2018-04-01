@@ -1,6 +1,6 @@
-From 398d7d355ea877e60b446ebe106cfef87ce40ff2 Mon Sep 17 00:00:00 2001
+From a13986ad0882b31ba9f9b297ea22f515272be0d9 Mon Sep 17 00:00:00 2001
 From: Andrew Comminos <andrew@comminos.com>
-Date: Fri, 30 Mar 2018 18:31:43 -0500
+Date: Sun, 1 Apr 2018 02:16:50 -0500
 Subject: [PATCH 8/9] wined3d: Add DISABLE_PBA envvar, some PBA cleanup.
 
 ---
@@ -12,10 +12,10 @@ Subject: [PATCH 8/9] wined3d: Add DISABLE_PBA envvar, some PBA cleanup.
  5 files changed, 57 insertions(+), 27 deletions(-)
 
 diff --git a/dlls/wined3d/buffer.c b/dlls/wined3d/buffer.c
-index 829b82d3b4..97571d520f 100644
+index 4eaa6c78df..c3d65b8b5c 100644
 --- a/dlls/wined3d/buffer.c
 +++ b/dlls/wined3d/buffer.c
-@@ -1582,9 +1582,9 @@ static HRESULT buffer_init(struct wined3d_buffer *buffer, struct wined3d_device
+@@ -1601,9 +1601,9 @@ static HRESULT buffer_init(struct wined3d_buffer *buffer, struct wined3d_device
  
      if (buffer->resource.usage & WINED3DUSAGE_DYNAMIC)
      {
@@ -104,10 +104,10 @@ index 80670c515f..899aad9612 100644
  }
  
 diff --git a/dlls/wined3d/device.c b/dlls/wined3d/device.c
-index 0647c10233..8f36eab67b 100644
+index 0a97d956b9..abafe51831 100644
 --- a/dlls/wined3d/device.c
 +++ b/dlls/wined3d/device.c
-@@ -830,16 +830,27 @@ static void destroy_default_samplers(struct wined3d_device *device, struct wined
+@@ -846,16 +846,27 @@ static void destroy_default_samplers(struct wined3d_device *device, struct wined
  static void create_buffer_heap(struct wined3d_device *device, struct wined3d_context *context)
  {
      const struct wined3d_gl_info *gl_info = &device->adapter->gl_info;
@@ -143,7 +143,7 @@ index 0647c10233..8f36eab67b 100644
          gl_info->gl_ops.gl.p_glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &ub_alignment);
  
          // Align constant buffer heap size, in case GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT isn't a power of two (for some reason).
-@@ -848,19 +859,22 @@ static void create_buffer_heap(struct wined3d_device *device, struct wined3d_con
+@@ -864,19 +875,22 @@ static void create_buffer_heap(struct wined3d_device *device, struct wined3d_con
          if (FAILED(hr = wined3d_buffer_heap_create(context, geo_heap_size, 0, TRUE, &device->wo_buffer_heap)))
          {
              ERR("Failed to create write-only persistent buffer heap, hr %#x.\n", hr);
@@ -171,7 +171,7 @@ index 0647c10233..8f36eab67b 100644
  
  /* Context activation is done by the caller. */
 diff --git a/dlls/wined3d/query.c b/dlls/wined3d/query.c
-index 9e22905f09..9828fc21aa 100644
+index f3ca1630e5..5ea79b6e4a 100644
 --- a/dlls/wined3d/query.c
 +++ b/dlls/wined3d/query.c
 @@ -88,7 +88,7 @@ static BOOL wined3d_fence_supported(const struct wined3d_gl_info *gl_info)
@@ -184,10 +184,10 @@ index 9e22905f09..9828fc21aa 100644
  {
      const struct wined3d_gl_info *gl_info;
 diff --git a/dlls/wined3d/wined3d_private.h b/dlls/wined3d/wined3d_private.h
-index d72098fd0d..8ae2758efc 100644
+index fbf4be452a..8f11c57039 100644
 --- a/dlls/wined3d/wined3d_private.h
 +++ b/dlls/wined3d/wined3d_private.h
-@@ -1708,9 +1708,6 @@ void wined3d_fence_destroy(struct wined3d_fence *fence) DECLSPEC_HIDDEN;
+@@ -1710,9 +1710,6 @@ void wined3d_fence_destroy(struct wined3d_fence *fence) DECLSPEC_HIDDEN;
  void wined3d_fence_issue(struct wined3d_fence *fence, const struct wined3d_device *device) DECLSPEC_HIDDEN;
  enum wined3d_fence_result wined3d_fence_wait(const struct wined3d_fence *fence,
          const struct wined3d_device *device) DECLSPEC_HIDDEN;
@@ -197,7 +197,7 @@ index d72098fd0d..8ae2758efc 100644
  
  /* Direct3D terminology with little modifications. We do not have an issued
   * state because only the driver knows about it, but we have a created state
-@@ -2907,7 +2904,8 @@ struct wined3d_device
+@@ -2929,7 +2926,8 @@ struct wined3d_device
      BYTE inScene : 1;                   /* A flag to check for proper BeginScene / EndScene call pairs */
      BYTE softwareVertexProcessing : 1;  /* process vertex shaders using software or hardware */
      BYTE filter_messages : 1;

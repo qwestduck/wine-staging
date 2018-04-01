@@ -1,6 +1,6 @@
-From d12c686079d9ae59f7f6c7bab7e25db30dd54174 Mon Sep 17 00:00:00 2001
+From d8eb41872a9dd01d24a9cd9f620d8876042dd465 Mon Sep 17 00:00:00 2001
 From: Andrew Comminos <andrew@comminos.com>
-Date: Fri, 30 Mar 2018 18:32:31 -0500
+Date: Sun, 1 Apr 2018 02:16:50 -0500
 Subject: [PATCH 9/9] wined3d: Add quirk to use GL_CLIENT_STORAGE_BIT for mesa.
 
 ---
@@ -36,10 +36,10 @@ index 899aad9612..9e8f2d799d 100644
      GL_EXTCALL(glGenBuffers(1, &object->buffer_object));
      checkGLcall("glGenBuffers");
 diff --git a/dlls/wined3d/directx.c b/dlls/wined3d/directx.c
-index faeec65f45..0f220ec4b4 100644
+index 07c4663366..e3a13fca51 100644
 --- a/dlls/wined3d/directx.c
 +++ b/dlls/wined3d/directx.c
-@@ -943,6 +943,13 @@ static BOOL match_broken_viewport_subpixel_bits(const struct wined3d_gl_info *gl
+@@ -946,6 +946,13 @@ static BOOL match_broken_viewport_subpixel_bits(const struct wined3d_gl_info *gl
      return !wined3d_caps_gl_ctx_test_viewport_subpixel_bits(ctx);
  }
  
@@ -53,7 +53,7 @@ index faeec65f45..0f220ec4b4 100644
  static void quirk_apple_glsl_constants(struct wined3d_gl_info *gl_info)
  {
      /* MacOS needs uniforms for relative addressing offsets. This can accumulate to quite a few uniforms.
-@@ -1080,6 +1087,13 @@ static void quirk_broken_viewport_subpixel_bits(struct wined3d_gl_info *gl_info)
+@@ -1083,6 +1090,13 @@ static void quirk_broken_viewport_subpixel_bits(struct wined3d_gl_info *gl_info)
      }
  }
  
@@ -67,7 +67,7 @@ index faeec65f45..0f220ec4b4 100644
  struct driver_quirk
  {
      BOOL (*match)(const struct wined3d_gl_info *gl_info, struct wined3d_caps_gl_ctx *ctx,
-@@ -1176,6 +1190,11 @@ static const struct driver_quirk quirk_table[] =
+@@ -1179,6 +1193,11 @@ static const struct driver_quirk quirk_table[] =
          quirk_broken_viewport_subpixel_bits,
          "Nvidia viewport subpixel bits bug"
      },
@@ -80,7 +80,7 @@ index faeec65f45..0f220ec4b4 100644
  
  /* Certain applications (Steam) complain if we report an outdated driver version. In general,
 diff --git a/dlls/wined3d/wined3d_private.h b/dlls/wined3d/wined3d_private.h
-index 8ae2758efc..eab66eb167 100644
+index 8f11c57039..9fa38aa5bb 100644
 --- a/dlls/wined3d/wined3d_private.h
 +++ b/dlls/wined3d/wined3d_private.h
 @@ -75,6 +75,7 @@
