@@ -1,6 +1,6 @@
-From 65993e989a6f4fdb7e15f60044222e10f034fb1d Mon Sep 17 00:00:00 2001
+From ac2707e6c781f6be7208b56819db30abe219e700 Mon Sep 17 00:00:00 2001
 From: Andrew Comminos <andrew@comminos.com>
-Date: Sun, 1 Apr 2018 02:16:50 -0500
+Date: Mon, 23 Apr 2018 21:19:47 -0500
 Subject: [PATCH 4/9] wined3d: Use GL_CLIENT_STORAGE_BIT for persistent
  mappings.
 

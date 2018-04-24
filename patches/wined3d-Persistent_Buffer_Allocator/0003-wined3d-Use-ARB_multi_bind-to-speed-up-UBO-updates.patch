@@ -1,6 +1,6 @@
-From 6d2b7b6751a22df82a65a623d7ddbcbc7cd9d36d Mon Sep 17 00:00:00 2001
+From 43221e7b3901b138168307278f5a33e07757101c Mon Sep 17 00:00:00 2001
 From: Andrew Comminos <andrew@comminos.com>
-Date: Sun, 1 Apr 2018 02:16:50 -0500
+Date: Mon, 23 Apr 2018 21:19:47 -0500
 Subject: [PATCH 3/9] wined3d: Use ARB_multi_bind to speed up UBO updates.
 
 ---
@@ -39,10 +39,10 @@ index 011582705b..07c4663366 100644
          {ARB_CLIP_CONTROL,                 MAKEDWORD_VERSION(4, 5)},
          {ARB_CULL_DISTANCE,                MAKEDWORD_VERSION(4, 5)},
 diff --git a/dlls/wined3d/state.c b/dlls/wined3d/state.c
-index aae3c1e06d..f34ba22f24 100644
+index 96a548777c..61ad44f83b 100644
 --- a/dlls/wined3d/state.c
 +++ b/dlls/wined3d/state.c
-@@ -4890,19 +4890,51 @@ static void state_cb(struct wined3d_context *context, const struct wined3d_state
+@@ -4440,19 +4440,51 @@ static void state_cb(struct wined3d_context *context, const struct wined3d_state
          shader_type = WINED3D_SHADER_TYPE_COMPUTE;
  
      wined3d_gl_limits_get_uniform_block_range(&gl_info->limits, shader_type, &base, &count);

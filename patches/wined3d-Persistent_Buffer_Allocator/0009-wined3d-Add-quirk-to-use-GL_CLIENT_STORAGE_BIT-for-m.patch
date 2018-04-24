@@ -1,6 +1,6 @@
-From d8eb41872a9dd01d24a9cd9f620d8876042dd465 Mon Sep 17 00:00:00 2001
+From b36b7ba5b774b5ac52a7c148e097ba5f722bf90b Mon Sep 17 00:00:00 2001
 From: Andrew Comminos <andrew@comminos.com>
-Date: Sun, 1 Apr 2018 02:16:50 -0500
+Date: Mon, 23 Apr 2018 21:19:48 -0500
 Subject: [PATCH 9/9] wined3d: Add quirk to use GL_CLIENT_STORAGE_BIT for mesa.
 
 ---
@@ -80,7 +80,7 @@ index 07c4663366..e3a13fca51 100644
  
  /* Certain applications (Steam) complain if we report an outdated driver version. In general,
 diff --git a/dlls/wined3d/wined3d_private.h b/dlls/wined3d/wined3d_private.h
-index 8f11c57039..9fa38aa5bb 100644
+index acf2a5d885..54efd514bd 100644
 --- a/dlls/wined3d/wined3d_private.h
 +++ b/dlls/wined3d/wined3d_private.h
 @@ -75,6 +75,7 @@
