@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "5e74b9ea945db50bd31cef3254865f6cd9544eb2"
+	echo "d6654dbf2b38d02f3c6e0ede706a0388cd7cd4a6"
 }
 
 # Show version information
@@ -110,7 +110,6 @@ patch_enable_all ()
 	enable_crypt32_MS_Root_Certs="$1"
 	enable_d3d11_Deferred_Context="$1"
 	enable_d3d11_Depth_Bias="$1"
-	enable_d3d11_Silence_FIXMEs="$1"
 	enable_d3d8_ValidateShader="$1"
 	enable_d3d9_DesktopWindow="$1"
 	enable_d3d9_Tests="$1"
@@ -149,6 +148,7 @@ patch_enable_all ()
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
 	enable_dxgi_GammaRamp="$1"
 	enable_dxgi_MakeWindowAssociation="$1"
+	enable_dxgi_SetMaximumFrameLatency="$1"
 	enable_dxva2_Video_Decoder="$1"
 	enable_explorer_Video_Registry_Key="$1"
 	enable_fonts_Missing_Fonts="$1"
@@ -418,6 +418,7 @@ patch_enable_all ()
 	enable_wininet_Internet_Settings="$1"
 	enable_winmm_Delay_Import_Depends="$1"
 	enable_winmm_mciSendCommandA="$1"
+	enable_wintrust_WTHelperGetProvCertFromChain="$1"
 	enable_wintrust_WinVerifyTrust="$1"
 	enable_wpcap_Dynamic_Linking="$1"
 	enable_ws2_32_APC_Performance="$1"
@@ -519,9 +520,6 @@ patch_enable ()
 			;;
 		d3d11-Depth_Bias)
 			enable_d3d11_Depth_Bias="$2"
-			;;
-		d3d11-Silence_FIXMEs)
-			enable_d3d11_Silence_FIXMEs="$2"
 			;;
 		d3d8-ValidateShader)
 			enable_d3d8_ValidateShader="$2"
@@ -636,6 +634,9 @@ patch_enable ()
 			;;
 		dxgi-MakeWindowAssociation)
 			enable_dxgi_MakeWindowAssociation="$2"
+			;;
+		dxgi-SetMaximumFrameLatency)
+			enable_dxgi_SetMaximumFrameLatency="$2"
 			;;
 		dxva2-Video_Decoder)
 			enable_dxva2_Video_Decoder="$2"
@@ -1444,6 +1445,9 @@ patch_enable ()
 		winmm-mciSendCommandA)
 			enable_winmm_mciSendCommandA="$2"
 			;;
+		wintrust-WTHelperGetProvCertFromChain)
+			enable_wintrust_WTHelperGetProvCertFromChain="$2"
+			;;
 		wintrust-WinVerifyTrust)
 			enable_wintrust_WinVerifyTrust="$2"
 			;;
@@ -1856,6 +1860,13 @@ if test "$enable_ws2_32_TransmitFile" -eq 1; then
 		abort "Patchset server-Desktop_Refcount disabled, but ws2_32-TransmitFile depends on that."
 	fi
 	enable_server_Desktop_Refcount=1
+fi
+
+if test "$enable_wintrust_WTHelperGetProvCertFromChain" -eq 1; then
+	if test "$enable_wintrust_WinVerifyTrust" -gt 1; then
+		abort "Patchset wintrust-WinVerifyTrust disabled, but wintrust-WTHelperGetProvCertFromChain depends on that."
+	fi
+	enable_wintrust_WinVerifyTrust=1
 fi
 
 if test "$enable_winex11_WM_WINDOWPOSCHANGING" -eq 1; then
@@ -3114,18 +3125,6 @@ if test "$enable_d3d11_Depth_Bias" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset d3d11-Silence_FIXMEs
-# |
-# | Modified files:
-# |   *	dlls/d3d11/device.c
-# |
-if test "$enable_d3d11_Silence_FIXMEs" -eq 1; then
-	patch_apply d3d11-Silence_FIXMEs/0001-d3d11-Silence-ID3D11Device_GetDeviceRemovedReason.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "d3d11: Silence ID3D11Device_GetDeviceRemovedReason.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset d3d8-ValidateShader
 # |
 # | This patchset fixes the following Wine bugs:
@@ -3774,6 +3773,21 @@ if test "$enable_dxgi_MakeWindowAssociation" -eq 1; then
 	patch_apply dxgi-MakeWindowAssociation/0001-dxgi-Improve-stubs-for-MakeWindowAssociation-and-Get.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "dxgi: Improve stubs for MakeWindowAssociation and GetWindowAssociation.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset dxgi-SetMaximumFrameLatency
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44061] Return S_OK from GetMaximumFrameLatency
+# |
+# | Modified files:
+# |   *	dlls/dxgi/device.c
+# |
+if test "$enable_dxgi_SetMaximumFrameLatency" -eq 1; then
+	patch_apply dxgi-SetMaximumFrameLatency/0001-dxgi-Return-S_OK-in-SetMaximumFrameLatency.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "dxgi: Return S_OK in SetMaximumFrameLatency.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -8513,6 +8527,24 @@ if test "$enable_wintrust_WinVerifyTrust" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset wintrust-WTHelperGetProvCertFromChain
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	wintrust-WinVerifyTrust
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44061] Check Parameter in WTHelperGetProvCertFromChain
+# |
+# | Modified files:
+# |   *	dlls/wintrust/tests/softpub.c, dlls/wintrust/wintrust_main.c
+# |
+if test "$enable_wintrust_WTHelperGetProvCertFromChain" -eq 1; then
+	patch_apply wintrust-WTHelperGetProvCertFromChain/0001-wintrust-Add-parameter-check-in-WTHelperGetProvCertF.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "wintrust: Add parameter check in WTHelperGetProvCertFromChain.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset wpcap-Dynamic_Linking
 # |
 # | Modified files:
@@ -8722,9 +8754,9 @@ fi
 # |   *	dlls/xaudio2_7/xaudio_dll.c
 # |
 if test "$enable_xaudio2_CommitChanges" -eq 1; then
-	patch_apply xaudio2_CommitChanges/0001-xaudio2-revert-commit-b747d6f6ccdf1699a9242a570d681f.patch
+	patch_apply xaudio2_CommitChanges/0001-xaudio2-Return-S_OK-in-IXAudio2-in-CommitChanges.patch
 	(
-		printf '%s\n' '+    { "Thomas Crider", "xaudio2: Revert commit b747d6f6ccdf1699a9242a570d681fa246de592e, fixes #44883.", 1 },';
+		printf '%s\n' '+    { "Thomas Crider", "xaudio2: Return S_OK in IXAudio2 in CommitChanges.", 1 },';
 	) >> "$patchlist"
 fi
 
