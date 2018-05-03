@@ -7986,7 +7986,7 @@ fi
 # Patchset wined3d-Persistent_Buffer_Allocator
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	d3d11-Deferred_Context, d3d9-Tests, wined3d-Accounting, wined3d-DXTn, d3d11-Depth_Bias, wined3d-Viewports, wined3d-
+# |   *	nvcuda-CUDA_Support, nvapi-Stub_DLL, d3d11-Deferred_Context, d3d9-Tests, wined3d-Accounting, wined3d-DXTn, wined3d-
 # | 	Dual_Source_Blending, wined3d-QUERY_Stubs, wined3d-Silence_FIXMEs, wined3d-UAV_Counters, wined3d-CSMT_Main
 # |
 # | Modified files:
