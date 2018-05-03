@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "dbce559df683b7831861c747f1f4d28614eedbe2"
+	echo "8dca6c35e11a104385242ed8346ee05707b78ef7"
 }
 
 # Show version information
@@ -1868,7 +1868,11 @@ if test "$enable_winedevice_Default_Drivers" -eq 1; then
 	if test "$enable_dxva2_Video_Decoder" -gt 1; then
 		abort "Patchset dxva2-Video_Decoder disabled, but winedevice-Default_Drivers depends on that."
 	fi
+	if test "$enable_ntoskrnl_Stubs" -gt 1; then
+		abort "Patchset ntoskrnl-Stubs disabled, but winedevice-Default_Drivers depends on that."
+	fi
 	enable_dxva2_Video_Decoder=1
+	enable_ntoskrnl_Stubs=1
 fi
 
 if test "$enable_wined3d_Persistent_Buffer_Allocator" -eq 1; then
@@ -2741,19 +2745,15 @@ fi
 # |
 # | Modified files:
 # |   *	dlls/api-ms-win-core-winrt-l1-1-0/api-ms-win-core-winrt-l1-1-0.spec, dlls/api-ms-win-core-winrt-registration-l1-1-0/api-
-# | 	ms-win-core-winrt-registration-l1-1-0.spec, dlls/combase/Makefile.in, dlls/combase/combase.spec, dlls/combase/roapi.c
+# | 	ms-win-core-winrt-registration-l1-1-0.spec, dlls/combase/combase.spec, dlls/combase/roapi.c
 # |
 if test "$enable_combase_RoApi" -eq 1; then
-	patch_apply combase-RoApi/0003-combase-Implement-RoGetActivationFactory.patch
-	patch_apply combase-RoApi/0004-combase-Implement-RoActivateInstance.patch
 	patch_apply combase-RoApi/0005-combase-Add-stub-for-RoGetApartmentIdentifier.patch
 	patch_apply combase-RoApi/0007-combase-Add-stub-for-RoRegisterForApartmentShutdown.patch
 	patch_apply combase-RoApi/0008-combase-Add-stub-for-RoGetServerActivatableClasses.patch
 	patch_apply combase-RoApi/0009-combase-Add-stub-for-RoRegisterActivationFactories.patch
 	patch_apply combase-RoApi/0010-combase-Add-stub-for-CleanupTlsOleState.patch
 	(
-		printf '%s\n' '+    { "Michael Müller", "combase: Implement RoGetActivationFactory.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "combase: Implement RoActivateInstance.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "combase: Add stub for RoGetApartmentIdentifier.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "combase: Add stub for RoRegisterForApartmentShutdown.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "combase: Add stub for RoGetServerActivatableClasses.", 1 },';
@@ -5688,7 +5688,8 @@ fi
 # |   *	[#37355] Add stub for ntoskrnl.Mm{Map,Unmap}LockedPages
 # |
 # | Modified files:
-# |   *	dlls/ntoskrnl.exe/ntoskrnl.c, dlls/ntoskrnl.exe/ntoskrnl.exe.spec, include/ddk/wdm.h, include/winnt.h
+# |   *	dlls/ntoskrnl.exe/ntoskrnl.c, dlls/ntoskrnl.exe/ntoskrnl.exe.spec, dlls/ntoskrnl.exe/tests/driver.c, include/ddk/wdm.h,
+# | 	include/winnt.h
 # |
 if test "$enable_ntoskrnl_Stubs" -eq 1; then
 	patch_apply ntoskrnl-Stubs/0005-ntoskrnl.exe-Improve-KeReleaseMutex-stub.patch
@@ -8046,13 +8047,13 @@ fi
 # Patchset winedevice-Default_Drivers
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	dxva2-Video_Decoder
+# |   *	dxva2-Video_Decoder, Compiler_Warnings, ntoskrnl-Stubs
 # |
 # | Modified files:
 # |   *	configure.ac, dlls/dxgkrnl.sys/Makefile.in, dlls/dxgkrnl.sys/dxgkrnl.sys.spec, dlls/dxgkrnl.sys/main.c,
-# | 	dlls/dxgmms1.sys/Makefile.in, dlls/dxgmms1.sys/dxgmms1.sys.spec, dlls/dxgmms1.sys/main.c, dlls/win32k.sys/Makefile.in,
-# | 	dlls/win32k.sys/main.c, dlls/win32k.sys/win32k.sys.spec, loader/wine.inf.in, programs/winedevice/device.c,
-# | 	tools/make_specfiles
+# | 	dlls/dxgmms1.sys/Makefile.in, dlls/dxgmms1.sys/dxgmms1.sys.spec, dlls/dxgmms1.sys/main.c,
+# | 	dlls/ntoskrnl.exe/tests/driver.c, dlls/win32k.sys/Makefile.in, dlls/win32k.sys/main.c, dlls/win32k.sys/win32k.sys.spec,
+# | 	include/ddk/ntddk.h, loader/wine.inf.in, programs/winedevice/device.c, tools/make_specfiles
 # |
 if test "$enable_winedevice_Default_Drivers" -eq 1; then
 	patch_apply winedevice-Default_Drivers/0001-win32k.sys-Add-stub-driver.patch
