@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "8dca6c35e11a104385242ed8346ee05707b78ef7"
+	echo "e637a6f0bf1eeba3e6be62c4e1c5688bb8f6102e"
 }
 
 # Show version information
@@ -108,8 +108,10 @@ patch_enable_all ()
 	enable_crypt32_CryptUnprotectMemory="$1"
 	enable_crypt32_ECDSA_Cert_Chains="$1"
 	enable_crypt32_MS_Root_Certs="$1"
+	enable_d2d1_ID2D1Factory1="$1"
 	enable_d3d11_Deferred_Context="$1"
 	enable_d3d11_Depth_Bias="$1"
+	enable_d3d11_shader_count="$1"
 	enable_d3d8_ValidateShader="$1"
 	enable_d3d9_DesktopWindow="$1"
 	enable_d3d9_Tests="$1"
@@ -143,6 +145,7 @@ patch_enable_all ()
 	enable_dsound_EAX="$1"
 	enable_dsound_Fast_Mixer="$1"
 	enable_dsound_Revert_Cleanup="$1"
+	enable_dwrite_FontFallback="$1"
 	enable_dxdiagn_Display_Information="$1"
 	enable_dxdiagn_Enumerate_DirectSound="$1"
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
@@ -412,7 +415,6 @@ patch_enable_all ()
 	enable_wininet_Cleanup="$1"
 	enable_wininet_Http_Decoding="$1"
 	enable_wininet_InternetCrackUrlW="$1"
-	enable_wininet_Internet_Settings="$1"
 	enable_winmm_Delay_Import_Depends="$1"
 	enable_winmm_mciSendCommandA="$1"
 	enable_wintrust_WTHelperGetProvCertFromChain="$1"
@@ -512,11 +514,17 @@ patch_enable ()
 		crypt32-MS_Root_Certs)
 			enable_crypt32_MS_Root_Certs="$2"
 			;;
+		d2d1-ID2D1Factory1)
+			enable_d2d1_ID2D1Factory1="$2"
+			;;
 		d3d11-Deferred_Context)
 			enable_d3d11_Deferred_Context="$2"
 			;;
 		d3d11-Depth_Bias)
 			enable_d3d11_Depth_Bias="$2"
+			;;
+		d3d11-shader-count)
+			enable_d3d11_shader_count="$2"
 			;;
 		d3d8-ValidateShader)
 			enable_d3d8_ValidateShader="$2"
@@ -616,6 +624,9 @@ patch_enable ()
 			;;
 		dsound-Revert_Cleanup)
 			enable_dsound_Revert_Cleanup="$2"
+			;;
+		dwrite-FontFallback)
+			enable_dwrite_FontFallback="$2"
 			;;
 		dxdiagn-Display_Information)
 			enable_dxdiagn_Display_Information="$2"
@@ -1423,9 +1434,6 @@ patch_enable ()
 			;;
 		wininet-InternetCrackUrlW)
 			enable_wininet_InternetCrackUrlW="$2"
-			;;
-		wininet-Internet_Settings)
-			enable_wininet_Internet_Settings="$2"
 			;;
 		winmm-Delay_Import_Depends)
 			enable_winmm_Delay_Import_Depends="$2"
@@ -2988,6 +2996,35 @@ if test "$enable_crypt32_MS_Root_Certs" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset d2d1-ID2D1Factory1
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44052] - Add ID2D1Bitmap1/ID2D1Factory1 support
+# |
+# | Modified files:
+# |   *	dlls/d2d1/Makefile.in, dlls/d2d1/bitmap.c, dlls/d2d1/brush.c, dlls/d2d1/d2d1_private.h, dlls/d2d1/device.c,
+# | 	dlls/d2d1/device_context.c, dlls/d2d1/factory.c, dlls/d2d1/geometry.c, dlls/d2d1/render_target.c,
+# | 	dlls/d2d1/tests/d2d1.c, include/d2d1_1.idl, include/dcommon.idl
+# |
+if test "$enable_d2d1_ID2D1Factory1" -eq 1; then
+	patch_apply d2d1-ID2D1Factory1/0001-d2d1-Add-d2d1_1.idl-for-drawing-ID2D1Bitmap1.patch
+	patch_apply d2d1-ID2D1Factory1/0002-d2d1-Test-ID2D1DeviceContext-drawing-ID2D1Bitmap1.patch
+	patch_apply d2d1-ID2D1Factory1/0003-d2d1-Use-ID2D1Factory1-in-d2d_geometry.patch
+	patch_apply d2d1-ID2D1Factory1/0004-d2d1-Implement-ID2D1Device.patch
+	patch_apply d2d1-ID2D1Factory1/0005-d2d1-Stub-ID2D1DeviceContext.patch
+	patch_apply d2d1-ID2D1Factory1/0006-d2d1-Implement-ID2D1DeviceContext.patch
+	patch_apply d2d1-ID2D1Factory1/0007-d2d1-Implement-ID2D1Bitmap1.patch
+	(
+		printf '%s\n' '+    { "Lucian Poston", "d2d1: Add d2d1_1.idl for drawing ID2D1Bitmap1.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "d2d1: Test ID2D1DeviceContext drawing ID2D1Bitmap1.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "d2d1: Use ID2D1Factory1 in d2d_geometry.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "d2d1: Implement ID2D1Device.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "d2d1: Stub ID2D1DeviceContext.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "d2d1: Implement ID2D1DeviceContext.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "d2d1: Implement ID2D1Bitmap1.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset nvcuda-CUDA_Support
 # |
 # | This patchset fixes the following Wine bugs:
@@ -3202,6 +3239,23 @@ if test "$enable_d3d11_Depth_Bias" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "d3d11: Add support for DepthClipEnable in RSSetState.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "d3d11/tests: Add basic test for depth bias clamping.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Add support for depth bias clamping.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset d3d11-shader-count
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44052] - Return a valid valud for shader count.
+# |
+# | Modified files:
+# |   *	dlls/d3d11/device.c, dlls/d3d11/tests/d3d11.c
+# |
+if test "$enable_d3d11_shader_count" -eq 1; then
+	patch_apply d3d11-shader-count/0001-d3d11-Test-shader-class-instance-count.patch
+	patch_apply d3d11-shader-count/0002-d3d11-Return-valid-values-for-shader-class-instances.patch
+	(
+		printf '%s\n' '+    { "Lucian Poston", "d3d11: Test shader class instance count.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "d3d11: Return valid values for shader class instances.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3777,6 +3831,23 @@ if test "$enable_dsound_EAX" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "dsound: Allow disabling of EAX support in the registry.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "dsound: Add stub support for DSPROPSETID_EAX20_ListenerProperties.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "dsound: Add stub support for DSPROPSETID_EAX20_BufferProperties.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset dwrite-FontFallback
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44052] - Support for font fallback.
+# |
+# | Modified files:
+# |   *	dlls/dwrite/analyzer.c, dlls/dwrite/layout.c, dlls/dwrite/tests/font.c
+# |
+if test "$enable_dwrite_FontFallback" -eq 1; then
+	patch_apply dwrite-FontFallback/0001-dwrite-test-font-collection-fallback-logic.patch
+	patch_apply dwrite-FontFallback/0002-dwrite-Fix-font-fallback.patch
+	(
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Test font collection fallback logic.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Fix font fallback.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -8398,20 +8469,6 @@ if test "$enable_wininet_InternetCrackUrlW" -eq 1; then
 	patch_apply wininet-InternetCrackUrlW/0002-wininet-Resize-buffer-when-call-to-InternetCanonical.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "wininet: Resize buffer when call to InternetCanonicalizeUrlW fails in InternetCrackUrlW.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset wininet-Internet_Settings
-# |
-# | Modified files:
-# |   *	dlls/wininet/internet.c, dlls/wininet/tests/internet.c
-# |
-if test "$enable_wininet_Internet_Settings" -eq 1; then
-	patch_apply wininet-Internet_Settings/0001-wininet-Allow-INTERNET_OPTION_SETTINGS_CHANGED-on-co.patch
-	patch_apply wininet-Internet_Settings/0002-wininet-Add-support-for-INTERNET_OPTION_SETTINGS_CHA.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "wininet: Allow INTERNET_OPTION_SETTINGS_CHANGED on connections.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "wininet: Add support for INTERNET_OPTION_SETTINGS_CHANGED in InternetSetOption.", 1 },';
 	) >> "$patchlist"
 fi
 
