@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "540c48b91175b11c7b8646d0a036b20c46425080"
+	echo "6d6b4bffb3f619ae298669b888775350223e281f"
 }
 
 # Show version information
@@ -110,6 +110,7 @@ patch_enable_all ()
 	enable_d2d1_ID2D1Factory1="$1"
 	enable_d3d11_Deferred_Context="$1"
 	enable_d3d11_Depth_Bias="$1"
+	enable_d3d11_dynamic_cpu_access="$1"
 	enable_d3d11_shader_count="$1"
 	enable_d3d8_ValidateShader="$1"
 	enable_d3d9_DesktopWindow="$1"
@@ -144,7 +145,6 @@ patch_enable_all ()
 	enable_dsound_EAX="$1"
 	enable_dsound_Fast_Mixer="$1"
 	enable_dsound_Revert_Cleanup="$1"
-	enable_dwrite_FontFallback="$1"
 	enable_dxdiagn_Display_Information="$1"
 	enable_dxdiagn_Enumerate_DirectSound="$1"
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
@@ -313,7 +313,6 @@ patch_enable_all ()
 	enable_shdocvw_ParseURLFromOutsideSource_Tests="$1"
 	enable_shell32_ACE_Viewer="$1"
 	enable_shell32_Context_Menu="$1"
-	enable_shell32_File_Property_Dialog="$1"
 	enable_shell32_Microsoft_Windows_Themes="$1"
 	enable_shell32_NewMenu_Interface="$1"
 	enable_shell32_Placeholder_Icons="$1"
@@ -519,6 +518,9 @@ patch_enable ()
 		d3d11-Depth_Bias)
 			enable_d3d11_Depth_Bias="$2"
 			;;
+		d3d11-dynamic-cpu-access)
+			enable_d3d11_dynamic_cpu_access="$2"
+			;;
 		d3d11-shader-count)
 			enable_d3d11_shader_count="$2"
 			;;
@@ -620,9 +622,6 @@ patch_enable ()
 			;;
 		dsound-Revert_Cleanup)
 			enable_dsound_Revert_Cleanup="$2"
-			;;
-		dwrite-FontFallback)
-			enable_dwrite_FontFallback="$2"
 			;;
 		dxdiagn-Display_Information)
 			enable_dxdiagn_Display_Information="$2"
@@ -1127,9 +1126,6 @@ patch_enable ()
 			;;
 		shell32-Context_Menu)
 			enable_shell32_Context_Menu="$2"
-			;;
-		shell32-File_Property_Dialog)
-			enable_shell32_File_Property_Dialog="$2"
 			;;
 		shell32-Microsoft_Windows_Themes)
 			enable_shell32_Microsoft_Windows_Themes="$2"
@@ -2014,13 +2010,9 @@ if test "$enable_shell32_SHFileOperation_Win9x" -eq 1; then
 fi
 
 if test "$enable_shell32_ACE_Viewer" -eq 1; then
-	if test "$enable_shell32_File_Property_Dialog" -gt 1; then
-		abort "Patchset shell32-File_Property_Dialog disabled, but shell32-ACE_Viewer depends on that."
-	fi
 	if test "$enable_shell32_Progress_Dialog" -gt 1; then
 		abort "Patchset shell32-Progress_Dialog disabled, but shell32-ACE_Viewer depends on that."
 	fi
-	enable_shell32_File_Property_Dialog=1
 	enable_shell32_Progress_Dialog=1
 fi
 
@@ -2742,20 +2734,17 @@ fi
 # |
 # | Modified files:
 # |   *	configure.ac, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/Makefile.in, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/ext-
-# | 	ms-win-appmodel-usercontext-l1-1-0.spec, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/main.c, dlls/ext-ms-win-uxtheme-
-# | 	themes-l1-1-0/Makefile.in, dlls/ext-ms-win-uxtheme-themes-l1-1-0/ext-ms-win-uxtheme-themes-l1-1-0.spec, dlls/ext-ms-win-
-# | 	xaml-pal-l1-1-0/Makefile.in, dlls/ext-ms-win-xaml-pal-l1-1-0/ext-ms-win-xaml-pal-l1-1-0.spec, dlls/ext-ms-win-xaml-
+# | 	ms-win-appmodel-usercontext-l1-1-0.spec, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/main.c, dlls/ext-ms-win-xaml-
+# | 	pal-l1-1-0/Makefile.in, dlls/ext-ms-win-xaml-pal-l1-1-0/ext-ms-win-xaml-pal-l1-1-0.spec, dlls/ext-ms-win-xaml-
 # | 	pal-l1-1-0/main.c, dlls/feclient/Makefile.in, dlls/feclient/feclient.spec, dlls/feclient/main.c,
 # | 	dlls/iertutil/Makefile.in, dlls/iertutil/iertutil.spec, dlls/iertutil/main.c, dlls/uiautomationcore/Makefile.in,
-# | 	dlls/uiautomationcore/uia_main.c, dlls/uiautomationcore/uiautomationcore.spec, include/uiautomationcoreapi.h,
-# | 	tools/make_specfiles
+# | 	dlls/uiautomationcore/uia_main.c, dlls/uiautomationcore/uiautomationcore.spec, include/uiautomationcoreapi.h
 # |
 if test "$enable_api_ms_win_Stub_DLLs" -eq 1; then
 	patch_apply api-ms-win-Stub_DLLs/0006-iertutil-Add-dll-and-add-stub-for-ordinal-811.patch
 	patch_apply api-ms-win-Stub_DLLs/0009-ext-ms-win-xaml-pal-l1-1-0-Add-dll-and-add-stub-for-.patch
 	patch_apply api-ms-win-Stub_DLLs/0010-ext-ms-win-appmodel-usercontext-l1-1-0-Add-dll-and-a.patch
 	patch_apply api-ms-win-Stub_DLLs/0012-ext-ms-win-xaml-pal-l1-1-0-Add-stub-for-GetThemeServ.patch
-	patch_apply api-ms-win-Stub_DLLs/0016-ext-ms-win-uxtheme-themes-l1-1-0-Add-dll.patch
 	patch_apply api-ms-win-Stub_DLLs/0026-feclient-Add-stub-dll.patch
 	patch_apply api-ms-win-Stub_DLLs/0027-uiautomationcore-Add-dll-and-stub-some-functions.patch
 	(
@@ -2763,7 +2752,6 @@ if test "$enable_api_ms_win_Stub_DLLs" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-xaml-pal-l1-1-0: Add dll and add stub for XamlBehaviorEnabled.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-appmodel-usercontext-l1-1-0: Add dll and add stub for UserContextExtInitialize.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-xaml-pal-l1-1-0: Add stub for GetThemeServices.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-uxtheme-themes-l1-1-0: Add dll.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "feclient: Add stub dll.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "uiautomationcore: Add dll and stub some functions.", 1 },';
 	) >> "$patchlist"
@@ -3201,6 +3189,21 @@ if test "$enable_d3d11_Depth_Bias" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "d3d11: Add support for DepthClipEnable in RSSetState.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "d3d11/tests: Add basic test for depth bias clamping.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Add support for depth bias clamping.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset d3d11-dynamic-cpu-access
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45066] - Enable CPU access for dynamic buffers.
+# |
+# | Modified files:
+# |   *	dlls/d3d11/buffer.c
+# |
+if test "$enable_d3d11_dynamic_cpu_access" -eq 1; then
+	patch_apply d3d11-dynamic-cpu-access/0001-d3d11-D3D11_USAGE_DYNAMIC-needs-to-have-CPU-access.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "d3d11: D3D11_USAGE_DYNAMIC needs to have CPU access.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3796,23 +3799,6 @@ if test "$enable_dsound_EAX" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset dwrite-FontFallback
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44052] - Support for font fallback.
-# |
-# | Modified files:
-# |   *	dlls/dwrite/analyzer.c, dlls/dwrite/layout.c, dlls/dwrite/tests/font.c
-# |
-if test "$enable_dwrite_FontFallback" -eq 1; then
-	patch_apply dwrite-FontFallback/0001-dwrite-test-font-collection-fallback-logic.patch
-	patch_apply dwrite-FontFallback/0002-dwrite-Fix-font-fallback.patch
-	(
-		printf '%s\n' '+    { "Lucian Poston", "dwrite: Test font collection fallback logic.", 1 },';
-		printf '%s\n' '+    { "Lucian Poston", "dwrite: Fix font fallback.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset dxdiagn-Display_Information
 # |
 # | This patchset fixes the following Wine bugs:
@@ -4193,7 +4179,7 @@ fi
 # |   *	[#34372] Support for AllocateAndGetTcpExTableFromStack
 # |
 # | Modified files:
-# |   *	dlls/iphlpapi/iphlpapi.spec, dlls/iphlpapi/ipstats.c, dlls/iphlpapi/ipstats.h
+# |   *	dlls/iphlpapi/iphlpapi.spec, dlls/iphlpapi/ipstats.c, include/iphlpapi.h
 # |
 if test "$enable_iphlpapi_TCP_Table" -eq 1; then
 	patch_apply iphlpapi-TCP_Table/0001-iphlpapi-Implement-AllocateAndGetTcpExTableFromStack.patch
@@ -4282,6 +4268,10 @@ if test "$enable_kernel32_Cwd_Startup_Info" -eq 1; then
 fi
 
 # Patchset kernel32-Debugger
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#35928] Crash handlers/debuggers fail to display user-interface when invoked for crashing (non-interactive) service
+# | 	processes (inherited Wine service window station/desktop)
 # |
 # | Modified files:
 # |   *	dlls/kernel32/except.c
@@ -5262,15 +5252,11 @@ fi
 # Patchset ntdll-RtlQueryPackageIdentity
 # |
 # | Modified files:
-# |   *	dlls/ntdll/ntdll.spec, dlls/ntdll/rtl.c, dlls/ntdll/tests/Makefile.in, dlls/ntdll/tests/rtl.c, include/shobjidl.idl
+# |   *	dlls/ntdll/tests/Makefile.in, dlls/ntdll/tests/rtl.c
 # |
 if test "$enable_ntdll_RtlQueryPackageIdentity" -eq 1; then
-	patch_apply ntdll-RtlQueryPackageIdentity/0001-ntdll-Add-stub-for-RtlQueryPackageIdentity.patch
-	patch_apply ntdll-RtlQueryPackageIdentity/0002-include-Add-IApplicationActivationManager-interface-.patch
 	patch_apply ntdll-RtlQueryPackageIdentity/0003-ntdll-tests-Add-basic-tests-for-RtlQueryPackageIdent.patch
 	(
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Add stub for RtlQueryPackageIdentity.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "include: Add IApplicationActivationManager interface declaration.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ntdll/tests: Add basic tests for RtlQueryPackageIdentity.", 1 },';
 	) >> "$patchlist"
 fi
@@ -6581,21 +6567,6 @@ if test "$enable_shdocvw_ParseURLFromOutsideSource_Tests" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset shell32-File_Property_Dialog
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#40426] Implement general tab for file property dialog
-# |
-# | Modified files:
-# |   *	dlls/shell32/shell32.rc, dlls/shell32/shlview_cmenu.c, dlls/shell32/shresdef.h
-# |
-if test "$enable_shell32_File_Property_Dialog" -eq 1; then
-	patch_apply shell32-File_Property_Dialog/0001-shell32-Add-general-tab-in-file-property-dialog.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "shell32: Add general tab in file property dialog.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset shell32-SHFileOperation_Move
 # |
 # | This patchset fixes the following Wine bugs:
@@ -6635,8 +6606,8 @@ fi
 # Patchset shell32-ACE_Viewer
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	shell32-File_Property_Dialog, server-File_Permissions, ntdll-FileDispositionInformation, kernel32-CopyFileEx,
-# | 	shell32-SHFileOperation_Move, shell32-Progress_Dialog
+# |   *	server-File_Permissions, ntdll-FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move,
+# | 	shell32-Progress_Dialog
 # |
 # | Modified files:
 # |   *	dlls/aclui/Makefile.in, dlls/aclui/aclui.rc, dlls/aclui/aclui_main.c, dlls/aclui/resource.h, dlls/aclui/user_icons.bmp,
