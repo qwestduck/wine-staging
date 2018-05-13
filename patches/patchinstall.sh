@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "6d6b4bffb3f619ae298669b888775350223e281f"
+	echo "7280f7fb744e951281e7f051c347fb8fef5ab36b"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.8 (Unreleased)"
+	echo "Wine Staging 3.8"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -87,8 +87,8 @@ patch_enable_all ()
 	enable_Coverity="$1"
 	enable_Pipelight="$1"
 	enable_Staging="$1"
-	enable_advapi_LsaLookupPrivilegeName="$1"
 	enable_advapi32_CreateRestrictedToken="$1"
+	enable_advapi32_LsaLookupPrivilegeName="$1"
 	enable_advapi32_LsaLookupSids="$1"
 	enable_advapi32_Performance_Counters="$1"
 	enable_advapi32_SetSecurityInfo="$1"
@@ -149,6 +149,7 @@ patch_enable_all ()
 	enable_dxdiagn_Enumerate_DirectSound="$1"
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
 	enable_dxgi_GammaRamp="$1"
+	enable_dxgi_IDXGIDevice2="$1"
 	enable_dxgi_MakeWindowAssociation="$1"
 	enable_dxgi_SetMaximumFrameLatency="$1"
 	enable_dxva2_Video_Decoder="$1"
@@ -290,7 +291,6 @@ patch_enable_all ()
 	enable_server_File_Permissions="$1"
 	enable_server_Inherited_ACLs="$1"
 	enable_server_Key_State="$1"
-	enable_server_Map_EXDEV_Error="$1"
 	enable_server_Misc_ACL="$1"
 	enable_server_Object_Types="$1"
 	enable_server_PeekMessage="$1"
@@ -383,6 +383,7 @@ patch_enable_all ()
 	enable_wined3d_CSMT_Main="$1"
 	enable_wined3d_DXTn="$1"
 	enable_wined3d_Dual_Source_Blending="$1"
+	enable_wined3d_Implement_oMask="$1"
 	enable_wined3d_Indexed_Vertex_Blending="$1"
 	enable_wined3d_Persistent_Buffer_Allocator="$1"
 	enable_wined3d_QUERY_Stubs="$1"
@@ -449,11 +450,11 @@ patch_enable ()
 		Staging)
 			enable_Staging="$2"
 			;;
-		advapi-LsaLookupPrivilegeName)
-			enable_advapi_LsaLookupPrivilegeName="$2"
-			;;
 		advapi32-CreateRestrictedToken)
 			enable_advapi32_CreateRestrictedToken="$2"
+			;;
+		advapi32-LsaLookupPrivilegeName)
+			enable_advapi32_LsaLookupPrivilegeName="$2"
 			;;
 		advapi32-LsaLookupSids)
 			enable_advapi32_LsaLookupSids="$2"
@@ -634,6 +635,9 @@ patch_enable ()
 			;;
 		dxgi-GammaRamp)
 			enable_dxgi_GammaRamp="$2"
+			;;
+		dxgi-IDXGIDevice2)
+			enable_dxgi_IDXGIDevice2="$2"
 			;;
 		dxgi-MakeWindowAssociation)
 			enable_dxgi_MakeWindowAssociation="$2"
@@ -1058,9 +1062,6 @@ patch_enable ()
 		server-Key_State)
 			enable_server_Key_State="$2"
 			;;
-		server-Map_EXDEV_Error)
-			enable_server_Map_EXDEV_Error="$2"
-			;;
 		server-Misc_ACL)
 			enable_server_Misc_ACL="$2"
 			;;
@@ -1336,6 +1337,9 @@ patch_enable ()
 			;;
 		wined3d-Dual_Source_Blending)
 			enable_wined3d_Dual_Source_Blending="$2"
+			;;
+		wined3d-Implement-oMask)
+			enable_wined3d_Implement_oMask="$2"
 			;;
 		wined3d-Indexed_Vertex_Blending)
 			enable_wined3d_Indexed_Vertex_Blending="$2"
@@ -2501,20 +2505,6 @@ if test "$enable_Staging" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset advapi-LsaLookupPrivilegeName
-# |
-# | Modified files:
-# |   *	dlls/advapi32/lsa.c, dlls/advapi32/tests/lsa.c
-# |
-if test "$enable_advapi_LsaLookupPrivilegeName" -eq 1; then
-	patch_apply advapi-LsaLookupPrivilegeName/0001-advapi32-Fix-error-code-when-calling-LsaOpenPolicy-f.patch
-	patch_apply advapi-LsaLookupPrivilegeName/0002-advapi32-Use-TRACE-for-LsaOpenPolicy-LsaClose.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "advapi32: Fix error code when calling LsaOpenPolicy for non existing remote machine.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "advapi32: Use TRACE for LsaOpenPolicy/LsaClose.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset advapi32-CreateRestrictedToken
 # |
 # | This patchset fixes the following Wine bugs:
@@ -2568,6 +2558,20 @@ if test "$enable_server_Misc_ACL" -eq 1; then
 	(
 		printf '%s\n' '+    { "Erich E. Hoover", "server: Add default security descriptor ownership for processes.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "server: Add default security descriptor DACL for processes.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset advapi32-LsaLookupPrivilegeName
+# |
+# | Modified files:
+# |   *	dlls/advapi32/lsa.c, dlls/advapi32/tests/lsa.c
+# |
+if test "$enable_advapi32_LsaLookupPrivilegeName" -eq 1; then
+	patch_apply advapi32-LsaLookupPrivilegeName/0001-advapi32-Fix-error-code-when-calling-LsaOpenPolicy-f.patch
+	patch_apply advapi32-LsaLookupPrivilegeName/0002-advapi32-Use-TRACE-for-LsaOpenPolicy-LsaClose.patch
+	(
+		printf '%s\n' '+    { "Michael Müller", "advapi32: Fix error code when calling LsaOpenPolicy for non existing remote machine.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "advapi32: Use TRACE for LsaOpenPolicy/LsaClose.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -2736,23 +2740,21 @@ fi
 # |   *	configure.ac, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/Makefile.in, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/ext-
 # | 	ms-win-appmodel-usercontext-l1-1-0.spec, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/main.c, dlls/ext-ms-win-xaml-
 # | 	pal-l1-1-0/Makefile.in, dlls/ext-ms-win-xaml-pal-l1-1-0/ext-ms-win-xaml-pal-l1-1-0.spec, dlls/ext-ms-win-xaml-
-# | 	pal-l1-1-0/main.c, dlls/feclient/Makefile.in, dlls/feclient/feclient.spec, dlls/feclient/main.c,
-# | 	dlls/iertutil/Makefile.in, dlls/iertutil/iertutil.spec, dlls/iertutil/main.c, dlls/uiautomationcore/Makefile.in,
-# | 	dlls/uiautomationcore/uia_main.c, dlls/uiautomationcore/uiautomationcore.spec, include/uiautomationcoreapi.h
+# | 	pal-l1-1-0/main.c, dlls/iertutil/Makefile.in, dlls/iertutil/iertutil.spec, dlls/iertutil/main.c,
+# | 	dlls/uiautomationcore/Makefile.in, dlls/uiautomationcore/uia_main.c, dlls/uiautomationcore/uiautomationcore.spec,
+# | 	include/uiautomationcoreapi.h
 # |
 if test "$enable_api_ms_win_Stub_DLLs" -eq 1; then
 	patch_apply api-ms-win-Stub_DLLs/0006-iertutil-Add-dll-and-add-stub-for-ordinal-811.patch
 	patch_apply api-ms-win-Stub_DLLs/0009-ext-ms-win-xaml-pal-l1-1-0-Add-dll-and-add-stub-for-.patch
 	patch_apply api-ms-win-Stub_DLLs/0010-ext-ms-win-appmodel-usercontext-l1-1-0-Add-dll-and-a.patch
 	patch_apply api-ms-win-Stub_DLLs/0012-ext-ms-win-xaml-pal-l1-1-0-Add-stub-for-GetThemeServ.patch
-	patch_apply api-ms-win-Stub_DLLs/0026-feclient-Add-stub-dll.patch
 	patch_apply api-ms-win-Stub_DLLs/0027-uiautomationcore-Add-dll-and-stub-some-functions.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "iertutil: Add dll and add stub for ordinal 811.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-xaml-pal-l1-1-0: Add dll and add stub for XamlBehaviorEnabled.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-appmodel-usercontext-l1-1-0: Add dll and add stub for UserContextExtInitialize.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-xaml-pal-l1-1-0: Add stub for GetThemeServices.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "feclient: Add stub dll.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "uiautomationcore: Add dll and stub some functions.", 1 },';
 	) >> "$patchlist"
 fi
@@ -3860,6 +3862,21 @@ if test "$enable_dxgi_GammaRamp" -eq 1; then
 	patch_apply dxgi-GammaRamp/0001-dxgi-Implement-setting-and-querying-the-gamma-value-.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "dxgi: Implement setting and querying the gamma value of an output.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset dxgi-IDXGIDevice2
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45080] - Add support for IDXGIDevice2 interface
+# |
+# | Modified files:
+# |   *	dlls/dxgi/device.c, include/wine/winedxgi.idl
+# |
+if test "$enable_dxgi_IDXGIDevice2" -eq 1; then
+	patch_apply dxgi-IDXGIDevice2/0001-dxgi-Add-IDXGIDevice2-stub.patch
+	(
+		printf '%s\n' '+    { "Nikolay Sivov", "dxgi: Add IDXGIDevice2 stub.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6232,18 +6249,6 @@ if test "$enable_server_Key_State" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset server-Map_EXDEV_Error
-# |
-# | Modified files:
-# |   *	server/file.c
-# |
-if test "$enable_server_Map_EXDEV_Error" -eq 1; then
-	patch_apply server-Map_EXDEV_Error/0001-server-Map-EXDEV-to-STATUS_NOT_SAME_DEVICE.patch
-	(
-		printf '%s\n' '+    { "Qian Hong", "server: Map EXDEV to STATUS_NOT_SAME_DEVICE.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset server-PeekMessage
 # |
 # | This patchset fixes the following Wine bugs:
@@ -7932,6 +7937,21 @@ if test "$enable_wined3d_CSMT_Main" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Add additional synchronization CS ops.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Reset context before destruction.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Improve wined3d_cs_emit_update_sub_resource.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wined3d-Implement-oMask
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44964] Implement oMask.
+# |
+# | Modified files:
+# |   *	dlls/wined3d/glsl_shader.c, dlls/wined3d/shader.c, dlls/wined3d/wined3d_private.h
+# |
+if test "$enable_wined3d_Implement_oMask" -eq 1; then
+	patch_apply wined3d-Implement-oMask/0001-wined3d-Implement-oMask.patch
+	(
+		printf '%s\n' '+    { "Józef Kucia", "wined3d: Implement oMask.", 1 },';
 	) >> "$patchlist"
 fi
 
