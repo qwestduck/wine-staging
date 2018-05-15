@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "7280f7fb744e951281e7f051c347fb8fef5ab36b"
+	echo "9321aa40f5ba79352d346c04f4d428d143575fb9"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.8"
+	echo "Wine Staging 3.9 (Unreleased)"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -111,7 +111,6 @@ patch_enable_all ()
 	enable_d3d11_Deferred_Context="$1"
 	enable_d3d11_Depth_Bias="$1"
 	enable_d3d11_dynamic_cpu_access="$1"
-	enable_d3d11_shader_count="$1"
 	enable_d3d8_ValidateShader="$1"
 	enable_d3d9_DesktopWindow="$1"
 	enable_d3d9_Tests="$1"
@@ -149,9 +148,7 @@ patch_enable_all ()
 	enable_dxdiagn_Enumerate_DirectSound="$1"
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
 	enable_dxgi_GammaRamp="$1"
-	enable_dxgi_IDXGIDevice2="$1"
 	enable_dxgi_MakeWindowAssociation="$1"
-	enable_dxgi_SetMaximumFrameLatency="$1"
 	enable_dxva2_Video_Decoder="$1"
 	enable_explorer_Video_Registry_Key="$1"
 	enable_fonts_Missing_Fonts="$1"
@@ -242,7 +239,6 @@ patch_enable_all ()
 	enable_ntdll_Purist_Mode="$1"
 	enable_ntdll_RtlCaptureStackBackTrace="$1"
 	enable_ntdll_RtlGetUnloadEventTraceEx="$1"
-	enable_ntdll_RtlIpStringToAddress_Stubs="$1"
 	enable_ntdll_RtlIpStringToAddress_Tests="$1"
 	enable_ntdll_RtlQueryPackageIdentity="$1"
 	enable_ntdll_Serial_Port_Detection="$1"
@@ -283,7 +279,6 @@ patch_enable_all ()
 	enable_quartz_Silence_FIXMEs="$1"
 	enable_riched20_Class_Tests="$1"
 	enable_riched20_IText_Interface="$1"
-	enable_secur32_Zero_Buffer_Length="$1"
 	enable_server_ClipCursor="$1"
 	enable_server_CreateProcess_ACLs="$1"
 	enable_server_Desktop_Refcount="$1"
@@ -320,7 +315,6 @@ patch_enable_all ()
 	enable_shell32_SFGAO_HASSUBFOLDER="$1"
 	enable_shell32_SHELL_execute="$1"
 	enable_shell32_SHFileOperation_Move="$1"
-	enable_shell32_SHFileOperation_Win9x="$1"
 	enable_shell32_Toolbar_Bitmaps="$1"
 	enable_shell32_UnixFS="$1"
 	enable_shlwapi_AssocGetPerceivedType="$1"
@@ -522,9 +516,6 @@ patch_enable ()
 		d3d11-dynamic-cpu-access)
 			enable_d3d11_dynamic_cpu_access="$2"
 			;;
-		d3d11-shader-count)
-			enable_d3d11_shader_count="$2"
-			;;
 		d3d8-ValidateShader)
 			enable_d3d8_ValidateShader="$2"
 			;;
@@ -636,14 +627,8 @@ patch_enable ()
 		dxgi-GammaRamp)
 			enable_dxgi_GammaRamp="$2"
 			;;
-		dxgi-IDXGIDevice2)
-			enable_dxgi_IDXGIDevice2="$2"
-			;;
 		dxgi-MakeWindowAssociation)
 			enable_dxgi_MakeWindowAssociation="$2"
-			;;
-		dxgi-SetMaximumFrameLatency)
-			enable_dxgi_SetMaximumFrameLatency="$2"
 			;;
 		dxva2-Video_Decoder)
 			enable_dxva2_Video_Decoder="$2"
@@ -915,9 +900,6 @@ patch_enable ()
 		ntdll-RtlGetUnloadEventTraceEx)
 			enable_ntdll_RtlGetUnloadEventTraceEx="$2"
 			;;
-		ntdll-RtlIpStringToAddress_Stubs)
-			enable_ntdll_RtlIpStringToAddress_Stubs="$2"
-			;;
 		ntdll-RtlIpStringToAddress_Tests)
 			enable_ntdll_RtlIpStringToAddress_Tests="$2"
 			;;
@@ -1038,9 +1020,6 @@ patch_enable ()
 		riched20-IText_Interface)
 			enable_riched20_IText_Interface="$2"
 			;;
-		secur32-Zero_Buffer_Length)
-			enable_secur32_Zero_Buffer_Length="$2"
-			;;
 		server-ClipCursor)
 			enable_server_ClipCursor="$2"
 			;;
@@ -1148,9 +1127,6 @@ patch_enable ()
 			;;
 		shell32-SHFileOperation_Move)
 			enable_shell32_SHFileOperation_Move="$2"
-			;;
-		shell32-SHFileOperation_Win9x)
-			enable_shell32_SHFileOperation_Win9x="$2"
 			;;
 		shell32-Toolbar_Bitmaps)
 			enable_shell32_Toolbar_Bitmaps="$2"
@@ -2006,13 +1982,6 @@ if test "$enable_stdole32_tlb_SLTG_Typelib" -eq 1; then
 	enable_widl_SLTG_Typelib_Support=1
 fi
 
-if test "$enable_shell32_SHFileOperation_Win9x" -eq 1; then
-	if test "$enable_shell32_Progress_Dialog" -gt 1; then
-		abort "Patchset shell32-Progress_Dialog disabled, but shell32-SHFileOperation_Win9x depends on that."
-	fi
-	enable_shell32_Progress_Dialog=1
-fi
-
 if test "$enable_shell32_ACE_Viewer" -eq 1; then
 	if test "$enable_shell32_Progress_Dialog" -gt 1; then
 		abort "Patchset shell32-Progress_Dialog disabled, but shell32-ACE_Viewer depends on that."
@@ -2409,15 +2378,14 @@ fi
 # |
 # | Modified files:
 # |   *	dlls/amstream/mediastreamfilter.c, dlls/d2d1/brush.c, dlls/d2d1/geometry.c, dlls/d3d11/view.c, dlls/d3d8/texture.c,
-# | 	dlls/d3d9/tests/visual.c, dlls/d3d9/texture.c, dlls/ddraw/viewport.c, dlls/dsound/primary.c, dlls/dwrite/font.c,
-# | 	dlls/dwrite/layout.c, dlls/evr/evr.c, dlls/msxml3/schema.c, dlls/netapi32/netapi32.c, dlls/oleaut32/oleaut.c,
-# | 	dlls/rpcrt4/cstub.c, dlls/vbscript/vbdisp.c, dlls/wined3d/glsl_shader.c, dlls/ws2_32/tests/sock.c,
-# | 	dlls/wsdapi/msgparams.c, include/wine/list.h, include/wine/rbtree.h, include/winnt.h, tools/makedep.c
+# | 	dlls/d3d9/tests/visual.c, dlls/d3d9/texture.c, dlls/ddraw/viewport.c, dlls/dwrite/font.c, dlls/dwrite/layout.c,
+# | 	dlls/evr/evr.c, dlls/msxml3/schema.c, dlls/netapi32/netapi32.c, dlls/oleaut32/oleaut.c, dlls/rpcrt4/cstub.c,
+# | 	dlls/vbscript/vbdisp.c, dlls/wined3d/glsl_shader.c, dlls/ws2_32/tests/sock.c, dlls/wsdapi/msgparams.c,
+# | 	include/wine/list.h, include/wine/rbtree.h, include/winnt.h, tools/makedep.c
 # |
 if test "$enable_Compiler_Warnings" -eq 1; then
 	patch_apply Compiler_Warnings/0009-ws2_32-tests-Work-around-an-incorrect-detection-in-G.patch
 	patch_apply Compiler_Warnings/0018-Appease-the-blessed-version-of-gcc-4.5-when-Werror-i.patch
-	patch_apply Compiler_Warnings/0019-dsound-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0020-amstream-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0021-d2d1-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0022-d3d11-Avoid-implicit-cast-of-interface-pointer.patch
@@ -2435,7 +2403,6 @@ if test "$enable_Compiler_Warnings" -eq 1; then
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "ws2_32/tests: Work around an incorrect detection in GCC 7.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "Appease the blessed version of gcc (4.5) when -Werror is enabled.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "dsound: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "amstream: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "d2d1: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "d3d11: Avoid implicit cast of interface pointer.", 1 },';
@@ -2525,6 +2492,20 @@ if test "$enable_advapi32_CreateRestrictedToken" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset advapi32-LsaLookupPrivilegeName
+# |
+# | Modified files:
+# |   *	dlls/advapi32/lsa.c, dlls/advapi32/tests/lsa.c
+# |
+if test "$enable_advapi32_LsaLookupPrivilegeName" -eq 1; then
+	patch_apply advapi32-LsaLookupPrivilegeName/0001-advapi32-Fix-error-code-when-calling-LsaOpenPolicy-f.patch
+	patch_apply advapi32-LsaLookupPrivilegeName/0002-advapi32-Use-TRACE-for-LsaOpenPolicy-LsaClose.patch
+	(
+		printf '%s\n' '+    { "Michael Müller", "advapi32: Fix error code when calling LsaOpenPolicy for non existing remote machine.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "advapi32: Use TRACE for LsaOpenPolicy/LsaClose.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset server-CreateProcess_ACLs
 # |
 # | This patchset fixes the following Wine bugs:
@@ -2558,20 +2539,6 @@ if test "$enable_server_Misc_ACL" -eq 1; then
 	(
 		printf '%s\n' '+    { "Erich E. Hoover", "server: Add default security descriptor ownership for processes.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "server: Add default security descriptor DACL for processes.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset advapi32-LsaLookupPrivilegeName
-# |
-# | Modified files:
-# |   *	dlls/advapi32/lsa.c, dlls/advapi32/tests/lsa.c
-# |
-if test "$enable_advapi32_LsaLookupPrivilegeName" -eq 1; then
-	patch_apply advapi32-LsaLookupPrivilegeName/0001-advapi32-Fix-error-code-when-calling-LsaOpenPolicy-f.patch
-	patch_apply advapi32-LsaLookupPrivilegeName/0002-advapi32-Use-TRACE-for-LsaOpenPolicy-LsaClose.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "advapi32: Fix error code when calling LsaOpenPolicy for non existing remote machine.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "advapi32: Use TRACE for LsaOpenPolicy/LsaClose.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3206,23 +3173,6 @@ if test "$enable_d3d11_dynamic_cpu_access" -eq 1; then
 	patch_apply d3d11-dynamic-cpu-access/0001-d3d11-D3D11_USAGE_DYNAMIC-needs-to-have-CPU-access.patch
 	(
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "d3d11: D3D11_USAGE_DYNAMIC needs to have CPU access.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset d3d11-shader-count
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44052] - Return a valid valud for shader count.
-# |
-# | Modified files:
-# |   *	dlls/d3d11/device.c, dlls/d3d11/tests/d3d11.c
-# |
-if test "$enable_d3d11_shader_count" -eq 1; then
-	patch_apply d3d11-shader-count/0001-d3d11-Test-shader-class-instance-count.patch
-	patch_apply d3d11-shader-count/0002-d3d11-Return-valid-values-for-shader-class-instances.patch
-	(
-		printf '%s\n' '+    { "Lucian Poston", "d3d11: Test shader class instance count.", 1 },';
-		printf '%s\n' '+    { "Lucian Poston", "d3d11: Return valid values for shader class instances.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3865,21 +3815,6 @@ if test "$enable_dxgi_GammaRamp" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset dxgi-IDXGIDevice2
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45080] - Add support for IDXGIDevice2 interface
-# |
-# | Modified files:
-# |   *	dlls/dxgi/device.c, include/wine/winedxgi.idl
-# |
-if test "$enable_dxgi_IDXGIDevice2" -eq 1; then
-	patch_apply dxgi-IDXGIDevice2/0001-dxgi-Add-IDXGIDevice2-stub.patch
-	(
-		printf '%s\n' '+    { "Nikolay Sivov", "dxgi: Add IDXGIDevice2 stub.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset dxgi-MakeWindowAssociation
 # |
 # | Modified files:
@@ -3889,21 +3824,6 @@ if test "$enable_dxgi_MakeWindowAssociation" -eq 1; then
 	patch_apply dxgi-MakeWindowAssociation/0001-dxgi-Improve-stubs-for-MakeWindowAssociation-and-Get.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "dxgi: Improve stubs for MakeWindowAssociation and GetWindowAssociation.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset dxgi-SetMaximumFrameLatency
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44061] Return S_OK from GetMaximumFrameLatency
-# |
-# | Modified files:
-# |   *	dlls/dxgi/device.c
-# |
-if test "$enable_dxgi_SetMaximumFrameLatency" -eq 1; then
-	patch_apply dxgi-SetMaximumFrameLatency/0001-dxgi-Return-S_OK-in-SetMaximumFrameLatency.patch
-	(
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "dxgi: Return S_OK in SetMaximumFrameLatency.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5508,18 +5428,6 @@ if test "$enable_ntdll_RtlGetUnloadEventTraceEx" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ntdll-RtlIpStringToAddress_Stubs
-# |
-# | Modified files:
-# |   *	dlls/ntdll/ntdll.spec, dlls/ntdll/rtl.c, dlls/ntoskrnl.exe/ntoskrnl.exe.spec
-# |
-if test "$enable_ntdll_RtlIpStringToAddress_Stubs" -eq 1; then
-	patch_apply ntdll-RtlIpStringToAddress_Stubs/0002-ntdll-Add-stub-for-RtlIpv6StringToAddressExW.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Add stub for RtlIpv6StringToAddressExW.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ntdll-RtlIpStringToAddress_Tests
 # |
 # | This patchset has the following (direct or indirect) dependencies:
@@ -6114,21 +6022,6 @@ if test "$enable_riched20_IText_Interface" -eq 1; then
 		printf '%s\n' '+    { "Jactry Zeng", "riched20: Implement ITextRange::GetStoryLength.", 1 },';
 		printf '%s\n' '+    { "Jactry Zeng", "riched20: Implement ITextSelection::GetStoryLength.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "riched20: Silence repeated FIXMEs triggered by Adobe Reader.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset secur32-Zero_Buffer_Length
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#40271] Set buffer size to zero when InitializeSecurityContextW returns no data
-# |
-# | Modified files:
-# |   *	dlls/secur32/schannel.c, dlls/secur32/tests/schannel.c
-# |
-if test "$enable_secur32_Zero_Buffer_Length" -eq 1; then
-	patch_apply secur32-Zero_Buffer_Length/0001-secur32-Set-output-buffer-size-to-zero-during-handsh.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "secur32: Set output buffer size to zero during handshake when no data needs to be sent.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6730,25 +6623,6 @@ if test "$enable_shell32_SHELL_execute" -eq 1; then
 	patch_apply shell32-SHELL_execute/0001-shell32-Properly-fail-when-a-data-object-cannot-be-i.patch
 	(
 		printf '%s\n' '+    { "Mark Jansen", "shell32: Properly fail when a data object cannot be instantiated and expand environment strings in ShellExecute.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset shell32-SHFileOperation_Win9x
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	server-File_Permissions, ntdll-FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move,
-# | 	shell32-Progress_Dialog
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#37916] Anno 1602 installer depends on Windows 98 behavior of SHFileOperationW
-# |
-# | Modified files:
-# |   *	dlls/shell32/shlfileop.c
-# |
-if test "$enable_shell32_SHFileOperation_Win9x" -eq 1; then
-	patch_apply shell32-SHFileOperation_Win9x/0001-shell32-Choose-return-value-for-SHFileOperationW-dep.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "shell32: Choose return value for SHFileOperationW depending on windows version.", 1 },';
 	) >> "$patchlist"
 fi
 
