@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "59994c94092efb70fcbec0cb147401609d125e41"
+	echo "d3a71dec7ee99e9c65630d080c02d7d4182e61a6"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.9"
+	echo "Wine Staging 3.10 (Unreleased)"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -369,6 +369,7 @@ patch_enable_all ()
 	enable_winecfg_Unmounted_Devices="$1"
 	enable_wined3d_Accounting="$1"
 	enable_wined3d_CSMT_Main="$1"
+	enable_wined3d_CompareInterpolationMode="$1"
 	enable_wined3d_DXTn="$1"
 	enable_wined3d_Dual_Source_Blending="$1"
 	enable_wined3d_Indexed_Vertex_Blending="$1"
@@ -1282,6 +1283,9 @@ patch_enable ()
 			;;
 		wined3d-CSMT_Main)
 			enable_wined3d_CSMT_Main="$2"
+			;;
+		wined3d-CompareInterpolationMode)
+			enable_wined3d_CompareInterpolationMode="$2"
 			;;
 		wined3d-DXTn)
 			enable_wined3d_DXTn="$2"
@@ -2894,15 +2898,13 @@ fi
 # |
 # | Modified files:
 # |   *	dlls/d2d1/Makefile.in, dlls/d2d1/d2d1_private.h, dlls/d2d1/device.c, dlls/d2d1/device_context.c, dlls/d2d1/factory.c,
-# | 	dlls/d2d1/geometry.c, include/d2d1_1.idl, include/dcommon.idl
+# | 	dlls/d2d1/geometry.c
 # |
 if test "$enable_d2d1_ID2D1Factory1" -eq 1; then
-	patch_apply d2d1-ID2D1Factory1/0001-d2d1-Add-d2d1_1.idl-for-drawing-ID2D1Bitmap1.patch
 	patch_apply d2d1-ID2D1Factory1/0003-d2d1-Use-ID2D1Factory1-in-d2d_geometry.patch
 	patch_apply d2d1-ID2D1Factory1/0005-d2d1-Stub-ID2D1DeviceContext.patch
 	patch_apply d2d1-ID2D1Factory1/0006-d2d1-Implement-ID2D1DeviceContext.patch
 	(
-		printf '%s\n' '+    { "Lucian Poston", "d2d1: Add d2d1_1.idl for drawing ID2D1Bitmap1.", 1 },';
 		printf '%s\n' '+    { "Lucian Poston", "d2d1: Use ID2D1Factory1 in d2d_geometry.", 1 },';
 		printf '%s\n' '+    { "Lucian Poston", "d2d1: Stub ID2D1DeviceContext.", 1 },';
 		printf '%s\n' '+    { "Lucian Poston", "d2d1: Implement ID2D1DeviceContext.", 1 },';
@@ -3012,6 +3014,7 @@ fi
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#42191] Add semi-stub for D3D11 deferred context implementation
+# |   *	[#44089] Correcly align the mapinfo buffer.
 # |
 # | Modified files:
 # |   *	dlls/d3d11/device.c, dlls/wined3d/buffer.c, dlls/wined3d/resource.c, dlls/wined3d/texture.c, dlls/wined3d/wined3d.spec,
@@ -3059,6 +3062,7 @@ if test "$enable_d3d11_Deferred_Context" -eq 1; then
 	patch_apply d3d11-Deferred_Context/0039-d3d11-Implement-d3d11_deferred_context_UpdateSubreso.patch
 	patch_apply d3d11-Deferred_Context/0040-d3d11-Implement-restoring-of-state-after-executing-a.patch
 	patch_apply d3d11-Deferred_Context/0041-d3d11-Allow-NULL-pointer-for-initial-count-in-d3d11_.patch
+	patch_apply d3d11-Deferred_Context/0042-d3d11-Correctly-align-map-info-buffer.patch
 	(
 		printf '%s\n' '+    { "Kimmo Myllyvirta", "d3d11: Add stub deferred rendering context.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Add wined3d_resource_map_info function.", 1 },';
@@ -3101,6 +3105,7 @@ if test "$enable_d3d11_Deferred_Context" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "d3d11: Implement d3d11_deferred_context_UpdateSubresource.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "d3d11: Implement restoring of state after executing a command list.", 1 },';
 		printf '%s\n' '+    { "Steve Melenchuk", "d3d11: Allow NULL pointer for initial count in d3d11_deferred_context_CSSetUnorderedAccessViews.", 1 },';
+		printf '%s\n' '+    { "Kimmo Myllyvirta", "d3d11: Correctly align map info buffer.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7199,6 +7204,7 @@ if test "$enable_windowscodecs_GIF_Encoder" -eq 1; then
 	patch_apply windowscodecs-GIF_Encoder/0002-windowscodecs-Implement-IWICBitmapEncoderInfo-GetFil.patch
 	patch_apply windowscodecs-GIF_Encoder/0004-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
 	patch_apply windowscodecs-GIF_Encoder/0006-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
+	patch_apply windowscodecs-GIF_Encoder/0007-windowscodecs-tests-Add-IWICBitmapEncoderInfo-test.patch
 	patch_apply windowscodecs-GIF_Encoder/0008-windowscodecs-Add-initial-implementation-of-the-GIF-.patch
 	patch_apply windowscodecs-GIF_Encoder/0010-windowscodecs-Initialize-empty-property-bag-in-GIF-e.patch
 	patch_apply windowscodecs-GIF_Encoder/0011-windowscodecs-Add-registration-for-GUID_WICPixelForm.patch
@@ -7223,6 +7229,7 @@ if test "$enable_windowscodecs_GIF_Encoder" -eq 1; then
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoderInfo::GetFileExtensions.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoder::GetEncoderInfo in JPEG encoder.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoder::GetEncoderInfo in TIFF encoder.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "windowscodecs/tests: Add IWICBitmapEncoderInfo test.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add initial implementation of the GIF encoder.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Initialize empty property bag in GIF encoder'\''s CreateNewFrame implementation.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add registration for GUID_WICPixelFormat32bppGrayFloat pixel format.", 1 },';
@@ -7679,6 +7686,21 @@ if test "$enable_wined3d_CSMT_Main" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Add additional synchronization CS ops.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Reset context before destruction.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Improve wined3d_cs_emit_update_sub_resource.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wined3d-CompareInterpolationMode
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45127] Correctly compare Interpolation mode values
+# |
+# | Modified files:
+# |   *	dlls/wined3d/glsl_shader.c
+# |
+if test "$enable_wined3d_CompareInterpolationMode" -eq 1; then
+	patch_apply wined3d-CompareInterpolationMode/0001-wined3d-Correctly-compare-Interpolation-mode-values.patch
+	(
+		printf '%s\n' '+    { "Matteo Bruni", "wined3d: Correctly compare Interpolation mode values.", 1 },';
 	) >> "$patchlist"
 fi
 
