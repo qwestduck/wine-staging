@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "d3a71dec7ee99e9c65630d080c02d7d4182e61a6"
+	echo "185d9ee7ebf56e0663f715e532f2ee2c27289f12"
 }
 
 # Show version information
@@ -392,6 +392,7 @@ patch_enable_all ()
 	enable_winex11_DefaultDisplayFrequency="$1"
 	enable_winex11_MWM_Decorations="$1"
 	enable_winex11_UpdateLayeredWindow="$1"
+	enable_winex11_Vulkan_support="$1"
 	enable_winex11_WM_WINDOWPOSCHANGING="$1"
 	enable_winex11_Window_Style="$1"
 	enable_winex11_XEMBED="$1"
@@ -404,6 +405,7 @@ patch_enable_all ()
 	enable_wininet_InternetCrackUrlW="$1"
 	enable_winmm_Delay_Import_Depends="$1"
 	enable_winmm_mciSendCommandA="$1"
+	enable_wintab32_improvements="$1"
 	enable_wintrust_WTHelperGetProvCertFromChain="$1"
 	enable_wintrust_WinVerifyTrust="$1"
 	enable_wpcap_Dynamic_Linking="$1"
@@ -1353,6 +1355,9 @@ patch_enable ()
 		winex11-UpdateLayeredWindow)
 			enable_winex11_UpdateLayeredWindow="$2"
 			;;
+		winex11-Vulkan_support)
+			enable_winex11_Vulkan_support="$2"
+			;;
 		winex11-WM_WINDOWPOSCHANGING)
 			enable_winex11_WM_WINDOWPOSCHANGING="$2"
 			;;
@@ -1388,6 +1393,9 @@ patch_enable ()
 			;;
 		winmm-mciSendCommandA)
 			enable_winmm_mciSendCommandA="$2"
+			;;
+		wintab32-improvements)
+			enable_wintab32_improvements="$2"
 			;;
 		wintrust-WTHelperGetProvCertFromChain)
 			enable_wintrust_WTHelperGetProvCertFromChain="$2"
@@ -3741,7 +3749,7 @@ fi
 # |   *	[#43584] Implement DXGI GammaControl methods
 # |
 # | Modified files:
-# |   *	dlls/dxgi/Makefile.in, dlls/dxgi/output.c, dlls/dxgi/tests/device.c
+# |   *	dlls/dxgi/output.c, dlls/dxgi/tests/device.c
 # |
 if test "$enable_dxgi_GammaRamp" -eq 1; then
 	patch_apply dxgi-GammaRamp/0001-dxgi-Implement-setting-and-querying-the-gamma-value-.patch
@@ -8021,6 +8029,21 @@ if test "$enable_winex11_UpdateLayeredWindow" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset winex11-Vulkan_support
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44775] Allow vulkan support to be detected at runtime.
+# |
+# | Modified files:
+# |   *	dlls/winex11.drv/vulkan.c
+# |
+if test "$enable_winex11_Vulkan_support" -eq 1; then
+	patch_apply winex11-Vulkan_support/0001-winex11-Specify-a-default-vulkan-driver-if-one-not-f.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11: Specify a default vulkan driver if one not found at build time.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset winex11-_NET_ACTIVE_WINDOW
 # |
 # | This patchset fixes the following Wine bugs:
@@ -8198,6 +8221,27 @@ if test "$enable_winmm_mciSendCommandA" -eq 1; then
 	patch_apply winmm-mciSendCommandA/0001-winmm-Do-not-crash-in-Win-9X-mode-when-an-invalid-de.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "winmm: Do not crash in Win 9X mode when an invalid device ptr is passed to MCI_OPEN.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wintab32-improvements
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#11846] Improve pressure sensitivity.
+# |   *	[#15443] Improve Wacom Bambo drawing support
+# |   *	[#18517] Improve eraser from working.
+# |
+# | Modified files:
+# |   *	dlls/winex11.drv/wintab.c, dlls/wintab32/context.c
+# |
+if test "$enable_wintab32_improvements" -eq 1; then
+	patch_apply wintab32-improvements/0001-winex11-Implement-PK_CHANGE-for-wintab.patch
+	patch_apply wintab32-improvements/0002-wintab32-Set-lcSysExtX-Y-for-the-first-index-of-WTI_.patch
+	patch_apply wintab32-improvements/0003-winex11-Handle-negative-orAltitude-values.patch
+	(
+		printf '%s\n' '+    { "Eriks Dobelis", "winex11: Implement PK_CHANGE for wintab.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "wintab32: Set lcSysExtX/Y for the first index of WTI_DDCTXS.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11: Handle negative orAltitude values.", 1 },';
 	) >> "$patchlist"
 fi
 
