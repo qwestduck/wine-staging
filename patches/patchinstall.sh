@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "185d9ee7ebf56e0663f715e532f2ee2c27289f12"
+	echo "868fb05e7710dbaa94569fa7d2c3736580aec438"
 }
 
 # Show version information
@@ -319,6 +319,7 @@ patch_enable_all ()
 	enable_stdole32_idl_Typelib="$1"
 	enable_stdole32_tlb_SLTG_Typelib="$1"
 	enable_taskmgr_Memory_Usage="$1"
+	enable_uianimation_stubs="$1"
 	enable_user_exe16_DlgDirList="$1"
 	enable_user32_Auto_Radio_Button="$1"
 	enable_user32_Combobox_WM_SIZE="$1"
@@ -345,7 +346,6 @@ patch_enable_all ()
 	enable_version_VerFindFileA="$1"
 	enable_version_VerQueryValue="$1"
 	enable_virtdisk_GetStorageDependencyInformation="$1"
-	enable_wbemdisp_ISWbemSecurity="$1"
 	enable_widl_SLTG_Typelib_Support="$1"
 	enable_windowscodecs_32bppPRGBA="$1"
 	enable_windowscodecs_GIF_Encoder="$1"
@@ -369,7 +369,6 @@ patch_enable_all ()
 	enable_winecfg_Unmounted_Devices="$1"
 	enable_wined3d_Accounting="$1"
 	enable_wined3d_CSMT_Main="$1"
-	enable_wined3d_CompareInterpolationMode="$1"
 	enable_wined3d_DXTn="$1"
 	enable_wined3d_Dual_Source_Blending="$1"
 	enable_wined3d_Indexed_Vertex_Blending="$1"
@@ -1136,6 +1135,9 @@ patch_enable ()
 		taskmgr-Memory_Usage)
 			enable_taskmgr_Memory_Usage="$2"
 			;;
+		uianimation-stubs)
+			enable_uianimation_stubs="$2"
+			;;
 		user.exe16-DlgDirList)
 			enable_user_exe16_DlgDirList="$2"
 			;;
@@ -1214,9 +1216,6 @@ patch_enable ()
 		virtdisk-GetStorageDependencyInformation)
 			enable_virtdisk_GetStorageDependencyInformation="$2"
 			;;
-		wbemdisp-ISWbemSecurity)
-			enable_wbemdisp_ISWbemSecurity="$2"
-			;;
 		widl-SLTG_Typelib_Support)
 			enable_widl_SLTG_Typelib_Support="$2"
 			;;
@@ -1285,9 +1284,6 @@ patch_enable ()
 			;;
 		wined3d-CSMT_Main)
 			enable_wined3d_CSMT_Main="$2"
-			;;
-		wined3d-CompareInterpolationMode)
-			enable_wined3d_CompareInterpolationMode="$2"
 			;;
 		wined3d-DXTn)
 			enable_wined3d_DXTn="$2"
@@ -6718,6 +6714,24 @@ if test "$enable_taskmgr_Memory_Usage" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset uianimation-stubs
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#41369] Add UIAnimation and stubs interfaces
+# |
+# | Modified files:
+# |   *	configure, configure.ac, dlls/uianimation/Makefile.in, dlls/uianimation/main.c, dlls/uianimation/uianimation.spec,
+# | 	dlls/uianimation/uianimation_private.h, dlls/uianimation/uianimation_typelib.idl, include/uianimation.idl
+# |
+if test "$enable_uianimation_stubs" -eq 1; then
+	patch_apply uianimation-stubs/0001-uianimation.idl-add-more-interfaces.patch
+	patch_apply uianimation-stubs/0002-uianimation-add-stub-dll.patch
+	(
+		printf '%s\n' '+    { "Louis Lenders", "uianimation.idl: Add more interfaces.", 1 },';
+		printf '%s\n' '+    { "Louis Lenders", "uianimation: Add stub dll.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset user.exe16-DlgDirList
 # |
 # | This patchset fixes the following Wine bugs:
@@ -7146,26 +7160,17 @@ fi
 # |   *	[#42577] Add stub for virtdisk.GetStorageDependencyInformation
 # |
 # | Modified files:
-# |   *	dlls/virtdisk/virtdisk.spec, dlls/virtdisk/virtdisk_main.c, include/Makefile.in, include/virtdisk.h
+# |   *	configure, configure.ac, dlls/virtdisk/tests/Makefile.in, dlls/virtdisk/tests/virtdisk.c, dlls/virtdisk/virtdisk.spec,
+# | 	dlls/virtdisk/virtdisk_main.c, include/Makefile.in, include/virtdisk.h
 # |
 if test "$enable_virtdisk_GetStorageDependencyInformation" -eq 1; then
 	patch_apply virtdisk-GetStorageDependencyInformation/0001-include-add-headerfile-virtdisk.h.patch
 	patch_apply virtdisk-GetStorageDependencyInformation/0002-virtdisk-Add-GetStorageDependencyInformation-stub.patch
+	patch_apply virtdisk-GetStorageDependencyInformation/0003-virtdisk-tests-Add-GetStorageDependencyInformation-t.patch
 	(
 		printf '%s\n' '+    { "Louis Lenders", "include: Add headerfile virtdisk.h.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "virtdisk: Add GetStorageDependencyInformation stub.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset wbemdisp-ISWbemSecurity
-# |
-# | Modified files:
-# |   *	dlls/wbemdisp/locator.c
-# |
-if test "$enable_wbemdisp_ISWbemSecurity" -eq 1; then
-	patch_apply wbemdisp-ISWbemSecurity/0001-wbemdisp-Add-ISWbemSecurity-stub-interface.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "wbemdisp: Add ISWbemSecurity stub interface.", 1 },';
+		printf '%s\n' '+    { "Gijs Vermeulen", "virtdisk/tests: Add GetStorageDependencyInformation tests.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7694,21 +7699,6 @@ if test "$enable_wined3d_CSMT_Main" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Add additional synchronization CS ops.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Reset context before destruction.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Improve wined3d_cs_emit_update_sub_resource.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset wined3d-CompareInterpolationMode
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45127] Correctly compare Interpolation mode values
-# |
-# | Modified files:
-# |   *	dlls/wined3d/glsl_shader.c
-# |
-if test "$enable_wined3d_CompareInterpolationMode" -eq 1; then
-	patch_apply wined3d-CompareInterpolationMode/0001-wined3d-Correctly-compare-Interpolation-mode-values.patch
-	(
-		printf '%s\n' '+    { "Matteo Bruni", "wined3d: Correctly compare Interpolation mode values.", 1 },';
 	) >> "$patchlist"
 fi
 
