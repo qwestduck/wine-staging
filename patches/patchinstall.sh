@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "868fb05e7710dbaa94569fa7d2c3736580aec438"
+	echo "58c49279f5d5ac11c0af25053f47845203dffdec"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.10 (Unreleased)"
+	echo "Wine Staging 3.11"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -98,6 +98,7 @@ patch_enable_all ()
 	enable_avifil32_IGetFrame_fnSetFormat="$1"
 	enable_avifile_dll16_AVIStreamGetFrame="$1"
 	enable_bcrypt_BCryptDeriveKeyPBKDF2="$1"
+	enable_bcrypt_BCryptGenerateKeyPair="$1"
 	enable_browseui_Progress_Dialog="$1"
 	enable_comctl32_Listview_DrawItem="$1"
 	enable_comdlg32_lpstrFileTitle="$1"
@@ -191,6 +192,7 @@ patch_enable_all ()
 	enable_mountmgr_DosDevices="$1"
 	enable_mscoree_CorValidateImage="$1"
 	enable_mshtml_HTMLLocation_put_hash="$1"
+	enable_msi_Deferral="$1"
 	enable_msi_MsiGetDatabaseState="$1"
 	enable_msi_msi_vcl_get_cost="$1"
 	enable_msidb_Implementation="$1"
@@ -472,6 +474,9 @@ patch_enable ()
 		bcrypt-BCryptDeriveKeyPBKDF2)
 			enable_bcrypt_BCryptDeriveKeyPBKDF2="$2"
 			;;
+		bcrypt-BCryptGenerateKeyPair)
+			enable_bcrypt_BCryptGenerateKeyPair="$2"
+			;;
 		browseui-Progress_Dialog)
 			enable_browseui_Progress_Dialog="$2"
 			;;
@@ -750,6 +755,9 @@ patch_enable ()
 			;;
 		mshtml-HTMLLocation_put_hash)
 			enable_mshtml_HTMLLocation_put_hash="$2"
+			;;
+		msi-Deferral)
+			enable_msi_Deferral="$2"
 			;;
 		msi-MsiGetDatabaseState)
 			enable_msi_MsiGetDatabaseState="$2"
@@ -2297,6 +2305,13 @@ if test "$enable_nvapi_Stub_DLL" -eq 1; then
 	enable_nvcuda_CUDA_Support=1
 fi
 
+if test "$enable_bcrypt_BCryptGenerateKeyPair" -eq 1; then
+	if test "$enable_crypt32_ECDSA_Cert_Chains" -gt 1; then
+		abort "Patchset crypt32-ECDSA_Cert_Chains disabled, but bcrypt-BCryptGenerateKeyPair depends on that."
+	fi
+	enable_crypt32_ECDSA_Cert_Chains=1
+fi
+
 if test "$enable_bcrypt_BCryptDeriveKeyPBKDF2" -eq 1; then
 	if test "$enable_crypt32_ECDSA_Cert_Chains" -gt 1; then
 		abort "Patchset crypt32-ECDSA_Cert_Chains disabled, but bcrypt-BCryptDeriveKeyPBKDF2 depends on that."
@@ -2680,16 +2695,12 @@ fi
 
 # Patchset api-ms-win-Stub_DLLs
 # |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#40451] Add feclient dll
-# |
 # | Modified files:
 # |   *	configure.ac, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/Makefile.in, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/ext-
 # | 	ms-win-appmodel-usercontext-l1-1-0.spec, dlls/ext-ms-win-appmodel-usercontext-l1-1-0/main.c, dlls/ext-ms-win-xaml-
 # | 	pal-l1-1-0/Makefile.in, dlls/ext-ms-win-xaml-pal-l1-1-0/ext-ms-win-xaml-pal-l1-1-0.spec, dlls/ext-ms-win-xaml-
 # | 	pal-l1-1-0/main.c, dlls/iertutil/Makefile.in, dlls/iertutil/iertutil.spec, dlls/iertutil/main.c,
-# | 	dlls/uiautomationcore/Makefile.in, dlls/uiautomationcore/uia_main.c, dlls/uiautomationcore/uiautomationcore.spec,
-# | 	include/uiautomationcoreapi.h
+# | 	dlls/uiautomationcore/Makefile.in, dlls/uiautomationcore/uia_main.c, dlls/uiautomationcore/uiautomationcore.spec
 # |
 if test "$enable_api_ms_win_Stub_DLLs" -eq 1; then
 	patch_apply api-ms-win-Stub_DLLs/0006-iertutil-Add-dll-and-add-stub-for-ordinal-811.patch
@@ -2739,24 +2750,15 @@ fi
 # |
 # | Modified files:
 # |   *	dlls/crypt32/Makefile.in, dlls/crypt32/cert.c, dlls/crypt32/chain.c, dlls/crypt32/crypt32_private.h,
-# | 	dlls/crypt32/decode.c, dlls/crypt32/oid.c, dlls/crypt32/tests/chain.c, dlls/crypt32/tests/encode.c,
-# | 	dlls/crypt32/tests/oid.c, include/wincrypt.h
+# | 	dlls/crypt32/tests/chain.c, dlls/crypt32/tests/encode.c
 # |
 if test "$enable_crypt32_ECDSA_Cert_Chains" -eq 1; then
 	patch_apply crypt32-ECDSA_Cert_Chains/0006-crypt32-tests-Basic-tests-for-decoding-ECDSA-signed-.patch
-	patch_apply crypt32-ECDSA_Cert_Chains/0007-crypt32-Implement-decoding-of-X509_OBJECT_IDENTIFIER.patch
-	patch_apply crypt32-ECDSA_Cert_Chains/0008-crypt32-Implement-decoding-of-X509_ECC_SIGNATURE.patch
-	patch_apply crypt32-ECDSA_Cert_Chains/0009-crypt32-tests-Add-basic-test-for-ecdsa-oid.patch
-	patch_apply crypt32-ECDSA_Cert_Chains/0010-crypt32-Add-oids-for-sha256ECDSA-and-sha384ECDSA.patch
 	patch_apply crypt32-ECDSA_Cert_Chains/0011-crypt32-Correctly-return-how-the-issuer-of-a-self-si.patch
 	patch_apply crypt32-ECDSA_Cert_Chains/0012-crypt32-tets-Add-test-for-verifying-an-ecdsa-chain.patch
 	patch_apply crypt32-ECDSA_Cert_Chains/0013-crypt32-Implement-verification-of-ECDSA-signatures.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "crypt32/tests: Basic tests for decoding ECDSA signed certificate.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "crypt32: Implement decoding of X509_OBJECT_IDENTIFIER.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "crypt32: Implement decoding of X509_ECC_SIGNATURE.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "crypt32/tests: Add basic test for ecdsa oid.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "crypt32: Add oids for sha256ECDSA and sha384ECDSA.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "crypt32: Correctly return how the issuer of a self signed certificate was checked.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "crypt32/tets: Add test for verifying an ecdsa chain.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "crypt32: Implement verification of ECDSA signatures.", 1 },';
@@ -2778,6 +2780,28 @@ if test "$enable_bcrypt_BCryptDeriveKeyPBKDF2" -eq 1; then
 	patch_apply bcrypt-BCryptDeriveKeyPBKDF2/0001-bcrypt-Implement-BCryptDeriveKeyPBKDF2-and-add-test-.patch
 	(
 		printf '%s\n' '+    { "Jack Grigg", "bcrypt: Implement BCryptDeriveKeyPBKDF2 and add test vectors.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset bcrypt-BCryptGenerateKeyPair
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	crypt32-ECDSA_Cert_Chains
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45312] Fix issue for Assassin's Creed : Syndicate
+# |
+# | Modified files:
+# |   *	dlls/bcrypt/bcrypt.spec, dlls/bcrypt/bcrypt_main.c, include/bcrypt.h
+# |
+if test "$enable_bcrypt_BCryptGenerateKeyPair" -eq 1; then
+	patch_apply bcrypt-BCryptGenerateKeyPair/0001-Add-support-for-bcrypt-algorithm-ECDH-P256.-Necessar.patch
+	patch_apply bcrypt-BCryptGenerateKeyPair/0002-Add-support-for-bcrypt-function-BCryptGenerateKeyPai.patch
+	patch_apply bcrypt-BCryptGenerateKeyPair/0003-Add-support-for-bcrypt-function-BCryptFinalizeKeyPai.patch
+	(
+		printf '%s\n' '+    { "Maxime Lombard", "bcrypt: Add support for algorithm ECDH P256.", 1 },';
+		printf '%s\n' '+    { "Maxime Lombard", "bcrypt: Add BCryptGenerateKeyPair stub.", 1 },';
+		printf '%s\n' '+    { "Maxime Lombard", "bcrypt: Add BCryptFinalizeKeyPair stub.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3018,6 +3042,7 @@ fi
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#42191] Add semi-stub for D3D11 deferred context implementation
+# |   *	[#43743] No 3D graphics in Wolcen: Lords of Mayhem
 # |   *	[#44089] Correcly align the mapinfo buffer.
 # |
 # | Modified files:
@@ -3313,19 +3338,13 @@ fi
 # |   *	[#17913] Port Royale doesn't display ocean correctly
 # |
 # | Modified files:
-# |   *	configure.ac, dlls/wined3d/Makefile.in, dlls/wined3d/dxtn.c, dlls/wined3d/surface.c, dlls/wined3d/wined3d.spec,
-# | 	dlls/wined3d/wined3d_main.c, dlls/wined3d/wined3d_private.h, include/wine/wined3d.h
+# |   *	dlls/wined3d/Makefile.in, dlls/wined3d/dxtn.c, dlls/wined3d/dxtn.h, dlls/wined3d/surface.c, dlls/wined3d/wined3d.spec,
+# | 	dlls/wined3d/wined3d_main.c, include/wine/wined3d.h
 # |
 if test "$enable_wined3d_DXTn" -eq 1; then
-	patch_apply wined3d-DXTn/0001-wined3d-Add-support-for-DXTn-software-decoding-throu.patch
-	patch_apply wined3d-DXTn/0002-wined3d-Improve-DXTn-support-and-export-conversion-f.patch
-	patch_apply wined3d-DXTn/0003-wined3d-add-DXT1-to-B4G4R4A4-DXT1-to-B5G5R5A1-and-DX.patch
-	patch_apply wined3d-DXTn/0004-wined3d-Load-dxtn-dylib-library-on-Mac-OS-X.patch
+	patch_apply wined3d-DXTn/0001-wined3d-add-DXTn-support.patch
 	(
-		printf '%s\n' '+    { "Michael Müller", "wined3d: Add support for DXTn software decoding through libtxc_dxtn.", 3 },';
-		printf '%s\n' '+    { "Christian Costa", "wined3d: Improve DXTn support and export conversion functions for d3dx9_36.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "wined3d: Add DXT1 to B4G4R4A4, DXT1 to B5G5R5A1 and DXT3 to B4G4R4A4 conversion.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "wined3d: Load dxtn dylib library on Mac OS X.", 1 },';
+		printf '%s\n' '+    { "Kyle Devir", "wined3d: Add DXTn support.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3351,7 +3370,7 @@ fi
 if test "$enable_d3dx9_36_DXTn" -eq 1; then
 	patch_apply d3dx9_36-DXTn/0001-d3dx9_36-Add-dxtn-support.patch
 	(
-		printf '%s\n' '+    { "Christian Costa", "d3dx9_36: Add dxtn support.", 1 },';
+		printf '%s\n' '+    { "Kyle Devir", "d3dx9_36: Add DXTn support.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4553,6 +4572,23 @@ if test "$enable_mshtml_HTMLLocation_put_hash" -eq 1; then
 	patch_apply mshtml-HTMLLocation_put_hash/0001-mshtml-Add-IHTMLLocation-hash-property-s-getter-impl.patch
 	(
 		printf '%s\n' '+    { "Zhenbo Li", "mshtml: Add IHTMLLocation::hash property'\''s getter implementation.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset msi-Deferral
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#34989] Multiple installers using Caphyon 'Advanced Installer' (AI) technology hang (Atlassian SourceTree v1.3.2,
+# | 	League of Legends 2013+) (deferred type 1 custom action executed before regular type 1 custom action)
+# |
+# | Modified files:
+# |   *	dlls/msi/action.c, dlls/msi/assembly.c, dlls/msi/classes.c, dlls/msi/custom.c, dlls/msi/files.c, dlls/msi/font.c,
+# | 	dlls/msi/msipriv.h, dlls/msi/tests/custom.c, dlls/msi/tests/install.c
+# |
+if test "$enable_msi_Deferral" -eq 1; then
+	patch_apply msi-Deferral/0001-msi-Implement-deferral-for-standard-and-custom-actio.patch
+	(
+		printf '%s\n' '+    { "Zebediah Figura", "msi: Implement deferral for standard and custom actions.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6721,7 +6757,7 @@ fi
 # |
 # | Modified files:
 # |   *	configure, configure.ac, dlls/uianimation/Makefile.in, dlls/uianimation/main.c, dlls/uianimation/uianimation.spec,
-# | 	dlls/uianimation/uianimation_private.h, dlls/uianimation/uianimation_typelib.idl, include/uianimation.idl
+# | 	dlls/uianimation/uianimation_typelib.idl, include/uianimation.idl
 # |
 if test "$enable_uianimation_stubs" -eq 1; then
 	patch_apply uianimation-stubs/0001-uianimation.idl-add-more-interfaces.patch
@@ -7528,7 +7564,10 @@ fi
 # |   *	ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data
 # |
 # | This patchset fixes the following Wine bugs:
-# |   *	[#42741] Various improvements for fake dlls
+# |   *	[#21232] Chromium-based browser engines (Chrome, Opera, Comodo Dragon, SRWare Iron) crash on startup unless '--no-
+# | 	sandbox' is used (native API sandboxing/hooking scheme incompatible with Wine)
+# |   *	[#42741] StarCraft I: 1.18 PTR fails to initialize ClientSdk.dll
+# |   *	[#45349] Multiple applications and games crash due to missing support for 64-bit syscall thunks (StreetFighter V)
 # |
 # | Modified files:
 # |   *	dlls/dbghelp/cpu_i386.c, dlls/kernel32/tests/loader.c, dlls/krnl386.exe16/kernel.c,
