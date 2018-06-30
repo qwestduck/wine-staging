@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "58c49279f5d5ac11c0af25053f47845203dffdec"
+	echo "86864486be64a277f6edf8e66709cd0f17a4eed9"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.11"
+	echo "Wine Staging 3.12 (Unreleased)"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -84,7 +84,6 @@ warning()
 patch_enable_all ()
 {
 	enable_Compiler_Warnings="$1"
-	enable_Coverity="$1"
 	enable_Pipelight="$1"
 	enable_Staging="$1"
 	enable_advapi32_CreateRestrictedToken="$1"
@@ -222,7 +221,6 @@ patch_enable_all ()
 	enable_ntdll_Junction_Points="$1"
 	enable_ntdll_LDR_MODULE="$1"
 	enable_ntdll_LdrGetDllHandle="$1"
-	enable_ntdll_LdrRegisterDllNotification="$1"
 	enable_ntdll_Loader_Machine_Type="$1"
 	enable_ntdll_NtAccessCheck="$1"
 	enable_ntdll_NtContinue="$1"
@@ -340,8 +338,6 @@ patch_enable_all ()
 	enable_user32_Refresh_MDI_Menus="$1"
 	enable_user32_ScrollWindowEx="$1"
 	enable_user32_ShowWindow="$1"
-	enable_user32_Sorted_Listbox="$1"
-	enable_user32_WM_MEASUREITEM="$1"
 	enable_user32_lpCreateParams="$1"
 	enable_uxtheme_CloseThemeClass="$1"
 	enable_uxtheme_GTK_Theming="$1"
@@ -379,6 +375,7 @@ patch_enable_all ()
 	enable_wined3d_Silence_FIXMEs="$1"
 	enable_wined3d_UAV_Counters="$1"
 	enable_wined3d_WINED3D_RS_COLORWRITEENABLE="$1"
+	enable_wined3d_texture_blt_device="$1"
 	enable_wined3d_wined3d_guess_gl_vendor="$1"
 	enable_winedbg_Process_Arguments="$1"
 	enable_winedevice_Default_Drivers="$1"
@@ -422,6 +419,7 @@ patch_enable_all ()
 	enable_wuauserv_Dummy_Service="$1"
 	enable_wusa_MSU_Package_Installer="$1"
 	enable_xaudio2_7_OnVoiceProcessingPassStart="$1"
+	enable_xaudio2_7_WMA_support="$1"
 	enable_xaudio2_CommitChanges="$1"
 }
 
@@ -431,9 +429,6 @@ patch_enable ()
 	case "$1" in
 		Compiler_Warnings)
 			enable_Compiler_Warnings="$2"
-			;;
-		Coverity)
-			enable_Coverity="$2"
 			;;
 		Pipelight)
 			enable_Pipelight="$2"
@@ -846,9 +841,6 @@ patch_enable ()
 		ntdll-LdrGetDllHandle)
 			enable_ntdll_LdrGetDllHandle="$2"
 			;;
-		ntdll-LdrRegisterDllNotification)
-			enable_ntdll_LdrRegisterDllNotification="$2"
-			;;
 		ntdll-Loader_Machine_Type)
 			enable_ntdll_Loader_Machine_Type="$2"
 			;;
@@ -1200,12 +1192,6 @@ patch_enable ()
 		user32-ShowWindow)
 			enable_user32_ShowWindow="$2"
 			;;
-		user32-Sorted_Listbox)
-			enable_user32_Sorted_Listbox="$2"
-			;;
-		user32-WM_MEASUREITEM)
-			enable_user32_WM_MEASUREITEM="$2"
-			;;
 		user32-lpCreateParams)
 			enable_user32_lpCreateParams="$2"
 			;;
@@ -1316,6 +1302,9 @@ patch_enable ()
 			;;
 		wined3d-WINED3D_RS_COLORWRITEENABLE)
 			enable_wined3d_WINED3D_RS_COLORWRITEENABLE="$2"
+			;;
+		wined3d-texture-blt-device)
+			enable_wined3d_texture_blt_device="$2"
 			;;
 		wined3d-wined3d_guess_gl_vendor)
 			enable_wined3d_wined3d_guess_gl_vendor="$2"
@@ -1445,6 +1434,9 @@ patch_enable ()
 			;;
 		xaudio2_7-OnVoiceProcessingPassStart)
 			enable_xaudio2_7_OnVoiceProcessingPassStart="$2"
+			;;
+		xaudio2_7-WMA_support)
+			enable_xaudio2_7_WMA_support="$2"
 			;;
 		xaudio2_CommitChanges)
 			enable_xaudio2_CommitChanges="$2"
@@ -1804,6 +1796,13 @@ patch_apply()
 }
 
 
+if test "$enable_xaudio2_7_WMA_support" -eq 1; then
+	if test "$enable_xaudio2_7_OnVoiceProcessingPassStart" -gt 1; then
+		abort "Patchset xaudio2_7-OnVoiceProcessingPassStart disabled, but xaudio2_7-WMA_support depends on that."
+	fi
+	enable_xaudio2_7_OnVoiceProcessingPassStart=1
+fi
+
 if test "$enable_ws2_32_WSACleanup" -eq 1; then
 	if test "$enable_server_Desktop_Refcount" -gt 1; then
 		abort "Patchset server-Desktop_Refcount disabled, but ws2_32-WSACleanup depends on that."
@@ -1947,13 +1946,6 @@ if test "$enable_uxtheme_GTK_Theming" -eq 1; then
 		abort "Patchset ntdll-DllRedirects disabled, but uxtheme-GTK_Theming depends on that."
 	fi
 	enable_ntdll_DllRedirects=1
-fi
-
-if test "$enable_user32_Sorted_Listbox" -eq 1; then
-	if test "$enable_user32_WM_MEASUREITEM" -gt 1; then
-		abort "Patchset user32-WM_MEASUREITEM disabled, but user32-Sorted_Listbox depends on that."
-	fi
-	enable_user32_WM_MEASUREITEM=1
 fi
 
 if test "$enable_user32_MessageBox_WS_EX_TOPMOST" -eq 1; then
@@ -2143,21 +2135,6 @@ if test "$enable_ntdll_NtDevicePath" -eq 1; then
 		abort "Patchset ntdll-Pipe_SpecialCharacters disabled, but ntdll-NtDevicePath depends on that."
 	fi
 	enable_ntdll_Pipe_SpecialCharacters=1
-fi
-
-if test "$enable_ntdll_LdrRegisterDllNotification" -eq 1; then
-	if test "$enable_ntdll_HashLinks" -gt 1; then
-		abort "Patchset ntdll-HashLinks disabled, but ntdll-LdrRegisterDllNotification depends on that."
-	fi
-	if test "$enable_ntdll_Hide_Wine_Exports" -gt 1; then
-		abort "Patchset ntdll-Hide_Wine_Exports disabled, but ntdll-LdrRegisterDllNotification depends on that."
-	fi
-	if test "$enable_ntdll_RtlQueryPackageIdentity" -gt 1; then
-		abort "Patchset ntdll-RtlQueryPackageIdentity disabled, but ntdll-LdrRegisterDllNotification depends on that."
-	fi
-	enable_ntdll_HashLinks=1
-	enable_ntdll_Hide_Wine_Exports=1
-	enable_ntdll_RtlQueryPackageIdentity=1
 fi
 
 if test "$enable_ntdll_Junction_Points" -eq 1; then
@@ -2412,20 +2389,6 @@ if test "$enable_Compiler_Warnings" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "include: Check element type in CONTAINING_RECORD and similar macros.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wsdapi: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "evr: Avoid implicit cast of interface pointer.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset Coverity
-# |
-# | Modified files:
-# |   *	tools/sfnt2fon/sfnt2fon.c, tools/winedump/msc.c
-# |
-if test "$enable_Coverity" -eq 1; then
-	patch_apply Coverity/0001-sfnt2fon-Don-t-leak-output-name-if-specified-multipl.patch
-	patch_apply Coverity/0002-winedump-Free-debug-string-in-case-it-was-not-freed-.patch
-	(
-		printf '%s\n' '+    { "André Hentschel", "sfnt2fon: Don'\''t leak output name if specified multiple times (Coverity).", 1 },';
-		printf '%s\n' '+    { "André Hentschel", "winedump: Free debug string in case it was not freed in for-loop (Coverity).", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -2749,19 +2712,14 @@ fi
 # |   *	[#35902] Implement support for validating ECDSA certificate chains
 # |
 # | Modified files:
-# |   *	dlls/crypt32/Makefile.in, dlls/crypt32/cert.c, dlls/crypt32/chain.c, dlls/crypt32/crypt32_private.h,
-# | 	dlls/crypt32/tests/chain.c, dlls/crypt32/tests/encode.c
+# |   *	dlls/crypt32/tests/chain.c, dlls/crypt32/tests/encode.c
 # |
 if test "$enable_crypt32_ECDSA_Cert_Chains" -eq 1; then
 	patch_apply crypt32-ECDSA_Cert_Chains/0006-crypt32-tests-Basic-tests-for-decoding-ECDSA-signed-.patch
-	patch_apply crypt32-ECDSA_Cert_Chains/0011-crypt32-Correctly-return-how-the-issuer-of-a-self-si.patch
 	patch_apply crypt32-ECDSA_Cert_Chains/0012-crypt32-tets-Add-test-for-verifying-an-ecdsa-chain.patch
-	patch_apply crypt32-ECDSA_Cert_Chains/0013-crypt32-Implement-verification-of-ECDSA-signatures.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "crypt32/tests: Basic tests for decoding ECDSA signed certificate.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "crypt32: Correctly return how the issuer of a self signed certificate was checked.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "crypt32/tets: Add test for verifying an ecdsa chain.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "crypt32: Implement verification of ECDSA signatures.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5147,36 +5105,6 @@ if test "$enable_ntdll_LdrGetDllHandle" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ntdll-RtlQueryPackageIdentity
-# |
-# | Modified files:
-# |   *	dlls/ntdll/tests/Makefile.in, dlls/ntdll/tests/rtl.c
-# |
-if test "$enable_ntdll_RtlQueryPackageIdentity" -eq 1; then
-	patch_apply ntdll-RtlQueryPackageIdentity/0003-ntdll-tests-Add-basic-tests-for-RtlQueryPackageIdent.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "ntdll/tests: Add basic tests for RtlQueryPackageIdentity.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ntdll-LdrRegisterDllNotification
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-LDR_MODULE, ntdll-HashLinks, ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-RtlQueryPackageIdentity
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44585] Implement LdrRegisterDllNotification/LdrUnregisterDllNotification
-# |
-# | Modified files:
-# |   *	dlls/ntdll/loader.c, dlls/ntdll/tests/rtl.c
-# |
-if test "$enable_ntdll_LdrRegisterDllNotification" -eq 1; then
-	patch_apply ntdll-LdrRegisterDllNotification/0001-ntdll-Implement-LdrRegisterDllNotification-and-LdrUn.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Implement LdrRegisterDllNotification and LdrUnregisterDllNotification.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ntdll-NtAccessCheck
 # |
 # | Modified files:
@@ -5352,6 +5280,18 @@ if test "$enable_ntdll_RtlCaptureStackBackTrace" -eq 1; then
 	patch_apply ntdll-RtlCaptureStackBackTrace/0001-ntdll-Silence-FIXME-in-RtlCaptureStackBackTrace-stub.patch
 	(
 		printf '%s\n' '+    { "Jarkko Korpi", "ntdll: Silence FIXME in RtlCaptureStackBackTrace stub function.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-RtlQueryPackageIdentity
+# |
+# | Modified files:
+# |   *	dlls/ntdll/tests/Makefile.in, dlls/ntdll/tests/rtl.c
+# |
+if test "$enable_ntdll_RtlQueryPackageIdentity" -eq 1; then
+	patch_apply ntdll-RtlQueryPackageIdentity/0003-ntdll-tests-Add-basic-tests-for-RtlQueryPackageIdent.patch
+	(
+		printf '%s\n' '+    { "Michael Müller", "ntdll/tests: Add basic tests for RtlQueryPackageIdentity.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7078,44 +7018,6 @@ if test "$enable_user32_ShowWindow" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset user32-WM_MEASUREITEM
-# |
-# | Modified files:
-# |   *	dlls/user32/tests/msg.c
-# |
-if test "$enable_user32_WM_MEASUREITEM" -eq 1; then
-	patch_apply user32-WM_MEASUREITEM/0001-user32-tests-Add-a-test-for-WM_MEASUREITEM-when-inse.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add a test for WM_MEASUREITEM when inserting an item to an owner-drawn listbox.", 2 },';
-	) >> "$patchlist"
-fi
-
-# Patchset user32-Sorted_Listbox
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	user32-WM_MEASUREITEM
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#42602] Multiple fixes for owner-drawn and sorted listbox
-# |
-# | Modified files:
-# |   *	dlls/user32/listbox.c, dlls/user32/tests/msg.c
-# |
-if test "$enable_user32_Sorted_Listbox" -eq 1; then
-	patch_apply user32-Sorted_Listbox/0001-user32-tests-Add-a-message-test-for-an-owner-drawn-s.patch
-	patch_apply user32-Sorted_Listbox/0002-user32-tests-Add-some-message-tests-for-not-an-owner.patch
-	patch_apply user32-Sorted_Listbox/0003-user32-Fix-order-of-items-passed-in-WM_COMPAREITEM-d.patch
-	patch_apply user32-Sorted_Listbox/0004-user32-Fix-the-listbox-sorting-algorithm.patch
-	patch_apply user32-Sorted_Listbox/0005-user32-For-an-owner-drawn-listbox-without-strings-WM.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add a message test for an owner-drawn sorted listbox.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add some message tests for not an owner-drawn listbox.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Fix order of items passed in WM_COMPAREITEM data.", 2 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Fix the listbox sorting algorithm.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: For an owner-drawn listbox without strings WM_MEASUREITEM still needs correct itemData.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset uxtheme-CloseThemeClass
 # |
 # | This patchset fixes the following Wine bugs:
@@ -7827,6 +7729,21 @@ if test "$enable_wined3d_Persistent_Buffer_Allocator" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset wined3d-texture-blt-device
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45382] Stop the Sting demo crashing
+# |
+# | Modified files:
+# |   *	dlls/wined3d/texture.c
+# |
+if test "$enable_wined3d_texture_blt_device" -eq 1; then
+	patch_apply wined3d-texture-blt-device/0001-wined3d-Dont-blt-textures-on-different-devices.patch
+	(
+		printf '%s\n' '+    { "Józef Kucia", "wined3d: Dont blt textures on different devices.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset wined3d-wined3d_guess_gl_vendor
 # |
 # | This patchset fixes the following Wine bugs:
@@ -8267,10 +8184,14 @@ if test "$enable_wintab32_improvements" -eq 1; then
 	patch_apply wintab32-improvements/0001-winex11-Implement-PK_CHANGE-for-wintab.patch
 	patch_apply wintab32-improvements/0002-wintab32-Set-lcSysExtX-Y-for-the-first-index-of-WTI_.patch
 	patch_apply wintab32-improvements/0003-winex11-Handle-negative-orAltitude-values.patch
+	patch_apply wintab32-improvements/0004-winex11.drv-Support-multiplex-categories-WTI_DSCTXS-.patch
+	patch_apply wintab32-improvements/0005-winex11-Support-WTI_STATUS-in-WTInfo.patch
 	(
 		printf '%s\n' '+    { "Eriks Dobelis", "winex11: Implement PK_CHANGE for wintab.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "wintab32: Set lcSysExtX/Y for the first index of WTI_DDCTXS.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11: Handle negative orAltitude values.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11.drv: Support multiplex categories WTI_DSCTXS and WTI_DDCTXS.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11: Support WTI_STATUS in WTInfo.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -8510,6 +8431,27 @@ if test "$enable_xaudio2_7_OnVoiceProcessingPassStart" -eq 1; then
 	patch_apply xaudio2_7-OnVoiceProcessingPassStart/0001-xaudio2_7-Use-assembly-wrapper-to-call-OnVoiceProces.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "xaudio2_7: Use assembly wrapper to call OnVoiceProcessingPassStart callback.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset xaudio2_7-WMA_support
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	xaudio2_7-OnVoiceProcessingPassStart
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#39402] Use ffmpeg 4.x to convert WMA format
+# |
+# | Modified files:
+# |   *	configure.ac, dlls/xaudio2_0/Makefile.in, dlls/xaudio2_1/Makefile.in, dlls/xaudio2_2/Makefile.in,
+# | 	dlls/xaudio2_3/Makefile.in, dlls/xaudio2_4/Makefile.in, dlls/xaudio2_5/Makefile.in, dlls/xaudio2_6/Makefile.in,
+# | 	dlls/xaudio2_7/Makefile.in, dlls/xaudio2_7/xaudio_dll.c, dlls/xaudio2_7/xaudio_private.h, dlls/xaudio2_8/Makefile.in,
+# | 	dlls/xaudio2_9/Makefile.in, include/config.h.in, include/mmreg.h
+# |
+if test "$enable_xaudio2_7_WMA_support" -eq 1; then
+	patch_apply xaudio2_7-WMA_support/0001-xaudio2-Use-ffmpeg-to-convert-WMA-formats.patch
+	(
+		printf '%s\n' '+    { "Andrew Eikum", "xaudio2: Use ffmpeg to convert WMA formats.", 1 },';
 	) >> "$patchlist"
 fi
 
