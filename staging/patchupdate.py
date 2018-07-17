@@ -219,7 +219,7 @@ def load_patchsets():
 
         # No single patch within this directory, ignore it
         if len(patch.patches) == 0:
-            print "WARNING: No patches found in directory %s" % (directory)
+            print("WARNING: No patches found in directory {}".format(directory))
             del patch
             continue
 
@@ -264,7 +264,7 @@ def load_patchsets():
                 patch.ifdefined = val
 
             else:
-                print("WARNING: Ignoring unknown command in definition file for {}: {}").format(patch.name, line)
+                print("WARNING: Ignoring unknown command in definition file for {}: {}".format(patch.name, line))
 
     # Filter autodepends on disabled patchsets
     for i, patch in all_patches.items():
@@ -427,14 +427,14 @@ def check_bug_status(all_patches, sync_bugs=False):
                 print("WARNING: The following bugs might require attention:")
                 print()
                 once = False
-            print(" #{} - \"{}\" - {} {} - {}").format(bug['id'], bug['summary'], bug['status'],
-                                                  bug['resolution'], bug['cf_staged_patchset'])
+            print(" #{} - \"{}\" - {} {} - {}".format(bug['id'], bug['summary'], bug['status'],
+                                                  bug['resolution'], bug['cf_staged_patchset']))
             if sync_bugs:
                 sync_bug_status(bugtracker, bug, url_map[bug['id']])
         patchset = bug['cf_staged_patchset']
         if '.patch' in patchset: patchset = patchset[0:patchset.rindex('/')].replace('/blob/','/tree/')
         if bug['status'] == 'STAGED' and patchset != url_map[bug['id']]:
-            print 'Invalid staged patchset: #%d - \"%s\" - %s' %(bug['id'], bug['summary'], bug['cf_staged_patchset'])
+            print("Invalid staged patchset: #{} - \"{}\" - {}".format(bug['id'], bug['summary'], bug['cf_staged_patchset']))
 
     once = True
 
@@ -445,8 +445,8 @@ def check_bug_status(all_patches, sync_bugs=False):
                 print("WARNING: The following bugs are incorrectly marked as STAGED:")
                 print()
                 once = False
-            print(" #{} - \"{}\" - {} {}").format(bug['id'], bug['summary'], bug['status'],
-                                             bug['resolution'])
+            print(" #{} - \"{}\" - {} {}".format(bug['id'], bug['summary'], bug['status'],
+                                             bug['resolution']))
 
     print()
 
@@ -800,6 +800,6 @@ if __name__ == "__main__":
 
     except PatchUpdaterError as e:
         print()
-        print("ERROR: {}").format(e)
+        print("ERROR: {}".format(e))
         print()
         exit(1)
