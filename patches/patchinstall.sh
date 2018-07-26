@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "bb264a0ac63a01954ac2dd6d851e45a642898508"
+	echo "25cc380b8ed41652b135657ef7651beef2f20ae4"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.13 (Unreleased)"
+	echo "Wine Staging 3.13"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
