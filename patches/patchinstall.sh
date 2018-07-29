@@ -163,6 +163,7 @@ patch_enable_all ()
 	enable_inseng_Implementation="$1"
 	enable_iphlpapi_System_Ping="$1"
 	enable_iphlpapi_TCP_Table="$1"
+	enable_kernel32_AttachConsole="$1"
 	enable_kernel32_COMSPEC="$1"
 	enable_kernel32_CopyFileEx="$1"
 	enable_kernel32_Cwd_Startup_Info="$1"
@@ -246,6 +247,7 @@ patch_enable_all ()
 	enable_ntdll_WRITECOPY="$1"
 	enable_ntdll_Wait_User_APC="$1"
 	enable_ntdll_Zero_mod_name="$1"
+	enable_ntdll_futex_condition_var="$1"
 	enable_ntdll_set_full_cpu_context="$1"
 	enable_ntoskrnl_Stubs="$1"
 	enable_nvapi_Stub_DLL="$1"
@@ -662,6 +664,9 @@ patch_enable ()
 		iphlpapi-TCP_Table)
 			enable_iphlpapi_TCP_Table="$2"
 			;;
+		kernel32-AttachConsole)
+			enable_kernel32_AttachConsole="$2"
+			;;
 		kernel32-COMSPEC)
 			enable_kernel32_COMSPEC="$2"
 			;;
@@ -910,6 +915,9 @@ patch_enable ()
 			;;
 		ntdll-Zero_mod_name)
 			enable_ntdll_Zero_mod_name="$2"
+			;;
+		ntdll-futex-condition-var)
+			enable_ntdll_futex_condition_var="$2"
 			;;
 		ntdll-set_full_cpu_context)
 			enable_ntdll_set_full_cpu_context="$2"
@@ -3984,6 +3992,22 @@ if test "$enable_iphlpapi_TCP_Table" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset kernel32-AttachConsole
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#41573] AttachConsole implementation.
+# |   *	[#43910] "Battle.net helper.exe" [NOT BLIZZARD APP!] crashes with Win 7 or higher
+# |
+# | Modified files:
+# |   *	dlls/kernel32/console.c, dlls/kernel32/tests/console.c, server/console.c, server/protocol.def
+# |
+if test "$enable_kernel32_AttachConsole" -eq 1; then
+	patch_apply kernel32-AttachConsole/0001-kernel32-Add-AttachConsole-implementation.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "kernel32: Add AttachConsole implementation.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset server-File_Permissions
 # |
 # | This patchset fixes the following Wine bugs:
@@ -5383,6 +5407,21 @@ if test "$enable_ntdll_Zero_mod_name" -eq 1; then
 	patch_apply ntdll-Zero_mod_name/0001-ntdll-Initialize-mod_name-to-zero.patch
 	(
 		printf '%s\n' '+    { "Qian Hong", "ntdll: Initialize mod_name to zero.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-futex-condition-var
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45524] Add a futex-based implementation of condition variables
+# |
+# | Modified files:
+# |   *	dlls/ntdll/sync.c
+# |
+if test "$enable_ntdll_futex_condition_var" -eq 1; then
+	patch_apply ntdll-futex-condition-var/0001-ntdll-Add-a-futex-based-condition-variable-implement.patch
+	(
+		printf '%s\n' '+    { "Zebediah Figura", "ntdll: Add a futex-based condition variable implementation.", 1 },';
 	) >> "$patchlist"
 fi
 
