@@ -140,9 +140,12 @@ patch_enable_all ()
 	enable_ddraw_Write_Vtable="$1"
 	enable_dinput_Deadlock="$1"
 	enable_dinput_Initialize="$1"
+	enable_dinput8_shared_code="$1"
 	enable_dsound_EAX="$1"
 	enable_dsound_Fast_Mixer="$1"
 	enable_dsound_Revert_Cleanup="$1"
+	enable_dwrite_FontFallback="$1"
+	enable_dwrite_layout_check="$1"
 	enable_dxdiagn_Enumerate_DirectSound="$1"
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
 	enable_dxgi_GammaRamp="$1"
@@ -224,6 +227,7 @@ patch_enable_all ()
 	enable_ntdll_NtContinue="$1"
 	enable_ntdll_NtDevicePath="$1"
 	enable_ntdll_NtQueryEaFile="$1"
+	enable_ntdll_NtQueryInformationProcess_ProcessCookie="$1"
 	enable_ntdll_NtQuerySection="$1"
 	enable_ntdll_NtQueryVirtualMemory="$1"
 	enable_ntdll_NtSetLdtEntries="$1"
@@ -234,6 +238,7 @@ patch_enable_all ()
 	enable_ntdll_RtlCaptureStackBackTrace="$1"
 	enable_ntdll_RtlGetUnloadEventTraceEx="$1"
 	enable_ntdll_RtlQueryPackageIdentity="$1"
+	enable_ntdll_RtlSetUnhandledExceptionFilter="$1"
 	enable_ntdll_Serial_Port_Detection="$1"
 	enable_ntdll_Signal_Handler="$1"
 	enable_ntdll_Stack_Guard_Page="$1"
@@ -595,6 +600,9 @@ patch_enable ()
 		dinput-Initialize)
 			enable_dinput_Initialize="$2"
 			;;
+		dinput8-shared-code)
+			enable_dinput8_shared_code="$2"
+			;;
 		dsound-EAX)
 			enable_dsound_EAX="$2"
 			;;
@@ -603,6 +611,12 @@ patch_enable ()
 			;;
 		dsound-Revert_Cleanup)
 			enable_dsound_Revert_Cleanup="$2"
+			;;
+		dwrite-FontFallback)
+			enable_dwrite_FontFallback="$2"
+			;;
+		dwrite-layout-check)
+			enable_dwrite_layout_check="$2"
 			;;
 		dxdiagn-Enumerate_DirectSound)
 			enable_dxdiagn_Enumerate_DirectSound="$2"
@@ -847,6 +861,9 @@ patch_enable ()
 		ntdll-NtQueryEaFile)
 			enable_ntdll_NtQueryEaFile="$2"
 			;;
+		ntdll-NtQueryInformationProcess-ProcessCookie)
+			enable_ntdll_NtQueryInformationProcess_ProcessCookie="$2"
+			;;
 		ntdll-NtQuerySection)
 			enable_ntdll_NtQuerySection="$2"
 			;;
@@ -876,6 +893,9 @@ patch_enable ()
 			;;
 		ntdll-RtlQueryPackageIdentity)
 			enable_ntdll_RtlQueryPackageIdentity="$2"
+			;;
+		ntdll-RtlSetUnhandledExceptionFilter)
+			enable_ntdll_RtlSetUnhandledExceptionFilter="$2"
 			;;
 		ntdll-Serial_Port_Detection)
 			enable_ntdll_Serial_Port_Detection="$2"
@@ -3253,7 +3273,7 @@ fi
 if test "$enable_wined3d_DXTn" -eq 1; then
 	patch_apply wined3d-DXTn/0001-wined3d-add-DXTn-support.patch
 	(
-		printf '%s\n' '+    { "Kyle Devir", "wined3d: Add DXTn support.", 1 },';
+		printf '%s\n' '+    { "Christian Costa", "wined3d: Add DXTn support.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3279,7 +3299,7 @@ fi
 if test "$enable_d3dx9_36_DXTn" -eq 1; then
 	patch_apply d3dx9_36-DXTn/0001-d3dx9_36-Add-dxtn-support.patch
 	(
-		printf '%s\n' '+    { "Kyle Devir", "d3dx9_36: Add DXTn support.", 1 },';
+		printf '%s\n' '+    { "Christian Costa", "d3dx9_36: Add DXTn support.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3564,6 +3584,21 @@ if test "$enable_dinput_Initialize" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset dinput8-shared-code
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45327] Stop access volation in League of Legends
+# |
+# | Modified files:
+# |   *	dlls/dinput/Makefile.in, dlls/dinput/dinput_main.c, dlls/dinput8/Makefile.in, dlls/dinput8/dinput8_main.c
+# |
+if test "$enable_dinput8_shared_code" -eq 1; then
+	patch_apply dinput8-shared-code/0001-dinput8-Use-shared-source-directory.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "dinput8: Use shared source directory.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset dsound-Fast_Mixer
 # |
 # | This patchset fixes the following Wine bugs:
@@ -3646,6 +3681,46 @@ if test "$enable_dsound_EAX" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "dsound: Allow disabling of EAX support in the registry.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "dsound: Add stub support for DSPROPSETID_EAX20_ListenerProperties.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "dsound: Add stub support for DSPROPSETID_EAX20_BufferProperties.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset dwrite-FontFallback
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44052] - Support for font fallback.
+# |
+# | Modified files:
+# |   *	dlls/dwrite/analyzer.c, dlls/dwrite/layout.c, dlls/dwrite/tests/layout.c
+# |
+if test "$enable_dwrite_FontFallback" -eq 1; then
+	patch_apply dwrite-FontFallback/0001-dwrite-Test-IDWriteTextFormat-with-nonexistent-font.patch
+	patch_apply dwrite-FontFallback/0002-dwrite-Test-GetMetrics-with-custom-fontcollection.patch
+	patch_apply dwrite-FontFallback/0003-dwrite-Skip-failing-font-metrics-test-for-Goha.patch
+	patch_apply dwrite-FontFallback/0004-dwrite-Use-font-fallback-when-mapping-characters.patch
+	patch_apply dwrite-FontFallback/0005-dwrite-Use-MapCharacters-for-non-visual-characters.patch
+	patch_apply dwrite-FontFallback/0006-dwrite-Use-MapCharacters-for-dummy-line-metrics.patch
+	(
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Test IDWriteTextFormat with nonexistent font.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Test GetMetrics with custom fontcollection.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Skip failing font metrics test for Goha.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Use font fallback when mapping characters.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Use MapCharacters for non-visual characters.", 1 },';
+		printf '%s\n' '+    { "Lucian Poston", "dwrite: Use MapCharacters for dummy line metrics.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset dwrite-layout-check
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45535] - dwrite Correct out of access
+# |
+# | Modified files:
+# |   *	dlls/dwrite/layout.c
+# |
+if test "$enable_dwrite_layout_check" -eq 1; then
+	patch_apply dwrite-layout-check/0001-dwrite-Avoid-possible-out-of-bounds-cluster-metrics-.patch
+	(
+		printf '%s\n' '+    { "Nikolay Sivov", "dwrite: Avoid possible out-of-bounds cluster metrics access.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4004,7 +4079,7 @@ fi
 if test "$enable_kernel32_AttachConsole" -eq 1; then
 	patch_apply kernel32-AttachConsole/0001-kernel32-Add-AttachConsole-implementation.patch
 	(
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "kernel32: Add AttachConsole implementation.", 1 },';
+		printf '%s\n' '+    { "Jacek Caban", "kernel32: Add AttachConsole implementation.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5056,14 +5131,17 @@ fi
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#31910] Add stub for NtContinue
+# |   *	[#45327] Helps League of Legends anti-cheat engine.
 # |
 # | Modified files:
-# |   *	dlls/ntdll/exception.c, dlls/ntdll/ntdll.spec
+# |   *	dlls/ntdll/exception.c, dlls/ntdll/ntdll.spec, dlls/ntdll/signal_i386.c
 # |
 if test "$enable_ntdll_NtContinue" -eq 1; then
 	patch_apply ntdll-NtContinue/0001-ntdll-Add-stub-for-NtContinue.patch
+	patch_apply ntdll-NtContinue/0002-Use-NtContinue-to-continue-execution-after-exception.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "ntdll: Add stub for NtContinue.", 1 },';
+		printf '%s\n' '+    { "Andrew Wesie", "Use NtContinue to continue execution after exceptions.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5100,6 +5178,21 @@ if test "$enable_ntdll_NtDevicePath" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset ntdll-NtQueryInformationProcess-ProcessCookie
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45327] Added support ProcessCookie in NtQueryInformationProcess
+# |
+# | Modified files:
+# |   *	dlls/ntdll/process.c
+# |
+if test "$enable_ntdll_NtQueryInformationProcess_ProcessCookie" -eq 1; then
+	patch_apply ntdll-NtQueryInformationProcess-ProcessCookie/0001-ntdll-Stub-for-ProcessCookie-in-NtQueryInformationPr.patch
+	(
+		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Stub for ProcessCookie in NtQueryInformationProcess.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset ntdll-NtQuerySection
 # |
 # | Modified files:
@@ -5123,7 +5216,7 @@ fi
 # |
 # | Modified files:
 # |   *	dlls/kernel32/virtual.c, dlls/ntdll/directory.c, dlls/ntdll/ntdll_misc.h, dlls/ntdll/tests/info.c, dlls/ntdll/virtual.c,
-# | 	dlls/psapi/tests/psapi_main.c, server/mapping.c, server/protocol.def
+# | 	dlls/psapi/tests/psapi_main.c, include/winternl.h, server/mapping.c, server/protocol.def
 # |
 if test "$enable_ntdll_NtQueryVirtualMemory" -eq 1; then
 	patch_apply ntdll-NtQueryVirtualMemory/0002-ntdll-Split-logic-for-MemoryBasicInformation-into-a-.patch
@@ -5133,6 +5226,7 @@ if test "$enable_ntdll_NtQueryVirtualMemory" -eq 1; then
 	patch_apply ntdll-NtQueryVirtualMemory/0006-ntdll-Allow-to-query-section-names-from-other-proces.patch
 	patch_apply ntdll-NtQueryVirtualMemory/0007-kernel32-Implement-K32GetMappedFileName.-v2.patch
 	patch_apply ntdll-NtQueryVirtualMemory/0008-ntdll-Resolve-drive-symlinks-before-returning-sectio.patch
+	patch_apply ntdll-NtQueryVirtualMemory/0009-ntdll-Unsupported-stub-for-MemoryWorkingSetExInforma.patch
 	(
 		printf '%s\n' '+    { "Dmitry Timoshkov", "ntdll: Split logic for MemoryBasicInformation into a separate function.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "ntdll: Implement NtQueryVirtualMemory(MemorySectionName).", 3 },';
@@ -5141,6 +5235,7 @@ if test "$enable_ntdll_NtQueryVirtualMemory" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Allow to query section names from other processes.", 2 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32: Implement K32GetMappedFileName.", 2 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Resolve drive symlinks before returning section name.", 1 },';
+		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Unsupported stub for MemoryWorkingSetExInformation.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5245,6 +5340,21 @@ if test "$enable_ntdll_RtlGetUnloadEventTraceEx" -eq 1; then
 	patch_apply ntdll-RtlGetUnloadEventTraceEx/0001-ntdll-Add-stub-for-RtlGetUnloadEventTraceEx.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "ntdll: Add stub for RtlGetUnloadEventTraceEx.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-RtlSetUnhandledExceptionFilter
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45327] Add RtlSetUnhandledExceptionFilter stub
+# |
+# | Modified files:
+# |   *	dlls/ntdll/exception.c, dlls/ntdll/ntdll.spec
+# |
+if test "$enable_ntdll_RtlSetUnhandledExceptionFilter" -eq 1; then
+	patch_apply ntdll-RtlSetUnhandledExceptionFilter/0001-ntdll-Add-RtlSetUnhandledExceptionFilter-stub.patch
+	(
+		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Add RtlSetUnhandledExceptionFilter stub.", 1 },';
 	) >> "$patchlist"
 fi
 
