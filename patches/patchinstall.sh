@@ -2067,9 +2067,17 @@ if test "$enable_server_Shared_Memory" -eq 1; then
 fi
 
 if test "$enable_server_Inherited_ACLs" -eq 1; then
+	if test "$enable_advapi32_Token_Integrity_Level" -gt 1; then
+		abort "Patchset advapi32-Token_Integrity_Level disabled, but server-Inherited_ACLs depends on that."
+	fi
+	if test "$enable_advapi32_WinBuiltinAnyPackageSid" -gt 1; then
+		abort "Patchset advapi32-WinBuiltinAnyPackageSid disabled, but server-Inherited_ACLs depends on that."
+	fi
 	if test "$enable_server_Stored_ACLs" -gt 1; then
 		abort "Patchset server-Stored_ACLs disabled, but server-Inherited_ACLs depends on that."
 	fi
+	enable_advapi32_Token_Integrity_Level=1
+	enable_advapi32_WinBuiltinAnyPackageSid=1
 	enable_server_Stored_ACLs=1
 fi
 
@@ -2267,17 +2275,6 @@ if test "$enable_ntdll_FileDispositionInformation" -eq 1; then
 	enable_server_File_Permissions=1
 fi
 
-if test "$enable_server_File_Permissions" -eq 1; then
-	if test "$enable_advapi32_Token_Integrity_Level" -gt 1; then
-		abort "Patchset advapi32-Token_Integrity_Level disabled, but server-File_Permissions depends on that."
-	fi
-	if test "$enable_advapi32_WinBuiltinAnyPackageSid" -gt 1; then
-		abort "Patchset advapi32-WinBuiltinAnyPackageSid disabled, but server-File_Permissions depends on that."
-	fi
-	enable_advapi32_Token_Integrity_Level=1
-	enable_advapi32_WinBuiltinAnyPackageSid=1
-fi
-
 if test "$enable_imagehlp_ImageLoad" -eq 1; then
 	if test "$enable_imagehlp_Cleanup" -gt 1; then
 		abort "Patchset imagehlp-Cleanup disabled, but imagehlp-ImageLoad depends on that."
@@ -2387,13 +2384,9 @@ if test "$enable_advapi32_LsaLookupSids" -eq 1; then
 fi
 
 if test "$enable_Compiler_Warnings" -eq 1; then
-	if test "$enable_ml_array_size" -gt 1; then
-		abort "Patchset ml-array_size disabled, but Compiler_Warnings depends on that."
-	fi
 	if test "$enable_ml_patches" -gt 1; then
 		abort "Patchset ml-patches disabled, but Compiler_Warnings depends on that."
 	fi
-	enable_ml_array_size=1
 	enable_ml_patches=1
 fi
 
@@ -4395,10 +4388,6 @@ fi
 
 # Patchset server-File_Permissions
 # |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
-# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid
-# |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#38970] Improve mapping of DACL to file permissions
 # |
@@ -4429,8 +4418,7 @@ fi
 # Patchset ntdll-FileDispositionInformation
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
-# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, server-File_Permissions
+# |   *	server-File_Permissions
 # |
 # | Modified files:
 # |   *	dlls/ntdll/tests/file.c, server/fd.c
@@ -4449,9 +4437,7 @@ fi
 # Patchset kernel32-CopyFileEx
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
-# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, server-File_Permissions, ntdll-
-# | 	FileDispositionInformation
+# |   *	server-File_Permissions, ntdll-FileDispositionInformation
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#22692] Add support for CopyFileEx progress callback
@@ -6318,9 +6304,7 @@ fi
 # Patchset server-Stored_ACLs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DOS_Attributes, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-
-# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, server-
-# | 	File_Permissions
+# |   *	ntdll-DOS_Attributes, server-File_Permissions
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#33576] Support for stored file ACLs
@@ -6351,8 +6335,8 @@ fi
 # Patchset server-Inherited_ACLs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DOS_Attributes, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-
-# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, server-
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-DOS_Attributes, server-
 # | 	File_Permissions, server-Stored_ACLs
 # |
 # | Modified files:
@@ -6725,9 +6709,7 @@ fi
 # Patchset shell32-Progress_Dialog
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
-# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, server-File_Permissions, ntdll-
-# | 	FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move
+# |   *	server-File_Permissions, ntdll-FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move
 # |
 # | Modified files:
 # |   *	dlls/shell32/shell32.rc, dlls/shell32/shlfileop.c, dlls/shell32/shresdef.h
@@ -6748,9 +6730,8 @@ fi
 # Patchset shell32-ACE_Viewer
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
-# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, server-File_Permissions, ntdll-
-# | 	FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move, shell32-Progress_Dialog
+# |   *	server-File_Permissions, ntdll-FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move,
+# | 	shell32-Progress_Dialog
 # |
 # | Modified files:
 # |   *	dlls/aclui/Makefile.in, dlls/aclui/aclui.rc, dlls/aclui/aclui_main.c, dlls/aclui/resource.h, dlls/aclui/user_icons.bmp,

@@ -1,4 +1,2 @@
 Fixes: Allow to open files/directories without any access rights in order to query attributes
 Fixes: [38970] Improve mapping of DACL to file permissions
-Depends: advapi32-Token_Integrity_Level
-Depends: advapi32-WinBuiltinAnyPackageSid
