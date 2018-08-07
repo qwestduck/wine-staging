@@ -1851,6 +1851,13 @@ if test "$enable_winex11_WM_WINDOWPOSCHANGING" -eq 1; then
 	enable_winex11__NET_ACTIVE_WINDOW=1
 fi
 
+if test "$enable_winemenubuilder_Desktop_Icon_Path" -eq 1; then
+	if test "$enable_ml_patches" -gt 1; then
+		abort "Patchset ml-patches disabled, but winemenubuilder-Desktop_Icon_Path depends on that."
+	fi
+	enable_ml_patches=1
+fi
+
 if test "$enable_winedevice_Default_Drivers" -eq 1; then
 	if test "$enable_dxva2_Video_Decoder" -gt 1; then
 		abort "Patchset dxva2-Video_Decoder disabled, but winedevice-Default_Drivers depends on that."
@@ -1926,9 +1933,13 @@ if test "$enable_wined3d_CSMT_Main" -eq 1; then
 fi
 
 if test "$enable_winebuild_Fake_Dlls" -eq 1; then
+	if test "$enable_ml_patches" -gt 1; then
+		abort "Patchset ml-patches disabled, but winebuild-Fake_Dlls depends on that."
+	fi
 	if test "$enable_ntdll_User_Shared_Data" -gt 1; then
 		abort "Patchset ntdll-User_Shared_Data disabled, but winebuild-Fake_Dlls depends on that."
 	fi
+	enable_ml_patches=1
 	enable_ntdll_User_Shared_Data=1
 fi
 
@@ -2115,13 +2126,6 @@ if test "$enable_ntdll_Signal_Handler" -eq 1; then
 	enable_ntdll_WRITECOPY=1
 fi
 
-if test "$enable_ntdll_WRITECOPY" -eq 1; then
-	if test "$enable_ntdll_User_Shared_Data" -gt 1; then
-		abort "Patchset ntdll-User_Shared_Data disabled, but ntdll-WRITECOPY depends on that."
-	fi
-	enable_ntdll_User_Shared_Data=1
-fi
-
 if test "$enable_ntdll_RtlGetUnloadEventTraceEx" -eq 1; then
 	if test "$enable_ntdll_RtlQueryPackageIdentity" -gt 1; then
 		abort "Patchset ntdll-RtlQueryPackageIdentity disabled, but ntdll-RtlGetUnloadEventTraceEx depends on that."
@@ -2196,20 +2200,6 @@ if test "$enable_ntdll_Builtin_Prot" -eq 1; then
 	enable_ntdll_User_Shared_Data=1
 fi
 
-if test "$enable_ntdll_User_Shared_Data" -eq 1; then
-	if test "$enable_ntdll_Hide_Wine_Exports" -gt 1; then
-		abort "Patchset ntdll-Hide_Wine_Exports disabled, but ntdll-User_Shared_Data depends on that."
-	fi
-	enable_ntdll_Hide_Wine_Exports=1
-fi
-
-if test "$enable_ntdll_Hide_Wine_Exports" -eq 1; then
-	if test "$enable_ntdll_ThreadTime" -gt 1; then
-		abort "Patchset ntdll-ThreadTime disabled, but ntdll-Hide_Wine_Exports depends on that."
-	fi
-	enable_ntdll_ThreadTime=1
-fi
-
 if test "$enable_ntdll_ApiSetMap" -eq 1; then
 	if test "$enable_ntdll_ThreadTime" -gt 1; then
 		abort "Patchset ntdll-ThreadTime disabled, but ntdll-ApiSetMap depends on that."
@@ -2235,6 +2225,13 @@ if test "$enable_kernel32_Processor_Group" -eq 1; then
 	enable_api_ms_win_Stub_DLLs=1
 fi
 
+if test "$enable_kernel32_MoveFile" -eq 1; then
+	if test "$enable_ml_patches" -gt 1; then
+		abort "Patchset ml-patches disabled, but kernel32-MoveFile depends on that."
+	fi
+	enable_ml_patches=1
+fi
+
 if test "$enable_kernel32_CopyFileEx" -eq 1; then
 	if test "$enable_ntdll_FileDispositionInformation" -gt 1; then
 		abort "Patchset ntdll-FileDispositionInformation disabled, but kernel32-CopyFileEx depends on that."
@@ -2247,6 +2244,45 @@ if test "$enable_ntdll_FileDispositionInformation" -eq 1; then
 		abort "Patchset server-File_Permissions disabled, but ntdll-FileDispositionInformation depends on that."
 	fi
 	enable_server_File_Permissions=1
+fi
+
+if test "$enable_server_File_Permissions" -eq 1; then
+	if test "$enable_ntdll_WRITECOPY" -gt 1; then
+		abort "Patchset ntdll-WRITECOPY disabled, but server-File_Permissions depends on that."
+	fi
+	enable_ntdll_WRITECOPY=1
+fi
+
+if test "$enable_ntdll_WRITECOPY" -eq 1; then
+	if test "$enable_ntdll_NtAccessCheck" -gt 1; then
+		abort "Patchset ntdll-NtAccessCheck disabled, but ntdll-WRITECOPY depends on that."
+	fi
+	if test "$enable_ntdll_User_Shared_Data" -gt 1; then
+		abort "Patchset ntdll-User_Shared_Data disabled, but ntdll-WRITECOPY depends on that."
+	fi
+	enable_ntdll_NtAccessCheck=1
+	enable_ntdll_User_Shared_Data=1
+fi
+
+if test "$enable_ntdll_User_Shared_Data" -eq 1; then
+	if test "$enable_ntdll_Hide_Wine_Exports" -gt 1; then
+		abort "Patchset ntdll-Hide_Wine_Exports disabled, but ntdll-User_Shared_Data depends on that."
+	fi
+	enable_ntdll_Hide_Wine_Exports=1
+fi
+
+if test "$enable_ntdll_Hide_Wine_Exports" -eq 1; then
+	if test "$enable_ntdll_ThreadTime" -gt 1; then
+		abort "Patchset ntdll-ThreadTime disabled, but ntdll-Hide_Wine_Exports depends on that."
+	fi
+	enable_ntdll_ThreadTime=1
+fi
+
+if test "$enable_ntdll_NtAccessCheck" -eq 1; then
+	if test "$enable_advapi32_WinBuiltinAnyPackageSid" -gt 1; then
+		abort "Patchset advapi32-WinBuiltinAnyPackageSid disabled, but ntdll-NtAccessCheck depends on that."
+	fi
+	enable_advapi32_WinBuiltinAnyPackageSid=1
 fi
 
 if test "$enable_imagehlp_ImageLoad" -eq 1; then
@@ -2272,6 +2308,13 @@ if test "$enable_dsound_EAX" -eq 1; then
 	fi
 	enable_dsound_Fast_Mixer=1
 	enable_dsound_Revert_Cleanup=1
+fi
+
+if test "$enable_ddraw_Device_Caps" -eq 1; then
+	if test "$enable_ml_patches" -gt 1; then
+		abort "Patchset ml-patches disabled, but ddraw-Device_Caps depends on that."
+	fi
+	enable_ml_patches=1
 fi
 
 if test "$enable_d3dx9_36_DXTn" -eq 1; then
@@ -2309,6 +2352,13 @@ if test "$enable_bcrypt_BCryptDeriveKeyPBKDF2" -eq 1; then
 	enable_crypt32_ECDSA_Cert_Chains=1
 fi
 
+if test "$enable_advapi32_WinBuiltinAnyPackageSid" -eq 1; then
+	if test "$enable_advapi32_Token_Integrity_Level" -gt 1; then
+		abort "Patchset advapi32-Token_Integrity_Level disabled, but advapi32-WinBuiltinAnyPackageSid depends on that."
+	fi
+	enable_advapi32_Token_Integrity_Level=1
+fi
+
 if test "$enable_advapi32_Token_Integrity_Level" -eq 1; then
 	if test "$enable_Staging" -gt 1; then
 		abort "Patchset Staging disabled, but advapi32-Token_Integrity_Level depends on that."
@@ -2332,6 +2382,13 @@ if test "$enable_advapi32_Token_Integrity_Level" -eq 1; then
 	enable_server_Misc_ACL=1
 fi
 
+if test "$enable_kernel32_COMSPEC" -eq 1; then
+	if test "$enable_ml_patches" -gt 1; then
+		abort "Patchset ml-patches disabled, but kernel32-COMSPEC depends on that."
+	fi
+	enable_ml_patches=1
+fi
+
 if test "$enable_advapi32_LsaLookupSids" -eq 1; then
 	if test "$enable_server_CreateProcess_ACLs" -gt 1; then
 		abort "Patchset server-CreateProcess_ACLs disabled, but advapi32-LsaLookupSids depends on that."
@@ -2352,6 +2409,13 @@ if test "$enable_Compiler_Warnings" -eq 1; then
 	fi
 	enable_ml_array_size=1
 	enable_ml_patches=1
+fi
+
+if test "$enable_ml_patches" -eq 1; then
+	if test "$enable_ml_array_size" -gt 1; then
+		abort "Patchset ml-array_size disabled, but ml-patches depends on that."
+	fi
+	enable_ml_array_size=1
 fi
 
 
@@ -2518,6 +2582,9 @@ if test "$enable_ml_array_size" -eq 1; then
 fi
 
 # Patchset ml-patches
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ml-array_size
 # |
 # | Modified files:
 # |   *	configure, configure.ac, dlls/api-ms-win-devices-config-l1-1-0/Makefile.in, dlls/api-ms-win-devices-config-l1-1-0/api-
@@ -2797,6 +2864,9 @@ fi
 
 # Patchset kernel32-COMSPEC
 # |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ml-array_size, ml-patches
+# |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#19801] Fallback to default comspec when %COMSPEC% is not set
 # |
@@ -2813,7 +2883,8 @@ fi
 # Patchset advapi32-Token_Integrity_Level
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, kernel32-COMSPEC, server-CreateProcess_ACLs, server-Misc_ACL
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#40613] Basic implementation for token integrity levels and UAC handling
@@ -2863,6 +2934,10 @@ if test "$enable_advapi32_Token_Integrity_Level" -eq 1; then
 fi
 
 # Patchset advapi32-WinBuiltinAnyPackageSid
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#41934] Assigns the AC abbreviation to WinBuiltinAnyPackageSid
@@ -3671,6 +3746,9 @@ fi
 
 # Patchset ddraw-Device_Caps
 # |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ml-array_size, ml-patches
+# |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#27002] Properly initialize caps->dwZBufferBitDepths in ddraw7_GetCaps
 # |
@@ -4333,7 +4411,126 @@ if test "$enable_kernel32_AttachConsole" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset ntdll-NtAccessCheck
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid
+# |
+# | Modified files:
+# |   *	dlls/advapi32/tests/security.c, dlls/ntdll/sec.c
+# |
+if test "$enable_ntdll_NtAccessCheck" -eq 1; then
+	patch_apply ntdll-NtAccessCheck/0001-ntdll-Improve-invalid-paramater-handling-in-NtAccess.patch
+	(
+		printf '%s\n' '+    { "Qian Hong", "ntdll: Improve invalid paramater handling in NtAccessCheck.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-ThreadTime
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#20230] Return correct values for GetThreadTimes function
+# |
+# | Modified files:
+# |   *	dlls/ntdll/nt.c, dlls/ntdll/ntdll_misc.h, dlls/ntdll/process.c, dlls/ntdll/thread.c, server/protocol.def,
+# | 	server/snapshot.c, server/thread.c, server/thread.h
+# |
+if test "$enable_ntdll_ThreadTime" -eq 1; then
+	patch_apply ntdll-ThreadTime/0001-ntdll-Return-correct-values-in-GetThreadTimes-for-al.patch
+	patch_apply ntdll-ThreadTime/0002-ntdll-Set-correct-thread-creation-time-for-SystemPro.patch
+	patch_apply ntdll-ThreadTime/0003-ntdll-Fill-process-kernel-and-user-time.patch
+	patch_apply ntdll-ThreadTime/0004-ntdll-Set-process-start-time.patch
+	patch_apply ntdll-ThreadTime/0005-ntdll-Fill-out-thread-times-in-process-enumeration.patch
+	patch_apply ntdll-ThreadTime/0006-ntdll-Fill-process-virtual-memory-counters-in-NtQuer.patch
+	(
+		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Return correct values in GetThreadTimes() for all threads.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Set correct thread creation time for SystemProcessInformation in NtQuerySystemInformation.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Fill process kernel and user time.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Set process start time.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Fill out thread times in process enumeration.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Fill process virtual memory counters in NtQuerySystemInformation.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-Hide_Wine_Exports
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ntdll-ThreadTime
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#38656] Add support for hiding wine version information from applications
+# |
+# | Modified files:
+# |   *	dlls/ntdll/loader.c, dlls/ntdll/ntdll_misc.h
+# |
+if test "$enable_ntdll_Hide_Wine_Exports" -eq 1; then
+	patch_apply ntdll-Hide_Wine_Exports/0001-ntdll-Add-support-for-hiding-wine-version-informatio.patch
+	(
+		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Add support for hiding wine version information from applications.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-User_Shared_Data
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ntdll-ThreadTime, ntdll-Hide_Wine_Exports
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#29168] Update user shared data at realtime
+# |
+# | Modified files:
+# |   *	dlls/kernel32/cpu.c, dlls/ntdll/loader.c, dlls/ntdll/ntdll.spec, dlls/ntdll/ntdll_misc.h, dlls/ntdll/tests/time.c,
+# | 	dlls/ntdll/thread.c, dlls/ntdll/virtual.c, dlls/ntoskrnl.exe/instr.c
+# |
+if test "$enable_ntdll_User_Shared_Data" -eq 1; then
+	patch_apply ntdll-User_Shared_Data/0001-ntdll-Move-code-to-update-user-shared-data-into-a-se.patch
+	patch_apply ntdll-User_Shared_Data/0002-ntoskrnl-Update-USER_SHARED_DATA-before-accessing-me.patch
+	patch_apply ntdll-User_Shared_Data/0003-ntdll-Create-thread-to-update-user_shared_data-time-.patch
+	patch_apply ntdll-User_Shared_Data/0004-ntdll-tests-Test-updating-TickCount-in-user_shared_d.patch
+	(
+		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Move code to update user shared data into a separate function.", 1 },';
+		printf '%s\n' '+    { "Sebastian Lackner", "ntoskrnl: Update USER_SHARED_DATA before accessing memory.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Create thread to update user_shared_data time values when necessary.", 1 },';
+		printf '%s\n' '+    { "Andrew Wesie", "ntdll/tests: Test updating TickCount in user_shared_data.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-WRITECOPY
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-NtAccessCheck, ntdll-ThreadTime,
+# | 	ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#29384] Voobly expects correct handling of WRITECOPY memory protection
+# |   *	[#35561] MSYS2 expects correct handling of WRITECOPY memory protection
+# |
+# | Modified files:
+# |   *	dlls/advapi32/crypt.c, dlls/advapi32/tests/security.c, dlls/ntdll/ntdll_misc.h, dlls/ntdll/server.c,
+# | 	dlls/ntdll/signal_arm.c, dlls/ntdll/signal_arm64.c, dlls/ntdll/signal_i386.c, dlls/ntdll/signal_powerpc.c,
+# | 	dlls/ntdll/signal_x86_64.c, dlls/ntdll/thread.c, dlls/ntdll/virtual.c
+# |
+if test "$enable_ntdll_WRITECOPY" -eq 1; then
+	patch_apply ntdll-WRITECOPY/0001-ntdll-Trigger-write-watches-before-passing-userdata-.patch
+	patch_apply ntdll-WRITECOPY/0002-advapi-Trigger-write-watches-before-passing-userdata.patch
+	patch_apply ntdll-WRITECOPY/0003-ntdll-Setup-a-temporary-signal-handler-during-proces.patch
+	patch_apply ntdll-WRITECOPY/0004-ntdll-Properly-handle-PAGE_WRITECOPY-protection.-try.patch
+	(
+		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Trigger write watches before passing userdata pointer to wait_reply.", 1 },';
+		printf '%s\n' '+    { "Sebastian Lackner", "advapi: Trigger write watches before passing userdata pointer to read syscall.", 1 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Setup a temporary signal handler during process startup to handle page faults.", 2 },';
+		printf '%s\n' '+    { "Michael Müller", "ntdll: Properly handle PAGE_WRITECOPY protection.", 5 },';
+	) >> "$patchlist"
+fi
+
 # Patchset server-File_Permissions
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-NtAccessCheck, ntdll-ThreadTime,
+# | 	ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#38970] Improve mapping of DACL to file permissions
@@ -4365,7 +4562,9 @@ fi
 # Patchset ntdll-FileDispositionInformation
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	server-File_Permissions
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-NtAccessCheck, ntdll-ThreadTime,
+# | 	ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY, server-File_Permissions
 # |
 # | Modified files:
 # |   *	dlls/ntdll/tests/file.c, server/fd.c
@@ -4384,7 +4583,10 @@ fi
 # Patchset kernel32-CopyFileEx
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	server-File_Permissions, ntdll-FileDispositionInformation
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-NtAccessCheck, ntdll-ThreadTime,
+# | 	ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY, server-File_Permissions, ntdll-
+# | 	FileDispositionInformation
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#22692] Add support for CopyFileEx progress callback
@@ -4485,6 +4687,9 @@ if test "$enable_kernel32_K32GetPerformanceInfo" -eq 1; then
 fi
 
 # Patchset kernel32-MoveFile
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ml-array_size, ml-patches
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#14901] MoveFile with source == dest should succeed.
@@ -4949,32 +5154,6 @@ if test "$enable_ntdll_Activation_Context" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ntdll-ThreadTime
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#20230] Return correct values for GetThreadTimes function
-# |
-# | Modified files:
-# |   *	dlls/ntdll/nt.c, dlls/ntdll/ntdll_misc.h, dlls/ntdll/process.c, dlls/ntdll/thread.c, server/protocol.def,
-# | 	server/snapshot.c, server/thread.c, server/thread.h
-# |
-if test "$enable_ntdll_ThreadTime" -eq 1; then
-	patch_apply ntdll-ThreadTime/0001-ntdll-Return-correct-values-in-GetThreadTimes-for-al.patch
-	patch_apply ntdll-ThreadTime/0002-ntdll-Set-correct-thread-creation-time-for-SystemPro.patch
-	patch_apply ntdll-ThreadTime/0003-ntdll-Fill-process-kernel-and-user-time.patch
-	patch_apply ntdll-ThreadTime/0004-ntdll-Set-process-start-time.patch
-	patch_apply ntdll-ThreadTime/0005-ntdll-Fill-out-thread-times-in-process-enumeration.patch
-	patch_apply ntdll-ThreadTime/0006-ntdll-Fill-process-virtual-memory-counters-in-NtQuer.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Return correct values in GetThreadTimes() for all threads.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Set correct thread creation time for SystemProcessInformation in NtQuerySystemInformation.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Fill process kernel and user time.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Set process start time.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Fill out thread times in process enumeration.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Fill process virtual memory counters in NtQuerySystemInformation.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ntdll-ApiSetMap
 # |
 # | This patchset has the following (direct or indirect) dependencies:
@@ -5002,49 +5181,6 @@ if test "$enable_ntdll_ApiSetQueryApiSetPresence" -eq 1; then
 	patch_apply ntdll-ApiSetQueryApiSetPresence/0001-ntdll-Add-stub-for-ApiSetQueryApiSetPresence.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "ntdll: Add stub for ApiSetQueryApiSetPresence.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ntdll-Hide_Wine_Exports
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-ThreadTime
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#38656] Add support for hiding wine version information from applications
-# |
-# | Modified files:
-# |   *	dlls/ntdll/loader.c, dlls/ntdll/ntdll_misc.h
-# |
-if test "$enable_ntdll_Hide_Wine_Exports" -eq 1; then
-	patch_apply ntdll-Hide_Wine_Exports/0001-ntdll-Add-support-for-hiding-wine-version-informatio.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Add support for hiding wine version information from applications.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ntdll-User_Shared_Data
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-ThreadTime, ntdll-Hide_Wine_Exports
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#29168] Update user shared data at realtime
-# |
-# | Modified files:
-# |   *	dlls/kernel32/cpu.c, dlls/ntdll/loader.c, dlls/ntdll/ntdll.spec, dlls/ntdll/ntdll_misc.h, dlls/ntdll/tests/time.c,
-# | 	dlls/ntdll/thread.c, dlls/ntdll/virtual.c, dlls/ntoskrnl.exe/instr.c
-# |
-if test "$enable_ntdll_User_Shared_Data" -eq 1; then
-	patch_apply ntdll-User_Shared_Data/0001-ntdll-Move-code-to-update-user-shared-data-into-a-se.patch
-	patch_apply ntdll-User_Shared_Data/0002-ntoskrnl-Update-USER_SHARED_DATA-before-accessing-me.patch
-	patch_apply ntdll-User_Shared_Data/0003-ntdll-Create-thread-to-update-user_shared_data-time-.patch
-	patch_apply ntdll-User_Shared_Data/0004-ntdll-tests-Test-updating-TickCount-in-user_shared_d.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Move code to update user shared data into a separate function.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "ntoskrnl: Update USER_SHARED_DATA before accessing memory.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Create thread to update user_shared_data time values when necessary.", 1 },';
-		printf '%s\n' '+    { "Andrew Wesie", "ntdll/tests: Test updating TickCount in user_shared_data.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5365,18 +5501,6 @@ if test "$enable_ntdll_LdrGetDllHandle" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ntdll-NtAccessCheck
-# |
-# | Modified files:
-# |   *	dlls/advapi32/tests/security.c, dlls/ntdll/sec.c
-# |
-if test "$enable_ntdll_NtAccessCheck" -eq 1; then
-	patch_apply ntdll-NtAccessCheck/0001-ntdll-Improve-invalid-paramater-handling-in-NtAccess.patch
-	(
-		printf '%s\n' '+    { "Qian Hong", "ntdll: Improve invalid paramater handling in NtAccessCheck.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ntdll-NtContinue
 # |
 # | This patchset fixes the following Wine bugs:
@@ -5623,37 +5747,12 @@ if test "$enable_ntdll_Serial_Port_Detection" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ntdll-WRITECOPY
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#29384] Voobly expects correct handling of WRITECOPY memory protection
-# |   *	[#35561] MSYS2 expects correct handling of WRITECOPY memory protection
-# |
-# | Modified files:
-# |   *	dlls/advapi32/crypt.c, dlls/advapi32/tests/security.c, dlls/ntdll/ntdll_misc.h, dlls/ntdll/server.c,
-# | 	dlls/ntdll/signal_arm.c, dlls/ntdll/signal_arm64.c, dlls/ntdll/signal_i386.c, dlls/ntdll/signal_powerpc.c,
-# | 	dlls/ntdll/signal_x86_64.c, dlls/ntdll/thread.c, dlls/ntdll/virtual.c
-# |
-if test "$enable_ntdll_WRITECOPY" -eq 1; then
-	patch_apply ntdll-WRITECOPY/0001-ntdll-Trigger-write-watches-before-passing-userdata-.patch
-	patch_apply ntdll-WRITECOPY/0002-advapi-Trigger-write-watches-before-passing-userdata.patch
-	patch_apply ntdll-WRITECOPY/0003-ntdll-Setup-a-temporary-signal-handler-during-proces.patch
-	patch_apply ntdll-WRITECOPY/0004-ntdll-Properly-handle-PAGE_WRITECOPY-protection.-try.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Trigger write watches before passing userdata pointer to wait_reply.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "advapi: Trigger write watches before passing userdata pointer to read syscall.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Setup a temporary signal handler during process startup to handle page faults.", 2 },';
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Properly handle PAGE_WRITECOPY protection.", 5 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ntdll-Signal_Handler
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-NtAccessCheck, ntdll-ThreadTime,
+# | 	ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY
 # |
 # | Modified files:
 # |   *	dlls/ntdll/signal_i386.c
@@ -6248,7 +6347,10 @@ fi
 # Patchset server-Stored_ACLs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DOS_Attributes, server-File_Permissions
+# |   *	ntdll-DOS_Attributes, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-
+# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-
+# | 	NtAccessCheck, ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY, server-
+# | 	File_Permissions
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#33576] Support for stored file ACLs
@@ -6279,7 +6381,10 @@ fi
 # Patchset server-Inherited_ACLs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DOS_Attributes, server-File_Permissions, server-Stored_ACLs
+# |   *	ntdll-DOS_Attributes, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-
+# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-
+# | 	NtAccessCheck, ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY, server-
+# | 	File_Permissions, server-Stored_ACLs
 # |
 # | Modified files:
 # |   *	dlls/advapi32/tests/security.c, server/file.c
@@ -6651,7 +6756,10 @@ fi
 # Patchset shell32-Progress_Dialog
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	server-File_Permissions, ntdll-FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-NtAccessCheck, ntdll-ThreadTime,
+# | 	ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY, server-File_Permissions, ntdll-
+# | 	FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move
 # |
 # | Modified files:
 # |   *	dlls/shell32/shell32.rc, dlls/shell32/shlfileop.c, dlls/shell32/shresdef.h
@@ -6672,8 +6780,10 @@ fi
 # Patchset shell32-ACE_Viewer
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	server-File_Permissions, ntdll-FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move,
-# | 	shell32-Progress_Dialog
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-NtAccessCheck, ntdll-ThreadTime,
+# | 	ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data, ntdll-WRITECOPY, server-File_Permissions, ntdll-
+# | 	FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move, shell32-Progress_Dialog
 # |
 # | Modified files:
 # |   *	dlls/aclui/Makefile.in, dlls/aclui/aclui.rc, dlls/aclui/aclui_main.c, dlls/aclui/resource.h, dlls/aclui/user_icons.bmp,
@@ -7722,7 +7832,7 @@ fi
 # Patchset winebuild-Fake_Dlls
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data
+# |   *	ml-array_size, ml-patches, ntdll-ThreadTime, ntdll-Hide_Wine_Exports, ntdll-User_Shared_Data
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#21232] Chromium-based browser engines (Chrome, Opera, Comodo Dragon, SRWare Iron) crash on startup unless '--no-
@@ -8101,6 +8211,9 @@ if test "$enable_winemapi_user_xdg_mail" -eq 1; then
 fi
 
 # Patchset winemenubuilder-Desktop_Icon_Path
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ml-array_size, ml-patches
 # |
 # | Modified files:
 # |   *	programs/winemenubuilder/Makefile.in, programs/winemenubuilder/winemenubuilder.c
