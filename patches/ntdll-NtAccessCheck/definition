@@ -1,2 +1,1 @@
 Fixes: Improve invalid paramater handling in NtAccessCheck
-Depends: advapi32-WinBuiltinAnyPackageSid

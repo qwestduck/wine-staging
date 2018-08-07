@@ -1,2 +1,1 @@
 Fixes: [41934] Assigns the AC abbreviation to WinBuiltinAnyPackageSid
-Depends: advapi32-Token_Integrity_Level
