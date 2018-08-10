@@ -2199,6 +2199,13 @@ if test "$enable_ntdll_NtDevicePath" -eq 1; then
 	enable_ntdll_Pipe_SpecialCharacters=1
 fi
 
+if test "$enable_ntdll_LdrInitializeThunk" -eq 1; then
+	if test "$enable_wow64cpu_Wow64Transition" -gt 1; then
+		abort "Patchset wow64cpu-Wow64Transition disabled, but ntdll-LdrInitializeThunk depends on that."
+	fi
+	enable_wow64cpu_Wow64Transition=1
+fi
+
 if test "$enable_ntdll_Junction_Points" -eq 1; then
 	if test "$enable_ntdll_NtQueryEaFile" -gt 1; then
 		abort "Patchset ntdll-NtQueryEaFile disabled, but ntdll-Junction_Points depends on that."
@@ -2217,7 +2224,11 @@ if test "$enable_ntdll_HashLinks" -eq 1; then
 	if test "$enable_ntdll_LDR_MODULE" -gt 1; then
 		abort "Patchset ntdll-LDR_MODULE disabled, but ntdll-HashLinks depends on that."
 	fi
+	if test "$enable_wow64cpu_Wow64Transition" -gt 1; then
+		abort "Patchset wow64cpu-Wow64Transition disabled, but ntdll-HashLinks depends on that."
+	fi
 	enable_ntdll_LDR_MODULE=1
+	enable_wow64cpu_Wow64Transition=1
 fi
 
 if test "$enable_ntdll_DllRedirects" -eq 1; then
@@ -2233,6 +2244,13 @@ if test "$enable_ntdll_DllRedirects" -eq 1; then
 	enable_ntdll_DllOverrides_WOW64=1
 	enable_ntdll_Loader_Machine_Type=1
 	enable_wow64cpu_Wow64Transition=1
+fi
+
+if test "$enable_wow64cpu_Wow64Transition" -eq 1; then
+	if test "$enable_advapi32_Token_Integrity_Level" -gt 1; then
+		abort "Patchset advapi32-Token_Integrity_Level disabled, but wow64cpu-Wow64Transition depends on that."
+	fi
+	enable_advapi32_Token_Integrity_Level=1
 fi
 
 if test "$enable_ntdll_Builtin_Prot" -eq 1; then
@@ -5254,6 +5272,10 @@ fi
 
 # Patchset wow64cpu-Wow64Transition
 # |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level
+# |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#45567] League of Legends 8.12+ fails to start a game (anticheat engine, validation of WoW64 syscall dispatcher)
 # |
@@ -5273,7 +5295,8 @@ fi
 # Patchset ntdll-DllRedirects
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches,
+# | 	kernel32-COMSPEC, server-CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition
 # |
 # | Modified files:
 # |   *	dlls/ntdll/loader.c, dlls/ntdll/loadorder.c, dlls/ntdll/ntdll_misc.h
@@ -5362,7 +5385,8 @@ fi
 # Patchset ntdll-HashLinks
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-LDR_MODULE
+# |   *	ntdll-LDR_MODULE, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-
+# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition
 # |
 # | Modified files:
 # |   *	dlls/kernel32/tests/loader.c, dlls/ntdll/loader.c, include/winternl.h
@@ -5467,6 +5491,10 @@ if test "$enable_ntdll_LdrGetDllHandle" -eq 1; then
 fi
 
 # Patchset ntdll-LdrInitializeThunk
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#45570] League of Legends 8.12+ fails to start a game (anticheat engine, incorrect implementation of
@@ -5655,7 +5683,9 @@ fi
 # Patchset ntdll-Purist_Mode
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition, ntdll-DllRedirects
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches,
+# | 	kernel32-COMSPEC, server-CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition,
+# | 	ntdll-DllRedirects
 # |
 # | Modified files:
 # |   *	dlls/ntdll/loadorder.c
@@ -5685,7 +5715,8 @@ fi
 # Patchset ntdll-RtlCreateUserThread
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-LdrInitializeThunk
+# |   *	Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches, kernel32-COMSPEC, server-CreateProcess_ACLs, server-
+# | 	Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition, ntdll-LdrInitializeThunk
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#45571] League of Legends 8.12+ fails to start a game (anticheat engine, hooking of NtCreateThread/Ex)
@@ -7450,7 +7481,9 @@ fi
 # Patchset uxtheme-GTK_Theming
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition, ntdll-DllRedirects
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, Staging, advapi32-CreateRestrictedToken, ml-array_size, ml-patches,
+# | 	kernel32-COMSPEC, server-CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition,
+# | 	ntdll-DllRedirects
 # |
 # | Modified files:
 # |   *	aclocal.m4, configure.ac, dlls/uxtheme-gtk/Makefile.in, dlls/uxtheme-gtk/button.c, dlls/uxtheme-gtk/combobox.c, dlls
