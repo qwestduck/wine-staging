@@ -224,6 +224,7 @@ patch_enable_all ()
 	enable_ntdll_Junction_Points="$1"
 	enable_ntdll_LDR_MODULE="$1"
 	enable_ntdll_LdrGetDllHandle="$1"
+	enable_ntdll_LdrInitializeThunk="$1"
 	enable_ntdll_Loader_Machine_Type="$1"
 	enable_ntdll_NtAccessCheck="$1"
 	enable_ntdll_NtContinue="$1"
@@ -238,6 +239,7 @@ patch_enable_all ()
 	enable_ntdll_ProcessQuotaLimits="$1"
 	enable_ntdll_Purist_Mode="$1"
 	enable_ntdll_RtlCaptureStackBackTrace="$1"
+	enable_ntdll_RtlCreateUserThread="$1"
 	enable_ntdll_RtlGetUnloadEventTraceEx="$1"
 	enable_ntdll_RtlQueryPackageIdentity="$1"
 	enable_ntdll_RtlSetUnhandledExceptionFilter="$1"
@@ -247,6 +249,7 @@ patch_enable_all ()
 	enable_ntdll_Stack_Overflow="$1"
 	enable_ntdll_Status_Mapping="$1"
 	enable_ntdll_SystemInterruptInformation="$1"
+	enable_ntdll_SystemModuleInformation="$1"
 	enable_ntdll_SystemRoot_Symlink="$1"
 	enable_ntdll_ThreadTime="$1"
 	enable_ntdll_Threading="$1"
@@ -411,6 +414,7 @@ patch_enable_all ()
 	enable_wintab32_improvements="$1"
 	enable_wintrust_WTHelperGetProvCertFromChain="$1"
 	enable_wintrust_WinVerifyTrust="$1"
+	enable_wow64cpu_Wow64Transition="$1"
 	enable_wpcap_Dynamic_Linking="$1"
 	enable_ws2_32_APC_Performance="$1"
 	enable_ws2_32_Connect_Time="$1"
@@ -855,6 +859,9 @@ patch_enable ()
 		ntdll-LdrGetDllHandle)
 			enable_ntdll_LdrGetDllHandle="$2"
 			;;
+		ntdll-LdrInitializeThunk)
+			enable_ntdll_LdrInitializeThunk="$2"
+			;;
 		ntdll-Loader_Machine_Type)
 			enable_ntdll_Loader_Machine_Type="$2"
 			;;
@@ -897,6 +904,9 @@ patch_enable ()
 		ntdll-RtlCaptureStackBackTrace)
 			enable_ntdll_RtlCaptureStackBackTrace="$2"
 			;;
+		ntdll-RtlCreateUserThread)
+			enable_ntdll_RtlCreateUserThread="$2"
+			;;
 		ntdll-RtlGetUnloadEventTraceEx)
 			enable_ntdll_RtlGetUnloadEventTraceEx="$2"
 			;;
@@ -923,6 +933,9 @@ patch_enable ()
 			;;
 		ntdll-SystemInterruptInformation)
 			enable_ntdll_SystemInterruptInformation="$2"
+			;;
+		ntdll-SystemModuleInformation)
+			enable_ntdll_SystemModuleInformation="$2"
 			;;
 		ntdll-SystemRoot_Symlink)
 			enable_ntdll_SystemRoot_Symlink="$2"
@@ -1415,6 +1428,9 @@ patch_enable ()
 			;;
 		wintrust-WinVerifyTrust)
 			enable_wintrust_WinVerifyTrust="$2"
+			;;
+		wow64cpu-Wow64Transition)
+			enable_wow64cpu_Wow64Transition="$2"
 			;;
 		wpcap-Dynamic_Linking)
 			enable_wpcap_Dynamic_Linking="$2"
@@ -2148,6 +2164,13 @@ if test "$enable_ntdll_RtlGetUnloadEventTraceEx" -eq 1; then
 	enable_ntdll_RtlQueryPackageIdentity=1
 fi
 
+if test "$enable_ntdll_RtlCreateUserThread" -eq 1; then
+	if test "$enable_ntdll_LdrInitializeThunk" -gt 1; then
+		abort "Patchset ntdll-LdrInitializeThunk disabled, but ntdll-RtlCreateUserThread depends on that."
+	fi
+	enable_ntdll_LdrInitializeThunk=1
+fi
+
 if test "$enable_ntdll_Purist_Mode" -eq 1; then
 	if test "$enable_ntdll_DllRedirects" -gt 1; then
 		abort "Patchset ntdll-DllRedirects disabled, but ntdll-Purist_Mode depends on that."
@@ -2204,8 +2227,12 @@ if test "$enable_ntdll_DllRedirects" -eq 1; then
 	if test "$enable_ntdll_Loader_Machine_Type" -gt 1; then
 		abort "Patchset ntdll-Loader_Machine_Type disabled, but ntdll-DllRedirects depends on that."
 	fi
+	if test "$enable_wow64cpu_Wow64Transition" -gt 1; then
+		abort "Patchset wow64cpu-Wow64Transition disabled, but ntdll-DllRedirects depends on that."
+	fi
 	enable_ntdll_DllOverrides_WOW64=1
 	enable_ntdll_Loader_Machine_Type=1
+	enable_wow64cpu_Wow64Transition=1
 fi
 
 if test "$enable_ntdll_Builtin_Prot" -eq 1; then
@@ -5225,10 +5252,28 @@ if test "$enable_ntdll_Loader_Machine_Type" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset wow64cpu-Wow64Transition
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45567] League of Legends 8.12+ fails to start a game (anticheat engine, validation of WoW64 syscall dispatcher)
+# |
+# | Modified files:
+# |   *	configure, configure.ac, dlls/ntdll/loader.c, dlls/ntdll/ntdll.spec, dlls/wow64cpu/Makefile.in,
+# | 	dlls/wow64cpu/wow64cpu.spec, dlls/wow64cpu/wow64cpu_main.c
+# |
+if test "$enable_wow64cpu_Wow64Transition" -eq 1; then
+	patch_apply wow64cpu-Wow64Transition/0001-wow64cpu-Add-stub-dll.patch
+	patch_apply wow64cpu-Wow64Transition/0002-ntdll-Add-a-stub-implementation-of-Wow64Transition.patch
+	(
+		printf '%s\n' '+    { "Zebediah Figura", "wow64cpu: Add stub dll.", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntdll: Add a stub implementation of Wow64Transition.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset ntdll-DllRedirects
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition
 # |
 # | Modified files:
 # |   *	dlls/ntdll/loader.c, dlls/ntdll/loadorder.c, dlls/ntdll/ntdll_misc.h
@@ -5421,6 +5466,24 @@ if test "$enable_ntdll_LdrGetDllHandle" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset ntdll-LdrInitializeThunk
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45570] League of Legends 8.12+ fails to start a game (anticheat engine, incorrect implementation of
+# | 	LdrInitializeThunk)
+# |
+# | Modified files:
+# |   *	dlls/kernel32/process.c, dlls/ntdll/loader.c, dlls/ntdll/ntdll.spec, dlls/ntdll/ntdll_misc.h, dlls/ntdll/signal_arm.c,
+# | 	dlls/ntdll/signal_arm64.c, dlls/ntdll/signal_i386.c, dlls/ntdll/signal_powerpc.c, dlls/ntdll/signal_x86_64.c,
+# | 	dlls/ntdll/thread.c, include/winternl.h
+# |
+if test "$enable_ntdll_LdrInitializeThunk" -eq 1; then
+	patch_apply ntdll-LdrInitializeThunk/0001-ntdll-Refactor-LdrInitializeThunk.patch
+	(
+		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Refactor LdrInitializeThunk.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset ntdll-NtAccessCheck
 # |
 # | Modified files:
@@ -5592,7 +5655,7 @@ fi
 # Patchset ntdll-Purist_Mode
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, ntdll-DllRedirects
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition, ntdll-DllRedirects
 # |
 # | Modified files:
 # |   *	dlls/ntdll/loadorder.c
@@ -5616,6 +5679,24 @@ if test "$enable_ntdll_RtlCaptureStackBackTrace" -eq 1; then
 	patch_apply ntdll-RtlCaptureStackBackTrace/0001-ntdll-Silence-FIXME-in-RtlCaptureStackBackTrace-stub.patch
 	(
 		printf '%s\n' '+    { "Jarkko Korpi", "ntdll: Silence FIXME in RtlCaptureStackBackTrace stub function.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-RtlCreateUserThread
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	ntdll-LdrInitializeThunk
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45571] League of Legends 8.12+ fails to start a game (anticheat engine, hooking of NtCreateThread/Ex)
+# |
+# | Modified files:
+# |   *	dlls/ntdll/ntdll.spec, dlls/ntdll/thread.c, include/winternl.h
+# |
+if test "$enable_ntdll_RtlCreateUserThread" -eq 1; then
+	patch_apply ntdll-RtlCreateUserThread/0001-ntdll-Refactor-RtlCreateUserThread-into-NtCreateThre.patch
+	(
+		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Refactor RtlCreateUserThread into NtCreateThreadEx.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5769,6 +5850,22 @@ if test "$enable_ntdll_SystemInterruptInformation" -eq 1; then
 	patch_apply ntdll-SystemInterruptInformation/0001-ntdll-Return-buffer-filled-with-random-values-from-S.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Return buffer filled with random values from SystemInterruptInformation.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-SystemModuleInformation
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45550] League of Legends 8.15+ anticheat fails due to incorrect implementation of
+# | 	NtQuerySystemInformation(SystemModuleInformation)
+# |
+# | Modified files:
+# |   *	dlls/ntdll/nt.c
+# |
+if test "$enable_ntdll_SystemModuleInformation" -eq 1; then
+	patch_apply ntdll-SystemModuleInformation/0001-ntdll-Don-t-call-LdrQueryProcessModuleInformation-in.patch
+	(
+		printf '%s\n' '+    { "Zebediah Figura", "ntdll: Don'\''t call LdrQueryProcessModuleInformation in NtQuerySystemInformation(SystemModuleInformation).", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7353,7 +7450,7 @@ fi
 # Patchset uxtheme-GTK_Theming
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, ntdll-DllRedirects
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition, ntdll-DllRedirects
 # |
 # | Modified files:
 # |   *	aclocal.m4, configure.ac, dlls/uxtheme-gtk/Makefile.in, dlls/uxtheme-gtk/button.c, dlls/uxtheme-gtk/combobox.c, dlls
@@ -8222,6 +8319,7 @@ if test "$enable_winepulse_PulseAudio_Support" -eq 1; then
 	patch_apply winepulse-PulseAudio_Support/0005-winepulse-implement-GetPropValue.patch
 	patch_apply winepulse-PulseAudio_Support/0006-winepulse-fetch-actual-program-name-if-possible.patch
 	patch_apply winepulse-PulseAudio_Support/0007-winepulse-return-PKEY_AudioEndpoint_PhysicalSpeakers.patch
+	patch_apply winepulse-PulseAudio_Support/0008-winepulse-Fix-up-recording.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "winepulse.drv: Use a separate mainloop and ctx for pulse_test_connect.", 1 },';
 		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Don'\''t rely on pulseaudio callbacks for timing.", 1 },';
@@ -8230,6 +8328,7 @@ if test "$enable_winepulse_PulseAudio_Support" -eq 1; then
 		printf '%s\n' '+    { "Mark Harmstone", "winepulse: Implement GetPropValue.", 1 },';
 		printf '%s\n' '+    { "Mark Harmstone", "winepulse: Fetch actual program name if possible.", 1 },';
 		printf '%s\n' '+    { "Mark Harmstone", "winepulse: Return PKEY_AudioEndpoint_PhysicalSpeakers device prop.", 1 },';
+		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Fix up recording.", 1 },';
 	) >> "$patchlist"
 fi
 
