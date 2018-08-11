@@ -2299,13 +2299,6 @@ if test "$enable_kernel32_Processor_Group" -eq 1; then
 	enable_api_ms_win_Stub_DLLs=1
 fi
 
-if test "$enable_kernel32_MoveFile" -eq 1; then
-	if test "$enable_ml_patches" -gt 1; then
-		abort "Patchset ml-patches disabled, but kernel32-MoveFile depends on that."
-	fi
-	enable_ml_patches=1
-fi
-
 if test "$enable_kernel32_CopyFileEx" -eq 1; then
 	if test "$enable_ntdll_FileDispositionInformation" -gt 1; then
 		abort "Patchset ntdll-FileDispositionInformation disabled, but kernel32-CopyFileEx depends on that."
@@ -4577,9 +4570,6 @@ if test "$enable_kernel32_K32GetPerformanceInfo" -eq 1; then
 fi
 
 # Patchset kernel32-MoveFile
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ml-array_size, ml-patches
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#14901] MoveFile with source == dest should succeed.
