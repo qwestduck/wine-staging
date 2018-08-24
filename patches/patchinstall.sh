@@ -2003,17 +2003,9 @@ if test "$enable_server_Shared_Memory" -eq 1; then
 fi
 
 if test "$enable_server_Inherited_ACLs" -eq 1; then
-	if test "$enable_advapi32_Token_Integrity_Level" -gt 1; then
-		abort "Patchset advapi32-Token_Integrity_Level disabled, but server-Inherited_ACLs depends on that."
-	fi
-	if test "$enable_advapi32_WinBuiltinAnyPackageSid" -gt 1; then
-		abort "Patchset advapi32-WinBuiltinAnyPackageSid disabled, but server-Inherited_ACLs depends on that."
-	fi
 	if test "$enable_server_Stored_ACLs" -gt 1; then
 		abort "Patchset server-Stored_ACLs disabled, but server-Inherited_ACLs depends on that."
 	fi
-	enable_advapi32_Token_Integrity_Level=1
-	enable_advapi32_WinBuiltinAnyPackageSid=1
 	enable_server_Stored_ACLs=1
 fi
 
@@ -2144,11 +2136,7 @@ if test "$enable_ntdll_HashLinks" -eq 1; then
 	if test "$enable_ntdll_LDR_MODULE" -gt 1; then
 		abort "Patchset ntdll-LDR_MODULE disabled, but ntdll-HashLinks depends on that."
 	fi
-	if test "$enable_wow64cpu_Wow64Transition" -gt 1; then
-		abort "Patchset wow64cpu-Wow64Transition disabled, but ntdll-HashLinks depends on that."
-	fi
 	enable_ntdll_LDR_MODULE=1
-	enable_wow64cpu_Wow64Transition=1
 fi
 
 if test "$enable_ntdll_DllRedirects" -eq 1; then
@@ -2164,13 +2152,6 @@ if test "$enable_ntdll_DllRedirects" -eq 1; then
 	enable_ntdll_DllOverrides_WOW64=1
 	enable_ntdll_Loader_Machine_Type=1
 	enable_wow64cpu_Wow64Transition=1
-fi
-
-if test "$enable_wow64cpu_Wow64Transition" -eq 1; then
-	if test "$enable_advapi32_Token_Integrity_Level" -gt 1; then
-		abort "Patchset advapi32-Token_Integrity_Level disabled, but wow64cpu-Wow64Transition depends on that."
-	fi
-	enable_advapi32_Token_Integrity_Level=1
 fi
 
 if test "$enable_ntdll_Builtin_Prot" -eq 1; then
@@ -4834,10 +4815,6 @@ fi
 
 # Patchset wow64cpu-Wow64Transition
 # |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, kernel32-COMSPEC, server-CreateProcess_ACLs, server-Misc_ACL,
-# | 	advapi32-Token_Integrity_Level
-# |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#45567] League of Legends 8.12+ fails to start a game (anticheat engine, validation of WoW64 syscall dispatcher)
 # |
@@ -4857,8 +4834,7 @@ fi
 # Patchset ntdll-DllRedirects
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, Staging, advapi32-CreateRestrictedToken, kernel32-COMSPEC, server-
-# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition
 # |
 # | Modified files:
 # |   *	dlls/ntdll/loader.c, dlls/ntdll/loadorder.c, dlls/ntdll/ntdll_misc.h
@@ -4947,8 +4923,7 @@ fi
 # Patchset ntdll-HashLinks
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-LDR_MODULE, Staging, advapi32-CreateRestrictedToken, kernel32-COMSPEC, server-CreateProcess_ACLs, server-Misc_ACL,
-# | 	advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition
+# |   *	ntdll-LDR_MODULE
 # |
 # | Modified files:
 # |   *	dlls/kernel32/tests/loader.c, dlls/ntdll/loader.c, include/winternl.h
@@ -5245,8 +5220,7 @@ fi
 # Patchset ntdll-Purist_Mode
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, Staging, advapi32-CreateRestrictedToken, kernel32-COMSPEC, server-
-# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition, ntdll-DllRedirects
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition, ntdll-DllRedirects
 # |
 # | Modified files:
 # |   *	dlls/ntdll/loadorder.c
@@ -6024,9 +5998,7 @@ fi
 # Patchset server-Inherited_ACLs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, kernel32-COMSPEC, server-CreateProcess_ACLs, server-Misc_ACL,
-# | 	advapi32-Token_Integrity_Level, advapi32-WinBuiltinAnyPackageSid, ntdll-DOS_Attributes, server-File_Permissions, server-
-# | 	Stored_ACLs
+# |   *	ntdll-DOS_Attributes, server-File_Permissions, server-Stored_ACLs
 # |
 # | Modified files:
 # |   *	dlls/advapi32/tests/security.c, server/file.c
@@ -7027,8 +6999,7 @@ fi
 # Patchset uxtheme-GTK_Theming
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, Staging, advapi32-CreateRestrictedToken, kernel32-COMSPEC, server-
-# | 	CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level, wow64cpu-Wow64Transition, ntdll-DllRedirects
+# |   *	ntdll-DllOverrides_WOW64, ntdll-Loader_Machine_Type, wow64cpu-Wow64Transition, ntdll-DllRedirects
 # |
 # | Modified files:
 # |   *	aclocal.m4, configure.ac, dlls/uxtheme-gtk/Makefile.in, dlls/uxtheme-gtk/button.c, dlls/uxtheme-gtk/combobox.c, dlls
