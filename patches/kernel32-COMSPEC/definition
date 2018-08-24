@@ -1,2 +1,1 @@
 Fixes: [19801] Fallback to default comspec when %COMSPEC% is not set
-Depends: ml-patches

@@ -2,4 +2,3 @@ Fixes: [21232] Chromium-based browser engines (Chrome, Opera, Comodo Dragon, SRW
 Fixes: [42741] StarCraft I: 1.18 PTR fails to initialize ClientSdk.dll
 Fixes: [45349] Multiple applications and games crash due to missing support for 64-bit syscall thunks (StreetFighter V)
 Depends: ntdll-User_Shared_Data
-Depends: ml-patches
