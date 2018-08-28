@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "f0ad5b5c546d17b281aef13fde996cda08d0c14e"
+	echo "96a6053feda4e16480c21d01b3688a8d38e5ad6d"
 }
 
 # Show version information
@@ -103,7 +103,6 @@ patch_enable_all ()
 	enable_configure_Absolute_RPATH="$1"
 	enable_crypt32_CMS_Certificates="$1"
 	enable_crypt32_CryptUnprotectMemory="$1"
-	enable_crypt32_ECDSA_Cert_Chains="$1"
 	enable_crypt32_MS_Root_Certs="$1"
 	enable_d2d1_ID2D1Factory1="$1"
 	enable_d3d11_Deferred_Context="$1"
@@ -184,6 +183,10 @@ patch_enable_all ()
 	enable_libs_Debug_Channel="$1"
 	enable_libs_Unicode_Collation="$1"
 	enable_loader_OSX_Preloader="$1"
+	enable_mfplat_MFCreateMFByteStreamOnStream="$1"
+	enable_mfplat_MFCreateMemoryBuffer="$1"
+	enable_mfplat_MFCreateSample="$1"
+	enable_mfplat_MFTRegisterLocal="$1"
 	enable_mmsystem_dll16_MIDIHDR_Refcount="$1"
 	enable_mountmgr_DosDevices="$1"
 	enable_mscoree_CorValidateImage="$1"
@@ -304,7 +307,6 @@ patch_enable_all ()
 	enable_shell32_ACE_Viewer="$1"
 	enable_shell32_Context_Menu="$1"
 	enable_shell32_NewMenu_Interface="$1"
-	enable_shell32_Placeholder_Icons="$1"
 	enable_shell32_Progress_Dialog="$1"
 	enable_shell32_SFGAO_HASSUBFOLDER="$1"
 	enable_shell32_SHELL_execute="$1"
@@ -415,6 +417,7 @@ patch_enable_all ()
 	enable_wtsapi32_WTSQueryUserToken="$1"
 	enable_wuauserv_Dummy_Service="$1"
 	enable_wusa_MSU_Package_Installer="$1"
+	enable_xaudio2_7_CreateFX_FXEcho="$1"
 	enable_xaudio2_7_OnVoiceProcessingPassStart="$1"
 	enable_xaudio2_7_WMA_support="$1"
 	enable_xaudio2_CommitChanges="$1"
@@ -483,9 +486,6 @@ patch_enable ()
 			;;
 		crypt32-CryptUnprotectMemory)
 			enable_crypt32_CryptUnprotectMemory="$2"
-			;;
-		crypt32-ECDSA_Cert_Chains)
-			enable_crypt32_ECDSA_Cert_Chains="$2"
 			;;
 		crypt32-MS_Root_Certs)
 			enable_crypt32_MS_Root_Certs="$2"
@@ -726,6 +726,18 @@ patch_enable ()
 			;;
 		loader-OSX_Preloader)
 			enable_loader_OSX_Preloader="$2"
+			;;
+		mfplat-MFCreateMFByteStreamOnStream)
+			enable_mfplat_MFCreateMFByteStreamOnStream="$2"
+			;;
+		mfplat-MFCreateMemoryBuffer)
+			enable_mfplat_MFCreateMemoryBuffer="$2"
+			;;
+		mfplat-MFCreateSample)
+			enable_mfplat_MFCreateSample="$2"
+			;;
+		mfplat-MFTRegisterLocal)
+			enable_mfplat_MFTRegisterLocal="$2"
 			;;
 		mmsystem.dll16-MIDIHDR_Refcount)
 			enable_mmsystem_dll16_MIDIHDR_Refcount="$2"
@@ -1087,9 +1099,6 @@ patch_enable ()
 		shell32-NewMenu_Interface)
 			enable_shell32_NewMenu_Interface="$2"
 			;;
-		shell32-Placeholder_Icons)
-			enable_shell32_Placeholder_Icons="$2"
-			;;
 		shell32-Progress_Dialog)
 			enable_shell32_Progress_Dialog="$2"
 			;;
@@ -1419,6 +1428,9 @@ patch_enable ()
 			;;
 		wusa-MSU_Package_Installer)
 			enable_wusa_MSU_Package_Installer="$2"
+			;;
+		xaudio2_7-CreateFX-FXEcho)
+			enable_xaudio2_7_CreateFX_FXEcho="$2"
 			;;
 		xaudio2_7-OnVoiceProcessingPassStart)
 			enable_xaudio2_7_OnVoiceProcessingPassStart="$2"
@@ -2182,6 +2194,20 @@ if test "$enable_ntdll_ApiSetMap" -eq 1; then
 	enable_ntdll_ThreadTime=1
 fi
 
+if test "$enable_mfplat_MFCreateMemoryBuffer" -eq 1; then
+	if test "$enable_mfplat_MFCreateMFByteStreamOnStream" -gt 1; then
+		abort "Patchset mfplat-MFCreateMFByteStreamOnStream disabled, but mfplat-MFCreateMemoryBuffer depends on that."
+	fi
+	enable_mfplat_MFCreateMFByteStreamOnStream=1
+fi
+
+if test "$enable_mfplat_MFCreateMFByteStreamOnStream" -eq 1; then
+	if test "$enable_mfplat_MFCreateSample" -gt 1; then
+		abort "Patchset mfplat-MFCreateSample disabled, but mfplat-MFCreateMFByteStreamOnStream depends on that."
+	fi
+	enable_mfplat_MFCreateSample=1
+fi
+
 if test "$enable_loader_OSX_Preloader" -eq 1; then
 	if test "$enable_Staging" -gt 1; then
 		abort "Patchset Staging disabled, but loader-OSX_Preloader depends on that."
@@ -2265,20 +2291,6 @@ if test "$enable_nvapi_Stub_DLL" -eq 1; then
 		abort "Patchset nvcuda-CUDA_Support disabled, but nvapi-Stub_DLL depends on that."
 	fi
 	enable_nvcuda_CUDA_Support=1
-fi
-
-if test "$enable_bcrypt_BCryptGenerateKeyPair" -eq 1; then
-	if test "$enable_crypt32_ECDSA_Cert_Chains" -gt 1; then
-		abort "Patchset crypt32-ECDSA_Cert_Chains disabled, but bcrypt-BCryptGenerateKeyPair depends on that."
-	fi
-	enable_crypt32_ECDSA_Cert_Chains=1
-fi
-
-if test "$enable_bcrypt_BCryptDeriveKeyPBKDF2" -eq 1; then
-	if test "$enable_crypt32_ECDSA_Cert_Chains" -gt 1; then
-		abort "Patchset crypt32-ECDSA_Cert_Chains disabled, but bcrypt-BCryptDeriveKeyPBKDF2 depends on that."
-	fi
-	enable_crypt32_ECDSA_Cert_Chains=1
 fi
 
 if test "$enable_advapi32_Token_Integrity_Level" -eq 1; then
@@ -2663,27 +2675,7 @@ if test "$enable_avifile_dll16_AVIStreamGetFrame" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset crypt32-ECDSA_Cert_Chains
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#35902] Implement support for validating ECDSA certificate chains
-# |
-# | Modified files:
-# |   *	dlls/crypt32/tests/chain.c, dlls/crypt32/tests/encode.c
-# |
-if test "$enable_crypt32_ECDSA_Cert_Chains" -eq 1; then
-	patch_apply crypt32-ECDSA_Cert_Chains/0006-crypt32-tests-Basic-tests-for-decoding-ECDSA-signed-.patch
-	patch_apply crypt32-ECDSA_Cert_Chains/0012-crypt32-tets-Add-test-for-verifying-an-ecdsa-chain.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "crypt32/tests: Basic tests for decoding ECDSA signed certificate.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "crypt32/tets: Add test for verifying an ecdsa chain.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset bcrypt-BCryptDeriveKeyPBKDF2
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	crypt32-ECDSA_Cert_Chains
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#42704] Implement BCryptDeriveKeyPBKDF2
@@ -2699,9 +2691,6 @@ if test "$enable_bcrypt_BCryptDeriveKeyPBKDF2" -eq 1; then
 fi
 
 # Patchset bcrypt-BCryptGenerateKeyPair
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	crypt32-ECDSA_Cert_Chains
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#45312] Fix issue for Assassin's Creed : Syndicate
@@ -4409,6 +4398,78 @@ if test "$enable_loader_OSX_Preloader" -eq 1; then
 	(
 		printf '%s\n' '+    { "Michael Müller", "libs/wine: Do not restrict base address of main thread on 64 bit mac os.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "loader: Implement preloader for Mac OS.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset mfplat-MFCreateSample
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45617] Implement MFCreateSample
+# |
+# | Modified files:
+# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, dlls/mfplat/tests/mfplat.c, include/mfapi.h
+# |
+if test "$enable_mfplat_MFCreateSample" -eq 1; then
+	patch_apply mfplat-MFCreateSample/0001-mfplat-Forward-IMFMediaType-to-IMFAttributes.patch
+	patch_apply mfplat-MFCreateSample/0002-mfplat-Forward-IMFStreamDescriptor-to-IMFAttributes.patch
+	patch_apply mfplat-MFCreateSample/0003-mfplat-Implement-MFCreateSample.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Forward IMFMediaType to IMFAttributes.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Forward IMFStreamDescriptor to IMFAttributes.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Implement MFCreateSample.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset mfplat-MFCreateMFByteStreamOnStream
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	mfplat-MFCreateSample
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45372] Implement MFCreateMFByteStreamOnStream.
+# |
+# | Modified files:
+# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, dlls/mfplat/tests/mfplat.c, include/mfidl.idl
+# |
+if test "$enable_mfplat_MFCreateMFByteStreamOnStream" -eq 1; then
+	patch_apply mfplat-MFCreateMFByteStreamOnStream/0001-mfplat-Implement-MFCreateMFByteStreamOnStream.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Implement MFCreateMFByteStreamOnStream.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset mfplat-MFCreateMemoryBuffer
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	mfplat-MFCreateSample, mfplat-MFCreateMFByteStreamOnStream
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45715] Implement MFCreateMemoryBuffer.
+# |
+# | Modified files:
+# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, dlls/mfplat/tests/mfplat.c, include/mfapi.h
+# |
+if test "$enable_mfplat_MFCreateMemoryBuffer" -eq 1; then
+	patch_apply mfplat-MFCreateMemoryBuffer/0001-mfplat-Implement-MFCreateMemoryBuffer.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Implement MFCreateMemoryBuffer.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset mfplat-MFTRegisterLocal
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45622] Add MFTRegisterLocal stub
+# |
+# | Modified files:
+# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, include/mfapi.h
+# |
+if test "$enable_mfplat_MFTRegisterLocal" -eq 1; then
+	patch_apply mfplat-MFTRegisterLocal/0001-mfplat-Add-MFTRegisterLocal-stub.patch
+	patch_apply mfplat-MFTRegisterLocal/0002-mfplat-Add-MFTUnregisterLocal-stub.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Add MFTRegisterLocal stub.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Add MFTUnregisterLocal stub.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6439,21 +6500,6 @@ if test "$enable_shell32_NewMenu_Interface" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset shell32-Placeholder_Icons
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#30185] Add shell32 placeholder icons to match offsets with Windows
-# |
-# | Modified files:
-# |   *	dlls/shell32/resources/placeholder.ico, dlls/shell32/shell32.rc, dlls/shell32/shresdef.h
-# |
-if test "$enable_shell32_Placeholder_Icons" -eq 1; then
-	patch_apply shell32-Placeholder_Icons/0001-shell32-Add-placeholder-icons-to-match-icon-offset-w.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "shell32: Add placeholder icons to match icon offset with XP.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset shell32-SFGAO_HASSUBFOLDER
 # |
 # | This patchset fixes the following Wine bugs:
@@ -7800,6 +7846,8 @@ if test "$enable_winepulse_PulseAudio_Support" -eq 1; then
 	patch_apply winepulse-PulseAudio_Support/0006-winepulse-fetch-actual-program-name-if-possible.patch
 	patch_apply winepulse-PulseAudio_Support/0007-winepulse-return-PKEY_AudioEndpoint_PhysicalSpeakers.patch
 	patch_apply winepulse-PulseAudio_Support/0008-winepulse-Fix-up-recording.patch
+	patch_apply winepulse-PulseAudio_Support/0009-winepulse.drv-Fix-getting-the-same-timing-info.patch
+	patch_apply winepulse-PulseAudio_Support/0010-winepulse-Update-last-time-on-underrun.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "winepulse.drv: Use a separate mainloop and ctx for pulse_test_connect.", 1 },';
 		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Don'\''t rely on pulseaudio callbacks for timing.", 1 },';
@@ -7809,6 +7857,8 @@ if test "$enable_winepulse_PulseAudio_Support" -eq 1; then
 		printf '%s\n' '+    { "Mark Harmstone", "winepulse: Fetch actual program name if possible.", 1 },';
 		printf '%s\n' '+    { "Mark Harmstone", "winepulse: Return PKEY_AudioEndpoint_PhysicalSpeakers device prop.", 1 },';
 		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Fix up recording.", 1 },';
+		printf '%s\n' '+    { "Zhiyi Zhang", "winepulse.drv: Fix getting the same timing info.", 1 },';
+		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Update last time on underrun.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -8328,6 +8378,21 @@ if test "$enable_wusa_MSU_Package_Installer" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "wusa: Add workaround to be compatible with Vista packages.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wusa: Improve tracing of installation process.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wusa: Print warning when encountering msdelta compressed files.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset xaudio2_7-CreateFX-FXEcho
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#39402] Support FXEcho interface in CreateFX
+# |
+# | Modified files:
+# |   *	dlls/xaudio2_7/xapofx.c
+# |
+if test "$enable_xaudio2_7_CreateFX_FXEcho" -eq 1; then
+	patch_apply xaudio2_7-CreateFX-FXEcho/0001-xaudio2_7-Support-FXEcho-interface-in-CreateFX.patch
+	(
+		printf '%s\n' '+    { "Thomas Crider", "xaudio2_7: Support FXEcho interface in CreateFX.", 1 },';
 	) >> "$patchlist"
 fi
 
