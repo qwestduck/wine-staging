@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "96a6053feda4e16480c21d01b3688a8d38e5ad6d"
+	echo "2346a4012aed5a150cd971ca1e929528722a4d12"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.14"
+	echo "Wine Staging 3.15"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -255,6 +255,7 @@ patch_enable_all ()
 	enable_ntdll_futex_condition_var="$1"
 	enable_ntdll_set_full_cpu_context="$1"
 	enable_ntoskrnl_Stubs="$1"
+	enable_ntoskrnl_exe_Fix_Relocation="$1"
 	enable_nvapi_Stub_DLL="$1"
 	enable_nvcuda_CUDA_Support="$1"
 	enable_nvcuvid_CUDA_Video_Support="$1"
@@ -377,7 +378,6 @@ patch_enable_all ()
 	enable_wined3d_wined3d_guess_gl_vendor="$1"
 	enable_winedbg_Process_Arguments="$1"
 	enable_winedevice_Default_Drivers="$1"
-	enable_winedevice_Fix_Relocation="$1"
 	enable_winemapi_user_xdg_mail="$1"
 	enable_winemenubuilder_Desktop_Icon_Path="$1"
 	enable_winemp3_acm_MPEG3_StreamOpen="$1"
@@ -393,6 +393,7 @@ patch_enable_all ()
 	enable_winex11_Window_Style="$1"
 	enable_winex11_XEMBED="$1"
 	enable_winex11__NET_ACTIVE_WINDOW="$1"
+	enable_winex11_mouse_movements="$1"
 	enable_winex11_wglShareLists="$1"
 	enable_winhttp_Accept_Headers="$1"
 	enable_winhttp_System_Proxy_Autoconfig="$1"
@@ -943,6 +944,9 @@ patch_enable ()
 		ntoskrnl-Stubs)
 			enable_ntoskrnl_Stubs="$2"
 			;;
+		ntoskrnl.exe-Fix_Relocation)
+			enable_ntoskrnl_exe_Fix_Relocation="$2"
+			;;
 		nvapi-Stub_DLL)
 			enable_nvapi_Stub_DLL="$2"
 			;;
@@ -1309,9 +1313,6 @@ patch_enable ()
 		winedevice-Default_Drivers)
 			enable_winedevice_Default_Drivers="$2"
 			;;
-		winedevice-Fix_Relocation)
-			enable_winedevice_Fix_Relocation="$2"
-			;;
 		winemapi-user-xdg-mail)
 			enable_winemapi_user_xdg_mail="$2"
 			;;
@@ -1356,6 +1357,9 @@ patch_enable ()
 			;;
 		winex11-_NET_ACTIVE_WINDOW)
 			enable_winex11__NET_ACTIVE_WINDOW="$2"
+			;;
+		winex11-mouse-movements)
+			enable_winex11_mouse_movements="$2"
 			;;
 		winex11-wglShareLists)
 			enable_winex11_wglShareLists="$2"
@@ -5605,6 +5609,21 @@ if test "$enable_ntoskrnl_Stubs" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset ntoskrnl.exe-Fix_Relocation
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#28254] Fix crash of winedevice when relocation entry crosses page boundary
+# |
+# | Modified files:
+# |   *	dlls/ntoskrnl.exe/ntoskrnl.c
+# |
+if test "$enable_ntoskrnl_exe_Fix_Relocation" -eq 1; then
+	patch_apply ntoskrnl.exe-Fix_Relocation/0001-ntoskrnl.exe-Avoid-invalid-memory-access-when-reloca.patch
+	(
+		printf '%s\n' '+    { "Sebastian Lackner", "ntoskrnl.exe: Avoid invalid memory access when relocation block addresses memory outside of the current page.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset nvcuvid-CUDA_Video_Support
 # |
 # | This patchset has the following (direct or indirect) dependencies:
@@ -7754,21 +7773,6 @@ if test "$enable_winedevice_Default_Drivers" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset winedevice-Fix_Relocation
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#28254] Fix crash of winedevice when relocation entry crosses page boundary
-# |
-# | Modified files:
-# |   *	programs/winedevice/device.c
-# |
-if test "$enable_winedevice_Fix_Relocation" -eq 1; then
-	patch_apply winedevice-Fix_Relocation/0001-winedevice-Avoid-invalid-memory-access-when-relocati.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "winedevice: Avoid invalid memory access when relocation block addresses memory outside of the current page.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset winemapi-user-xdg-mail
 # |
 # | This patchset fixes the following Wine bugs:
@@ -8012,6 +8016,21 @@ if test "$enable_winex11_XEMBED" -eq 1; then
 	patch_apply winex11-XEMBED/0001-winex11-Enable-disable-windows-when-they-are-un-mapped.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "winex11: Enable/disable windows when they are (un)mapped by foreign applications.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset winex11-mouse-movements
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#42631] Mouse drift, jump or don't react to small slow movements in Unity-engine games
+# |
+# | Modified files:
+# |   *	dlls/winex11.drv/mouse.c, dlls/winex11.drv/x11drv.h
+# |
+if test "$enable_winex11_mouse_movements" -eq 1; then
+	patch_apply winex11-mouse-movements/0001-winex11-Don-t-react-to-small-slow-mouse-movements.patch
+	(
+		printf '%s\n' '+    { "Jordan Galby", "winex11: Don'\''t react to small slow mouse movements.", 1 },';
 	) >> "$patchlist"
 fi
 
