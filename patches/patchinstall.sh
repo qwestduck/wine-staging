@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "279ac253e5aa7132ec4960af175115befcdfefd0"
+	echo "b29cdbd5f23548d9631e5c98ec923b6d2d16a3f8"
 }
 
 # Show version information
@@ -102,7 +102,6 @@ patch_enable_all ()
 	enable_comdlg32_lpstrFileTitle="$1"
 	enable_configure_Absolute_RPATH="$1"
 	enable_crypt32_CMS_Certificates="$1"
-	enable_crypt32_CryptUnprotectMemory="$1"
 	enable_crypt32_MS_Root_Certs="$1"
 	enable_d2d1_ID2D1Factory1="$1"
 	enable_d3d11_Deferred_Context="$1"
@@ -125,7 +124,6 @@ patch_enable_all ()
 	enable_d3dx9_36_Texture_Align="$1"
 	enable_d3dx9_36_UpdateSkinnedMesh="$1"
 	enable_dbghelp_Debug_Symbols="$1"
-	enable_ddraw_D3DFINDDEVICERESULT="$1"
 	enable_ddraw_Device_Caps="$1"
 	enable_ddraw_EnumSurfaces="$1"
 	enable_ddraw_Fix_Typos="$1"
@@ -182,10 +180,7 @@ patch_enable_all ()
 	enable_libs_Debug_Channel="$1"
 	enable_libs_Unicode_Collation="$1"
 	enable_loader_OSX_Preloader="$1"
-	enable_mfplat_MFCreateMFByteStreamOnStream="$1"
-	enable_mfplat_MFCreateMemoryBuffer="$1"
 	enable_mfplat_MFCreateSample="$1"
-	enable_mfplat_MFTRegisterLocal="$1"
 	enable_mmsystem_dll16_MIDIHDR_Refcount="$1"
 	enable_mountmgr_DosDevices="$1"
 	enable_mscoree_CorValidateImage="$1"
@@ -398,7 +393,6 @@ patch_enable_all ()
 	enable_winhttp_System_Proxy_Autoconfig="$1"
 	enable_wininet_Cleanup="$1"
 	enable_wininet_Http_Decoding="$1"
-	enable_wininet_InternetCrackUrlW="$1"
 	enable_winmm_Delay_Import_Depends="$1"
 	enable_winmm_mciSendCommandA="$1"
 	enable_wintab32_improvements="$1"
@@ -408,7 +402,6 @@ patch_enable_all ()
 	enable_wpcap_Dynamic_Linking="$1"
 	enable_ws2_32_APC_Performance="$1"
 	enable_ws2_32_Connect_Time="$1"
-	enable_ws2_32_Tests="$1"
 	enable_ws2_32_TransmitFile="$1"
 	enable_ws2_32_WSACleanup="$1"
 	enable_ws2_32_getaddrinfo="$1"
@@ -484,9 +477,6 @@ patch_enable ()
 		crypt32-CMS_Certificates)
 			enable_crypt32_CMS_Certificates="$2"
 			;;
-		crypt32-CryptUnprotectMemory)
-			enable_crypt32_CryptUnprotectMemory="$2"
-			;;
 		crypt32-MS_Root_Certs)
 			enable_crypt32_MS_Root_Certs="$2"
 			;;
@@ -552,9 +542,6 @@ patch_enable ()
 			;;
 		dbghelp-Debug_Symbols)
 			enable_dbghelp_Debug_Symbols="$2"
-			;;
-		ddraw-D3DFINDDEVICERESULT)
-			enable_ddraw_D3DFINDDEVICERESULT="$2"
 			;;
 		ddraw-Device_Caps)
 			enable_ddraw_Device_Caps="$2"
@@ -724,17 +711,8 @@ patch_enable ()
 		loader-OSX_Preloader)
 			enable_loader_OSX_Preloader="$2"
 			;;
-		mfplat-MFCreateMFByteStreamOnStream)
-			enable_mfplat_MFCreateMFByteStreamOnStream="$2"
-			;;
-		mfplat-MFCreateMemoryBuffer)
-			enable_mfplat_MFCreateMemoryBuffer="$2"
-			;;
 		mfplat-MFCreateSample)
 			enable_mfplat_MFCreateSample="$2"
-			;;
-		mfplat-MFTRegisterLocal)
-			enable_mfplat_MFTRegisterLocal="$2"
 			;;
 		mmsystem.dll16-MIDIHDR_Refcount)
 			enable_mmsystem_dll16_MIDIHDR_Refcount="$2"
@@ -1372,9 +1350,6 @@ patch_enable ()
 		wininet-Http_Decoding)
 			enable_wininet_Http_Decoding="$2"
 			;;
-		wininet-InternetCrackUrlW)
-			enable_wininet_InternetCrackUrlW="$2"
-			;;
 		winmm-Delay_Import_Depends)
 			enable_winmm_Delay_Import_Depends="$2"
 			;;
@@ -1401,9 +1376,6 @@ patch_enable ()
 			;;
 		ws2_32-Connect_Time)
 			enable_ws2_32_Connect_Time="$2"
-			;;
-		ws2_32-Tests)
-			enable_ws2_32_Tests="$2"
 			;;
 		ws2_32-TransmitFile)
 			enable_ws2_32_TransmitFile="$2"
@@ -2194,20 +2166,6 @@ if test "$enable_ntdll_ApiSetMap" -eq 1; then
 	enable_ntdll_ThreadTime=1
 fi
 
-if test "$enable_mfplat_MFCreateMemoryBuffer" -eq 1; then
-	if test "$enable_mfplat_MFCreateMFByteStreamOnStream" -gt 1; then
-		abort "Patchset mfplat-MFCreateMFByteStreamOnStream disabled, but mfplat-MFCreateMemoryBuffer depends on that."
-	fi
-	enable_mfplat_MFCreateMFByteStreamOnStream=1
-fi
-
-if test "$enable_mfplat_MFCreateMFByteStreamOnStream" -eq 1; then
-	if test "$enable_mfplat_MFCreateSample" -gt 1; then
-		abort "Patchset mfplat-MFCreateSample disabled, but mfplat-MFCreateMFByteStreamOnStream depends on that."
-	fi
-	enable_mfplat_MFCreateSample=1
-fi
-
 if test "$enable_loader_OSX_Preloader" -eq 1; then
 	if test "$enable_Staging" -gt 1; then
 		abort "Patchset Staging disabled, but loader-OSX_Preloader depends on that."
@@ -2760,18 +2718,6 @@ if test "$enable_crypt32_CMS_Certificates" -eq 1; then
 	patch_apply crypt32-CMS_Certificates/0001-crypt32-Skip-unknown-item-when-decoding-a-CMS-certif.patch
 	(
 		printf '%s\n' '+    { "Charles Davis", "crypt32: Skip unknown item when decoding a CMS certificate.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset crypt32-CryptUnprotectMemory
-# |
-# | Modified files:
-# |   *	dlls/crypt32/main.c
-# |
-if test "$enable_crypt32_CryptUnprotectMemory" -eq 1; then
-	patch_apply crypt32-CryptUnprotectMemory/0001-crypt32-Print-CryptUnprotectMemory-FIXME-only-once.patch
-	(
-		printf '%s\n' '+    { "Christian Costa", "crypt32: Print CryptUnprotectMemory FIXME only once.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3341,18 +3287,6 @@ if test "$enable_dbghelp_Debug_Symbols" -eq 1; then
 	patch_apply dbghelp-Debug_Symbols/0001-dbghelp-Always-check-for-debug-symbols-in-BINDIR.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "dbghelp: Always check for debug symbols in BINDIR.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ddraw-D3DFINDDEVICERESULT
-# |
-# | Modified files:
-# |   *	dlls/ddraw/ddraw.c, dlls/ddraw/tests/d3d.c, include/d3dcaps.h
-# |
-if test "$enable_ddraw_D3DFINDDEVICERESULT" -eq 1; then
-	patch_apply ddraw-D3DFINDDEVICERESULT/0001-ddraw-Accept-d3d1-and-d3d2-versions-of-D3DFINDDEVICE.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "ddraw: Accept d3d1 and d3d2 versions of D3DFINDDEVICERESULT in IDirect3D_FindDevice.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4398,59 +4332,6 @@ if test "$enable_mfplat_MFCreateSample" -eq 1; then
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Forward IMFMediaType to IMFAttributes.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Forward IMFStreamDescriptor to IMFAttributes.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Implement MFCreateSample.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset mfplat-MFCreateMFByteStreamOnStream
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	mfplat-MFCreateSample
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45372] Implement MFCreateMFByteStreamOnStream.
-# |
-# | Modified files:
-# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, dlls/mfplat/tests/mfplat.c, include/mfidl.idl
-# |
-if test "$enable_mfplat_MFCreateMFByteStreamOnStream" -eq 1; then
-	patch_apply mfplat-MFCreateMFByteStreamOnStream/0001-mfplat-Implement-MFCreateMFByteStreamOnStream.patch
-	(
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Implement MFCreateMFByteStreamOnStream.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset mfplat-MFCreateMemoryBuffer
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	mfplat-MFCreateSample, mfplat-MFCreateMFByteStreamOnStream
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45715] Implement MFCreateMemoryBuffer.
-# |
-# | Modified files:
-# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, dlls/mfplat/tests/mfplat.c, include/mfapi.h
-# |
-if test "$enable_mfplat_MFCreateMemoryBuffer" -eq 1; then
-	patch_apply mfplat-MFCreateMemoryBuffer/0001-mfplat-Implement-MFCreateMemoryBuffer.patch
-	(
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Implement MFCreateMemoryBuffer.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset mfplat-MFTRegisterLocal
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45622] Add MFTRegisterLocal stub
-# |
-# | Modified files:
-# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, include/mfapi.h
-# |
-if test "$enable_mfplat_MFTRegisterLocal" -eq 1; then
-	patch_apply mfplat-MFTRegisterLocal/0001-mfplat-Add-MFTRegisterLocal-stub.patch
-	patch_apply mfplat-MFTRegisterLocal/0002-mfplat-Add-MFTUnregisterLocal-stub.patch
-	(
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Add MFTRegisterLocal stub.", 1 },';
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Add MFTUnregisterLocal stub.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7734,7 +7615,7 @@ fi
 # |   *	configure.ac, dlls/dxgkrnl.sys/Makefile.in, dlls/dxgkrnl.sys/dxgkrnl.sys.spec, dlls/dxgkrnl.sys/main.c,
 # | 	dlls/dxgmms1.sys/Makefile.in, dlls/dxgmms1.sys/dxgmms1.sys.spec, dlls/dxgmms1.sys/main.c,
 # | 	dlls/ntoskrnl.exe/tests/driver.c, dlls/win32k.sys/Makefile.in, dlls/win32k.sys/main.c, dlls/win32k.sys/win32k.sys.spec,
-# | 	include/ddk/ntddk.h, loader/wine.inf.in, programs/winedevice/device.c, tools/make_specfiles
+# | 	loader/wine.inf.in, programs/winedevice/device.c, tools/make_specfiles
 # |
 if test "$enable_winedevice_Default_Drivers" -eq 1; then
 	patch_apply winedevice-Default_Drivers/0001-win32k.sys-Add-stub-driver.patch
@@ -8085,21 +7966,6 @@ if test "$enable_wininet_Http_Decoding" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset wininet-InternetCrackUrlW
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#40598] Resize buffer when call to InternetCanonicalizeUrlW fails in InternetCrackUrlW
-# |
-# | Modified files:
-# |   *	dlls/wininet/internet.c, dlls/wininet/tests/url.c
-# |
-if test "$enable_wininet_InternetCrackUrlW" -eq 1; then
-	patch_apply wininet-InternetCrackUrlW/0002-wininet-Resize-buffer-when-call-to-InternetCanonical.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "wininet: Resize buffer when call to InternetCanonicalizeUrlW fails in InternetCrackUrlW.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset winmm-Delay_Import_Depends
 # |
 # | This patchset fixes the following Wine bugs:
@@ -8224,18 +8090,6 @@ if test "$enable_ws2_32_Connect_Time" -eq 1; then
 	patch_apply ws2_32-Connect_Time/0001-ws2_32-Implement-returning-the-proper-time-with-SO_C.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "ws2_32: Implement returning the proper time with SO_CONNECT_TIME.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ws2_32-Tests
-# |
-# | Modified files:
-# |   *	dlls/ws2_32/tests/sock.c
-# |
-if test "$enable_ws2_32_Tests" -eq 1; then
-	patch_apply ws2_32-Tests/0001-ws2_32-tests-Hide-random-test-failures-in-socket-tests.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "ws2_32/tests: Hide random test failures in socket tests.", 1 },';
 	) >> "$patchlist"
 fi
 
