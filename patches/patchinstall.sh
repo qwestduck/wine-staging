@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "b29cdbd5f23548d9631e5c98ec923b6d2d16a3f8"
+	echo "52fecef1a237368eee84ebc9b366107ee2509562"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.15"
+	echo "Wine Staging 3.16"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -137,7 +137,6 @@ patch_enable_all ()
 	enable_dinput_Initialize="$1"
 	enable_dsound_EAX="$1"
 	enable_dsound_Fast_Mixer="$1"
-	enable_dsound_Revert_Cleanup="$1"
 	enable_dwrite_FontFallback="$1"
 	enable_dxdiagn_Enumerate_DirectSound="$1"
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
@@ -152,6 +151,7 @@ patch_enable_all ()
 	enable_gdi32_Path_Metafile="$1"
 	enable_gdi32_Symbol_Truetype_Font="$1"
 	enable_gdiplus_Performance_Improvements="$1"
+	enable_hnetcfg_NATUPnP="$1"
 	enable_imagehlp_BindImageEx="$1"
 	enable_imagehlp_Cleanup="$1"
 	enable_imagehlp_ImageLoad="$1"
@@ -180,7 +180,6 @@ patch_enable_all ()
 	enable_libs_Debug_Channel="$1"
 	enable_libs_Unicode_Collation="$1"
 	enable_loader_OSX_Preloader="$1"
-	enable_mfplat_MFCreateSample="$1"
 	enable_mmsystem_dll16_MIDIHDR_Refcount="$1"
 	enable_mountmgr_DosDevices="$1"
 	enable_mscoree_CorValidateImage="$1"
@@ -193,7 +192,6 @@ patch_enable_all ()
 	enable_ntdll_APC_Performance="$1"
 	enable_ntdll_Activation_Context="$1"
 	enable_ntdll_ApiSetMap="$1"
-	enable_ntdll_ApiSetQueryApiSetPresence="$1"
 	enable_ntdll_Builtin_Prot="$1"
 	enable_ntdll_CriticalSection="$1"
 	enable_ntdll_DOS_Attributes="$1"
@@ -219,7 +217,6 @@ patch_enable_all ()
 	enable_ntdll_NtContinue="$1"
 	enable_ntdll_NtDevicePath="$1"
 	enable_ntdll_NtQueryEaFile="$1"
-	enable_ntdll_NtQueryInformationProcess_ProcessCookie="$1"
 	enable_ntdll_NtQuerySection="$1"
 	enable_ntdll_NtQueryVirtualMemory="$1"
 	enable_ntdll_NtSetLdtEntries="$1"
@@ -249,6 +246,7 @@ patch_enable_all ()
 	enable_ntdll_futex_condition_var="$1"
 	enable_ntdll_set_full_cpu_context="$1"
 	enable_ntoskrnl_Stubs="$1"
+	enable_ntoskrnl_Synchronization="$1"
 	enable_ntoskrnl_exe_Fix_Relocation="$1"
 	enable_nvapi_Stub_DLL="$1"
 	enable_nvcuda_CUDA_Support="$1"
@@ -265,7 +263,6 @@ patch_enable_all ()
 	enable_oleaut32_OleLoadPictureFile="$1"
 	enable_oleaut32_TKIND_COCLASS="$1"
 	enable_oleaut32_x86_64_Marshaller="$1"
-	enable_opengl32_Revert_Disable_Ext="$1"
 	enable_opengl32_glDebugMessageCallback="$1"
 	enable_opengl32_wglChoosePixelFormat="$1"
 	enable_packager_DllMain="$1"
@@ -274,7 +271,6 @@ patch_enable_all ()
 	enable_riched20_Class_Tests="$1"
 	enable_riched20_IText_Interface="$1"
 	enable_server_ClipCursor="$1"
-	enable_server_CreateProcess_ACLs="$1"
 	enable_server_Desktop_Refcount="$1"
 	enable_server_FileEndOfFileInformation="$1"
 	enable_server_File_Permissions="$1"
@@ -337,7 +333,6 @@ patch_enable_all ()
 	enable_uxtheme_GTK_Theming="$1"
 	enable_version_VerFindFileA="$1"
 	enable_version_VerQueryValue="$1"
-	enable_virtdisk_GetStorageDependencyInformation="$1"
 	enable_widl_SLTG_Typelib_Support="$1"
 	enable_windowscodecs_32bppPRGBA="$1"
 	enable_windowscodecs_GIF_Encoder="$1"
@@ -582,9 +577,6 @@ patch_enable ()
 		dsound-Fast_Mixer)
 			enable_dsound_Fast_Mixer="$2"
 			;;
-		dsound-Revert_Cleanup)
-			enable_dsound_Revert_Cleanup="$2"
-			;;
 		dwrite-FontFallback)
 			enable_dwrite_FontFallback="$2"
 			;;
@@ -626,6 +618,9 @@ patch_enable ()
 			;;
 		gdiplus-Performance-Improvements)
 			enable_gdiplus_Performance_Improvements="$2"
+			;;
+		hnetcfg-NATUPnP)
+			enable_hnetcfg_NATUPnP="$2"
 			;;
 		imagehlp-BindImageEx)
 			enable_imagehlp_BindImageEx="$2"
@@ -711,9 +706,6 @@ patch_enable ()
 		loader-OSX_Preloader)
 			enable_loader_OSX_Preloader="$2"
 			;;
-		mfplat-MFCreateSample)
-			enable_mfplat_MFCreateSample="$2"
-			;;
 		mmsystem.dll16-MIDIHDR_Refcount)
 			enable_mmsystem_dll16_MIDIHDR_Refcount="$2"
 			;;
@@ -749,9 +741,6 @@ patch_enable ()
 			;;
 		ntdll-ApiSetMap)
 			enable_ntdll_ApiSetMap="$2"
-			;;
-		ntdll-ApiSetQueryApiSetPresence)
-			enable_ntdll_ApiSetQueryApiSetPresence="$2"
 			;;
 		ntdll-Builtin_Prot)
 			enable_ntdll_Builtin_Prot="$2"
@@ -827,9 +816,6 @@ patch_enable ()
 			;;
 		ntdll-NtQueryEaFile)
 			enable_ntdll_NtQueryEaFile="$2"
-			;;
-		ntdll-NtQueryInformationProcess-ProcessCookie)
-			enable_ntdll_NtQueryInformationProcess_ProcessCookie="$2"
 			;;
 		ntdll-NtQuerySection)
 			enable_ntdll_NtQuerySection="$2"
@@ -918,6 +904,9 @@ patch_enable ()
 		ntoskrnl-Stubs)
 			enable_ntoskrnl_Stubs="$2"
 			;;
+		ntoskrnl-Synchronization)
+			enable_ntoskrnl_Synchronization="$2"
+			;;
 		ntoskrnl.exe-Fix_Relocation)
 			enable_ntoskrnl_exe_Fix_Relocation="$2"
 			;;
@@ -966,9 +955,6 @@ patch_enable ()
 		oleaut32-x86_64_Marshaller)
 			enable_oleaut32_x86_64_Marshaller="$2"
 			;;
-		opengl32-Revert_Disable_Ext)
-			enable_opengl32_Revert_Disable_Ext="$2"
-			;;
 		opengl32-glDebugMessageCallback)
 			enable_opengl32_glDebugMessageCallback="$2"
 			;;
@@ -992,9 +978,6 @@ patch_enable ()
 			;;
 		server-ClipCursor)
 			enable_server_ClipCursor="$2"
-			;;
-		server-CreateProcess_ACLs)
-			enable_server_CreateProcess_ACLs="$2"
 			;;
 		server-Desktop_Refcount)
 			enable_server_Desktop_Refcount="$2"
@@ -1181,9 +1164,6 @@ patch_enable ()
 			;;
 		version-VerQueryValue)
 			enable_version_VerQueryValue="$2"
-			;;
-		virtdisk-GetStorageDependencyInformation)
-			enable_virtdisk_GetStorageDependencyInformation="$2"
 			;;
 		widl-SLTG_Typelib_Support)
 			enable_widl_SLTG_Typelib_Support="$2"
@@ -2029,7 +2009,11 @@ if test "$enable_ntoskrnl_Stubs" -eq 1; then
 	if test "$enable_Compiler_Warnings" -gt 1; then
 		abort "Patchset Compiler_Warnings disabled, but ntoskrnl-Stubs depends on that."
 	fi
+	if test "$enable_ntoskrnl_Synchronization" -gt 1; then
+		abort "Patchset ntoskrnl-Synchronization disabled, but ntoskrnl-Stubs depends on that."
+	fi
 	enable_Compiler_Warnings=1
+	enable_ntoskrnl_Synchronization=1
 fi
 
 if test "$enable_ntdll_SystemRoot_Symlink" -eq 1; then
@@ -2216,11 +2200,7 @@ if test "$enable_dsound_EAX" -eq 1; then
 	if test "$enable_dsound_Fast_Mixer" -gt 1; then
 		abort "Patchset dsound-Fast_Mixer disabled, but dsound-EAX depends on that."
 	fi
-	if test "$enable_dsound_Revert_Cleanup" -gt 1; then
-		abort "Patchset dsound-Revert_Cleanup disabled, but dsound-EAX depends on that."
-	fi
 	enable_dsound_Fast_Mixer=1
-	enable_dsound_Revert_Cleanup=1
 fi
 
 if test "$enable_d3dx9_36_DXTn" -eq 1; then
@@ -2258,26 +2238,18 @@ if test "$enable_advapi32_Token_Integrity_Level" -eq 1; then
 	if test "$enable_advapi32_CreateRestrictedToken" -gt 1; then
 		abort "Patchset advapi32-CreateRestrictedToken disabled, but advapi32-Token_Integrity_Level depends on that."
 	fi
-	if test "$enable_server_CreateProcess_ACLs" -gt 1; then
-		abort "Patchset server-CreateProcess_ACLs disabled, but advapi32-Token_Integrity_Level depends on that."
-	fi
 	if test "$enable_server_Misc_ACL" -gt 1; then
 		abort "Patchset server-Misc_ACL disabled, but advapi32-Token_Integrity_Level depends on that."
 	fi
 	enable_Staging=1
 	enable_advapi32_CreateRestrictedToken=1
-	enable_server_CreateProcess_ACLs=1
 	enable_server_Misc_ACL=1
 fi
 
 if test "$enable_advapi32_LsaLookupSids" -eq 1; then
-	if test "$enable_server_CreateProcess_ACLs" -gt 1; then
-		abort "Patchset server-CreateProcess_ACLs disabled, but advapi32-LsaLookupSids depends on that."
-	fi
 	if test "$enable_server_Misc_ACL" -gt 1; then
 		abort "Patchset server-Misc_ACL disabled, but advapi32-LsaLookupSids depends on that."
 	fi
-	enable_server_CreateProcess_ACLs=1
 	enable_server_Misc_ACL=1
 fi
 
@@ -2301,14 +2273,11 @@ fi
 # |
 # | Modified files:
 # |   *	dlls/amstream/mediastreamfilter.c, dlls/d2d1/brush.c, dlls/d2d1/geometry.c, dlls/d3d11/view.c, dlls/d3d8/texture.c,
-# | 	dlls/d3d9/tests/visual.c, dlls/d3d9/texture.c, dlls/ddraw/viewport.c, dlls/dwrite/font.c, dlls/dwrite/layout.c,
-# | 	dlls/evr/evr.c, dlls/msxml3/schema.c, dlls/netapi32/netapi32.c, dlls/oleaut32/oleaut.c, dlls/rpcrt4/cstub.c,
-# | 	dlls/vbscript/vbdisp.c, dlls/wined3d/glsl_shader.c, dlls/ws2_32/tests/sock.c, dlls/wsdapi/msgparams.c,
-# | 	include/wine/list.h, include/wine/rbtree.h, include/winnt.h, tools/makedep.c
+# | 	dlls/d3d9/texture.c, dlls/ddraw/viewport.c, dlls/dwrite/font.c, dlls/dwrite/layout.c, dlls/evr/evr.c,
+# | 	dlls/msxml3/schema.c, dlls/oleaut32/oleaut.c, dlls/rpcrt4/cstub.c, dlls/vbscript/vbdisp.c, dlls/wsdapi/msgparams.c,
+# | 	include/wine/list.h, include/wine/rbtree.h, include/winnt.h
 # |
 if test "$enable_Compiler_Warnings" -eq 1; then
-	patch_apply Compiler_Warnings/0009-ws2_32-tests-Work-around-an-incorrect-detection-in-G.patch
-	patch_apply Compiler_Warnings/0018-Appease-the-blessed-version-of-gcc-4.5-when-Werror-i.patch
 	patch_apply Compiler_Warnings/0020-amstream-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0021-d2d1-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0022-d3d11-Avoid-implicit-cast-of-interface-pointer.patch
@@ -2324,8 +2293,6 @@ if test "$enable_Compiler_Warnings" -eq 1; then
 	patch_apply Compiler_Warnings/0032-wsdapi-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0033-evr-Avoid-implicit-cast-of-interface-pointer.patch
 	(
-		printf '%s\n' '+    { "Sebastian Lackner", "ws2_32/tests: Work around an incorrect detection in GCC 7.", 1 },';
-		printf '%s\n' '+    { "Erich E. Hoover", "Appease the blessed version of gcc (4.5) when -Werror is enabled.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "amstream: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "d2d1: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "d3d11: Avoid implicit cast of interface pointer.", 1 },';
@@ -2415,25 +2382,6 @@ if test "$enable_advapi32_LsaLookupPrivilegeName" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset server-CreateProcess_ACLs
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#22006] Support for process ACLs
-# |
-# | Modified files:
-# |   *	dlls/advapi32/tests/security.c, dlls/kernel32/process.c, server/process.c, server/protocol.def
-# |
-if test "$enable_server_CreateProcess_ACLs" -eq 1; then
-	patch_apply server-CreateProcess_ACLs/0001-server-Support-for-thread-and-process-security-descr.patch
-	patch_apply server-CreateProcess_ACLs/0002-kernel32-Implement-passing-security-descriptors-from.patch
-	patch_apply server-CreateProcess_ACLs/0003-advapi32-tests-Add-additional-tests-for-passing-a-th.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "server: Support for thread and process security descriptors in new_process wineserver call.", 2 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "kernel32: Implement passing security descriptors from CreateProcess to the wineserver.", 2 },';
-		printf '%s\n' '+    { "Joris van der Wel", "advapi32/tests: Add additional tests for passing a thread sd to CreateProcess.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset server-Misc_ACL
 # |
 # | This patchset fixes the following Wine bugs:
@@ -2454,7 +2402,7 @@ fi
 # Patchset advapi32-LsaLookupSids
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	server-CreateProcess_ACLs, server-Misc_ACL
+# |   *	server-Misc_ACL
 # |
 # | Modified files:
 # |   *	dlls/advapi32/lsa.c, dlls/advapi32/security.c, dlls/advapi32/tests/security.c, server/token.c
@@ -2498,7 +2446,7 @@ fi
 # Patchset advapi32-Token_Integrity_Level
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, server-CreateProcess_ACLs, server-Misc_ACL
+# |   *	Staging, advapi32-CreateRestrictedToken, server-Misc_ACL
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#40613] Basic implementation for token integrity levels and UAC handling
@@ -3470,24 +3418,10 @@ if test "$enable_dsound_Fast_Mixer" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset dsound-Revert_Cleanup
-# |
-# | Modified files:
-# |   *	dlls/dsound/buffer.c, dlls/dsound/dsound.c, dlls/dsound/dsound_private.h
-# |
-if test "$enable_dsound_Revert_Cleanup" -eq 1; then
-	patch_apply dsound-Revert_Cleanup/0001-Revert-dsound-Use-a-better-name-for-IDirectSoundBuff.patch
-	patch_apply dsound-Revert_Cleanup/0002-Revert-dsound-Simplify-error-handling-when-creating-.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "Revert \"dsound: Use a better name for IDirectSoundBufferImpl_Create().\".", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "Revert \"dsound: Simplify error handling when creating a sound buffer.\".", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset dsound-EAX
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	dsound-Fast_Mixer, dsound-Revert_Cleanup
+# |   *	dsound-Fast_Mixer
 # |
 # | Modified files:
 # |   *	dlls/dsound/Makefile.in, dlls/dsound/buffer.c, dlls/dsound/dsound.c, dlls/dsound/dsound_eax.h,
@@ -3798,6 +3732,31 @@ if test "$enable_gdiplus_Performance_Improvements" -eq 1; then
 		printf '%s\n' '+    { "Dmitry Timoshkov", "gdiplus: Change multiplications by additions in the x/y scaler loops.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "gdiplus: Remove ceilf/floorf calls from bilinear scaler.", 2 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "gdiplus: Prefer using pre-multiplied ARGB data in the scaler.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset hnetcfg-NATUPnP
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#34711] hnetcfg: Add Support for interface UPnPNAT
+# |
+# | Modified files:
+# |   *	dlls/hnetcfg/Makefile.in, dlls/hnetcfg/apps.c, dlls/hnetcfg/hnetcfg.c, dlls/hnetcfg/hnetcfg_private.h,
+# | 	dlls/hnetcfg/hnetcfg_tlb.idl, dlls/hnetcfg/manager.c, dlls/hnetcfg/port.c, dlls/hnetcfg/tests/policy.c,
+# | 	dlls/uuid/uuid.c, include/Makefile.in, include/natupnp.idl
+# |
+if test "$enable_hnetcfg_NATUPnP" -eq 1; then
+	patch_apply hnetcfg-NATUPnP/0001-include-Add-natupnp.idl.patch
+	patch_apply hnetcfg-NATUPnP/0002-hnetcfg-Register-NATUPnP-interface.patch
+	patch_apply hnetcfg-NATUPnP/0003-hnetcfg-Support-IUPnPNAT-interface.patch
+	patch_apply hnetcfg-NATUPnP/0004-hnetcfg-Linked-to-uuid.patch
+	patch_apply hnetcfg-NATUPnP/0005-hnetcfg-tests-Add-IUPnPNAT-interface-tests.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "include: Add natupnp.idl.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg: Register NATUPnP interface.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg: Support IUPnPNAT interface.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg: Linked to uuid.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg/tests: Add IUPnPNAT interface tests.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4316,25 +4275,6 @@ if test "$enable_loader_OSX_Preloader" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset mfplat-MFCreateSample
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45617] Implement MFCreateSample
-# |
-# | Modified files:
-# |   *	dlls/mfplat/main.c, dlls/mfplat/mfplat.spec, dlls/mfplat/tests/mfplat.c, include/mfapi.h
-# |
-if test "$enable_mfplat_MFCreateSample" -eq 1; then
-	patch_apply mfplat-MFCreateSample/0001-mfplat-Forward-IMFMediaType-to-IMFAttributes.patch
-	patch_apply mfplat-MFCreateSample/0002-mfplat-Forward-IMFStreamDescriptor-to-IMFAttributes.patch
-	patch_apply mfplat-MFCreateSample/0003-mfplat-Implement-MFCreateSample.patch
-	(
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Forward IMFMediaType to IMFAttributes.", 1 },';
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Forward IMFStreamDescriptor to IMFAttributes.", 1 },';
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "mfplat: Implement MFCreateSample.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset mmsystem.dll16-MIDIHDR_Refcount
 # |
 # | This patchset fixes the following Wine bugs:
@@ -4557,18 +4497,6 @@ if test "$enable_ntdll_ApiSetMap" -eq 1; then
 	patch_apply ntdll-ApiSetMap/0001-ntdll-Add-dummy-apiset-to-PEB.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "ntdll: Add dummy apiset to PEB.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ntdll-ApiSetQueryApiSetPresence
-# |
-# | Modified files:
-# |   *	dlls/api-ms-win-core-apiquery-l1-1-0/api-ms-win-core-apiquery-l1-1-0.spec, dlls/ntdll/misc.c, dlls/ntdll/ntdll.spec
-# |
-if test "$enable_ntdll_ApiSetQueryApiSetPresence" -eq 1; then
-	patch_apply ntdll-ApiSetQueryApiSetPresence/0001-ntdll-Add-stub-for-ApiSetQueryApiSetPresence.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Add stub for ApiSetQueryApiSetPresence.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4953,7 +4881,7 @@ fi
 # Patchset ntdll-LdrInitializeThunk
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, server-CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level
+# |   *	Staging, advapi32-CreateRestrictedToken, server-Misc_ACL, advapi32-Token_Integrity_Level
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#45570] League of Legends 8.12+ fails to start a game (anticheat engine, incorrect implementation of
@@ -5031,21 +4959,6 @@ if test "$enable_ntdll_NtDevicePath" -eq 1; then
 	patch_apply ntdll-NtDevicePath/0001-ntdll-Implement-opening-files-through-nt-device-path.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "ntdll: Implement opening files through nt device paths.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ntdll-NtQueryInformationProcess-ProcessCookie
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45569] League of Legends 8.12+ needs NtQueryInformationProcess(ProcessCookie) stub
-# |
-# | Modified files:
-# |   *	dlls/ntdll/process.c
-# |
-if test "$enable_ntdll_NtQueryInformationProcess_ProcessCookie" -eq 1; then
-	patch_apply ntdll-NtQueryInformationProcess-ProcessCookie/0001-ntdll-Stub-for-ProcessCookie-in-NtQueryInformationPr.patch
-	(
-		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Stub for ProcessCookie in NtQueryInformationProcess.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5172,8 +5085,7 @@ fi
 # Patchset ntdll-RtlCreateUserThread
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, advapi32-CreateRestrictedToken, server-CreateProcess_ACLs, server-Misc_ACL, advapi32-Token_Integrity_Level,
-# | 	ntdll-LdrInitializeThunk
+# |   *	Staging, advapi32-CreateRestrictedToken, server-Misc_ACL, advapi32-Token_Integrity_Level, ntdll-LdrInitializeThunk
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#45571] League of Legends 8.12+ fails to start a game (anticheat engine, hooking of NtCreateThread/Ex)
@@ -5438,28 +5350,71 @@ if test "$enable_ntdll_set_full_cpu_context" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset ntoskrnl-Synchronization
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44588] Multiple kernel drivers need ntoskrnl.exe.KeWaitForMultipleObjects semi-stub (Franson VSerial service
+# | 	'bizvserialnt.sys')
+# |
+# | Modified files:
+# |   *	dlls/ntoskrnl.exe/Makefile.in, dlls/ntoskrnl.exe/ntoskrnl.c, dlls/ntoskrnl.exe/ntoskrnl.exe.spec,
+# | 	dlls/ntoskrnl.exe/sync.c, dlls/ntoskrnl.exe/tests/driver.c, include/ddk/ntddk.h, include/ddk/wdm.h
+# |
+if test "$enable_ntoskrnl_Synchronization" -eq 1; then
+	patch_apply ntoskrnl-Synchronization/0001-ntoskrnl.exe-Implement-KeWaitForMultipleObjects.patch
+	patch_apply ntoskrnl-Synchronization/0002-ntoskrnl.exe-Implement-KeInitializeEvent.patch
+	patch_apply ntoskrnl-Synchronization/0003-ntoskrnl.exe-Implement-KeSetEvent.patch
+	patch_apply ntoskrnl-Synchronization/0004-ntoskrnl.exe-Implement-KeResetEvent.patch
+	patch_apply ntoskrnl-Synchronization/0005-ntoskrnl.exe-Implement-KeClearEvent.patch
+	patch_apply ntoskrnl-Synchronization/0006-ntoskrnl.exe-Implement-KeWaitForSingleObject.patch
+	patch_apply ntoskrnl-Synchronization/0007-ntoskrnl.exe-tests-Add-some-tests-for-synchronizatio.patch
+	patch_apply ntoskrnl-Synchronization/0008-ntoskrnl.exe-Implement-KeInitializeSemaphore.patch
+	patch_apply ntoskrnl-Synchronization/0009-ntoskrnl.exe-Implement-KeReleaseSemaphore-and-waitin.patch
+	patch_apply ntoskrnl-Synchronization/0010-ntoskrnl.exe-Implement-KeInitializeMutex.patch
+	patch_apply ntoskrnl-Synchronization/0011-ntoskrnl.exe-Implement-KeReleaseMutex-and-waiting-on.patch
+	patch_apply ntoskrnl-Synchronization/0012-ntoskrnl.exe-Implement-KeWaitForMutexObject.patch
+	patch_apply ntoskrnl-Synchronization/0013-ntoskrnl.exe-Implement-KeInitializeTimerEx.patch
+	patch_apply ntoskrnl-Synchronization/0014-ntoskrnl.exe-Implement-KeSetTimerEx-and-waiting-on-t.patch
+	patch_apply ntoskrnl-Synchronization/0015-ntoskrnl.exe-Implement-KeCancelTimer.patch
+	patch_apply ntoskrnl-Synchronization/0016-ntoskrnl.exe-tests-Add-tests-for-waiting-on-timers.patch
+	patch_apply ntoskrnl-Synchronization/0017-ntoskrnl.exe-Implement-KeDelayExecutionThread.patch
+	(
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeWaitForMultipleObjects().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeEvent().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeSetEvent().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeResetEvent().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeClearEvent().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeWaitForSingleObject().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe/tests: Add some tests for synchronization functions.", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeSemaphore().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeReleaseSemaphore() and waiting on semaphores.", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeMutex().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeReleaseMutex() and waiting on mutexes.", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeWaitForMutexObject().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeTimerEx().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeSetTimerEx() and waiting on timers.", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeCancelTimer().", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe/tests: Add tests for waiting on timers.", 1 },';
+		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeDelayExecutionThread().", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset ntoskrnl-Stubs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Compiler_Warnings
+# |   *	Compiler_Warnings, ntoskrnl-Synchronization
 # |
 # | Modified files:
 # |   *	dlls/ntoskrnl.exe/ntoskrnl.c, dlls/ntoskrnl.exe/ntoskrnl.exe.spec, dlls/ntoskrnl.exe/tests/driver.c, include/ddk/wdm.h,
 # | 	include/winnt.h
 # |
 if test "$enable_ntoskrnl_Stubs" -eq 1; then
-	patch_apply ntoskrnl-Stubs/0005-ntoskrnl.exe-Improve-KeReleaseMutex-stub.patch
-	patch_apply ntoskrnl-Stubs/0006-ntoskrnl.exe-Improve-KeInitializeSemaphore-stub.patch
 	patch_apply ntoskrnl-Stubs/0009-ntoskrnl.exe-Implement-MmMapLockedPages-and-MmUnmapL.patch
-	patch_apply ntoskrnl-Stubs/0010-ntoskrnl.exe-Implement-KeInitializeMutex.patch
 	patch_apply ntoskrnl-Stubs/0011-ntoskrnl.exe-Add-IoGetDeviceAttachmentBaseRef-stub.patch
 	patch_apply ntoskrnl-Stubs/0013-ntoskrnl.exe-Implement-NtBuildNumber.patch
 	patch_apply ntoskrnl-Stubs/0014-ntoskrnl.exe-Implement-ExInitializeNPagedLookasideLi.patch
 	(
-		printf '%s\n' '+    { "Alexander Morozov", "ntoskrnl.exe: Improve KeReleaseMutex stub.", 1 },';
-		printf '%s\n' '+    { "Alexander Morozov", "ntoskrnl.exe: Improve KeInitializeSemaphore stub.", 1 },';
 		printf '%s\n' '+    { "Christian Costa", "ntoskrnl.exe: Implement MmMapLockedPages and MmUnmapLockedPages.", 1 },';
-		printf '%s\n' '+    { "Alexander Morozov", "ntoskrnl.exe: Implement KeInitializeMutex.", 1 },';
 		printf '%s\n' '+    { "Jarkko Korpi", "ntoskrnl.exe: Add IoGetDeviceAttachmentBaseRef stub.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ntoskrnl.exe: Implement NtBuildNumber.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ntoskrnl.exe: Implement ExInitializeNPagedLookasideList.", 1 },';
@@ -5714,18 +5669,6 @@ if test "$enable_oleaut32_x86_64_Marshaller" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Initial preparation to make marshalling compatible with x86_64.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Implement TMStubImpl_Invoke on x86_64.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Implement asm proxys for x86_64.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset opengl32-Revert_Disable_Ext
-# |
-# | Modified files:
-# |   *	dlls/opengl32/wgl.c
-# |
-if test "$enable_opengl32_Revert_Disable_Ext" -eq 1; then
-	patch_apply opengl32-Revert_Disable_Ext/0001-Revert-opengl32-Return-a-NULL-pointer-for-functions-.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "Revert \"opengl32: Return a NULL pointer for functions requiring unsupported or disabled extensions.\".", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6337,9 +6280,9 @@ fi
 # |   *	[#34321] Fix Cut/Copy/Paste keyboard shortcuts in Total Commander
 # |
 # | Modified files:
-# |   *	dlls/shell32/clipboard.c, dlls/shell32/dataobject.c, dlls/shell32/recyclebin.c, dlls/shell32/shell32.rc,
-# | 	dlls/shell32/shell32_main.h, dlls/shell32/shellfolder.h, dlls/shell32/shfldr_fs.c, dlls/shell32/shfldr_unixfs.c,
-# | 	dlls/shell32/shlview.c, dlls/shell32/shlview_cmenu.c
+# |   *	dlls/shell32/brsfolder.c, dlls/shell32/clipboard.c, dlls/shell32/dataobject.c, dlls/shell32/recyclebin.c,
+# | 	dlls/shell32/shell32.rc, dlls/shell32/shell32_main.h, dlls/shell32/shellfolder.h, dlls/shell32/shfldr_fs.c,
+# | 	dlls/shell32/shfldr_unixfs.c, dlls/shell32/shlview.c, dlls/shell32/shlview_cmenu.c
 # |
 if test "$enable_shell32_Context_Menu" -eq 1; then
 	patch_apply shell32-Context_Menu/0001-shell32-Fix-copying-of-files-when-using-a-context-me.patch
@@ -6977,26 +6920,6 @@ if test "$enable_version_VerQueryValue" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset virtdisk-GetStorageDependencyInformation
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#42577] Add stub for virtdisk.GetStorageDependencyInformation
-# |
-# | Modified files:
-# |   *	configure, configure.ac, dlls/virtdisk/tests/Makefile.in, dlls/virtdisk/tests/virtdisk.c, dlls/virtdisk/virtdisk.spec,
-# | 	dlls/virtdisk/virtdisk_main.c, include/Makefile.in, include/virtdisk.h
-# |
-if test "$enable_virtdisk_GetStorageDependencyInformation" -eq 1; then
-	patch_apply virtdisk-GetStorageDependencyInformation/0001-include-add-headerfile-virtdisk.h.patch
-	patch_apply virtdisk-GetStorageDependencyInformation/0002-virtdisk-Add-GetStorageDependencyInformation-stub.patch
-	patch_apply virtdisk-GetStorageDependencyInformation/0003-virtdisk-tests-Add-GetStorageDependencyInformation-t.patch
-	(
-		printf '%s\n' '+    { "Louis Lenders", "include: Add headerfile virtdisk.h.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "virtdisk: Add GetStorageDependencyInformation stub.", 1 },';
-		printf '%s\n' '+    { "Gijs Vermeulen", "virtdisk/tests: Add GetStorageDependencyInformation tests.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset windowscodecs-Palette_Images
 # |
 # | Modified files:
@@ -7609,7 +7532,7 @@ fi
 # Patchset winedevice-Default_Drivers
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	dxva2-Video_Decoder, Compiler_Warnings, ntoskrnl-Stubs
+# |   *	dxva2-Video_Decoder, Compiler_Warnings, ntoskrnl-Synchronization, ntoskrnl-Stubs
 # |
 # | Modified files:
 # |   *	configure.ac, dlls/dxgkrnl.sys/Makefile.in, dlls/dxgkrnl.sys/dxgkrnl.sys.spec, dlls/dxgkrnl.sys/main.c,
