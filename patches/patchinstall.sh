@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "52fecef1a237368eee84ebc9b366107ee2509562"
+	echo "ee206a37609f99e9dc024dbe19d4a9b842433813"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.16"
+	echo "Wine Staging 3.17"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -287,6 +287,7 @@ patch_enable_all ()
 	enable_server_Timestamp_Compat="$1"
 	enable_server_device_manager_destroy="$1"
 	enable_server_send_hardware_message="$1"
+	enable_setupapi_CM_Request_Device_Eject="$1"
 	enable_setupapi_DiskSpaceList="$1"
 	enable_setupapi_Display_Device="$1"
 	enable_setupapi_HSPFILEQ_Check_Type="$1"
@@ -320,6 +321,7 @@ patch_enable_all ()
 	enable_user32_DrawMenuItem="$1"
 	enable_user32_DrawTextExW="$1"
 	enable_user32_FlashWindowEx="$1"
+	enable_user32_GetPointerType="$1"
 	enable_user32_GetSystemMetrics="$1"
 	enable_user32_LR_LOADFROMFILE="$1"
 	enable_user32_ListBox_Size="$1"
@@ -328,7 +330,7 @@ patch_enable_all ()
 	enable_user32_Refresh_MDI_Menus="$1"
 	enable_user32_ScrollWindowEx="$1"
 	enable_user32_ShowWindow="$1"
-	enable_user32_lpCreateParams="$1"
+	enable_user32_msgbox_Support_WM_COPY_mesg="$1"
 	enable_uxtheme_CloseThemeClass="$1"
 	enable_uxtheme_GTK_Theming="$1"
 	enable_version_VerFindFileA="$1"
@@ -1027,6 +1029,9 @@ patch_enable ()
 		server-send_hardware_message)
 			enable_server_send_hardware_message="$2"
 			;;
+		setupapi-CM_Request_Device_Eject)
+			enable_setupapi_CM_Request_Device_Eject="$2"
+			;;
 		setupapi-DiskSpaceList)
 			enable_setupapi_DiskSpaceList="$2"
 			;;
@@ -1126,6 +1131,9 @@ patch_enable ()
 		user32-FlashWindowEx)
 			enable_user32_FlashWindowEx="$2"
 			;;
+		user32-GetPointerType)
+			enable_user32_GetPointerType="$2"
+			;;
 		user32-GetSystemMetrics)
 			enable_user32_GetSystemMetrics="$2"
 			;;
@@ -1150,8 +1158,8 @@ patch_enable ()
 		user32-ShowWindow)
 			enable_user32_ShowWindow="$2"
 			;;
-		user32-lpCreateParams)
-			enable_user32_lpCreateParams="$2"
+		user32-msgbox-Support-WM_COPY-mesg)
+			enable_user32_msgbox_Support_WM_COPY_mesg="$2"
 			;;
 		uxtheme-CloseThemeClass)
 			enable_uxtheme_CloseThemeClass="$2"
@@ -1893,11 +1901,11 @@ if test "$enable_uxtheme_GTK_Theming" -eq 1; then
 	enable_ntdll_DllRedirects=1
 fi
 
-if test "$enable_user32_MessageBox_WS_EX_TOPMOST" -eq 1; then
-	if test "$enable_user32_lpCreateParams" -gt 1; then
-		abort "Patchset user32-lpCreateParams disabled, but user32-MessageBox_WS_EX_TOPMOST depends on that."
+if test "$enable_user32_GetPointerType" -eq 1; then
+	if test "$enable_user32_Mouse_Message_Hwnd" -gt 1; then
+		abort "Patchset user32-Mouse_Message_Hwnd disabled, but user32-GetPointerType depends on that."
 	fi
-	enable_user32_lpCreateParams=1
+	enable_user32_Mouse_Message_Hwnd=1
 fi
 
 if test "$enable_stdole32_tlb_SLTG_Typelib" -eq 1; then
@@ -2272,12 +2280,14 @@ fi
 # Patchset Compiler_Warnings
 # |
 # | Modified files:
-# |   *	dlls/amstream/mediastreamfilter.c, dlls/d2d1/brush.c, dlls/d2d1/geometry.c, dlls/d3d11/view.c, dlls/d3d8/texture.c,
-# | 	dlls/d3d9/texture.c, dlls/ddraw/viewport.c, dlls/dwrite/font.c, dlls/dwrite/layout.c, dlls/evr/evr.c,
-# | 	dlls/msxml3/schema.c, dlls/oleaut32/oleaut.c, dlls/rpcrt4/cstub.c, dlls/vbscript/vbdisp.c, dlls/wsdapi/msgparams.c,
-# | 	include/wine/list.h, include/wine/rbtree.h, include/winnt.h
+# |   *	dlls/amstream/mediastreamfilter.c, dlls/d2d1/bitmap.c, dlls/d2d1/brush.c, dlls/d2d1/dc_render_target.c,
+# | 	dlls/d2d1/device.c, dlls/d2d1/geometry.c, dlls/d2d1/hwnd_render_target.c, dlls/d2d1/state_block.c, dlls/d3d11/view.c,
+# | 	dlls/d3d8/texture.c, dlls/d3d9/texture.c, dlls/ddraw/viewport.c, dlls/dwrite/font.c, dlls/dwrite/layout.c,
+# | 	dlls/evr/evr.c, dlls/msxml3/schema.c, dlls/oleaut32/oleaut.c, dlls/rpcrt4/cstub.c, dlls/vbscript/vbdisp.c,
+# | 	dlls/windowscodecs/info.c, dlls/wsdapi/msgparams.c, include/wine/list.h, include/wine/rbtree.h, include/winnt.h
 # |
 if test "$enable_Compiler_Warnings" -eq 1; then
+	patch_apply Compiler_Warnings/0001-windowscodecs-Avoid-implicit-cast-of-interface-point.patch
 	patch_apply Compiler_Warnings/0020-amstream-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0021-d2d1-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0022-d3d11-Avoid-implicit-cast-of-interface-pointer.patch
@@ -2293,6 +2303,7 @@ if test "$enable_Compiler_Warnings" -eq 1; then
 	patch_apply Compiler_Warnings/0032-wsdapi-Avoid-implicit-cast-of-interface-pointer.patch
 	patch_apply Compiler_Warnings/0033-evr-Avoid-implicit-cast-of-interface-pointer.patch
 	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "windowscodecs: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "amstream: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "d2d1: Avoid implicit cast of interface pointer.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "d3d11: Avoid implicit cast of interface pointer.", 1 },';
@@ -4844,8 +4855,7 @@ fi
 # |   *	[#12401] Support for Junction Points
 # |
 # | Modified files:
-# |   *	dlls/kernel32/path.c, dlls/kernel32/volume.c, dlls/ntdll/file.c, dlls/ntdll/tests/file.c, include/Makefile.in,
-# | 	include/ntifs.h
+# |   *	dlls/kernel32/path.c, dlls/kernel32/volume.c, dlls/ntdll/file.c, dlls/ntdll/tests/file.c, include/ddk/ntifs.h
 # |
 if test "$enable_ntdll_Junction_Points" -eq 1; then
 	patch_apply ntdll-Junction_Points/0001-ntdll-Add-support-for-junction-point-creation.patch
@@ -6079,6 +6089,21 @@ if test "$enable_server_send_hardware_message" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset setupapi-CM_Request_Device_Eject
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45879] Added CM_Request_Device_EjectA/W stub
+# |
+# | Modified files:
+# |   *	dlls/setupapi/setupapi.spec, dlls/setupapi/stubs.c, include/cfgmgr32.h
+# |
+if test "$enable_setupapi_CM_Request_Device_Eject" -eq 1; then
+	patch_apply setupapi-CM_Request_Device_Eject/0001-setupapi-Added-CM_Request_Device_EjectA-W-stub.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "setupapi: Added CM_Request_Device_EjectA/W stub.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset setupapi-DiskSpaceList
 # |
 # | Modified files:
@@ -6695,6 +6720,49 @@ if test "$enable_user32_FlashWindowEx" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset user32-Mouse_Message_Hwnd
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#22458] Fix issues with inserting symbols by clicking on center in Word 2007 & 2010
+# |   *	[#12007] Fix issues with dragging layers between images in Adobe Photoshop 7.0
+# |   *	[#9512] Make sure popups don't block access to objects underneath in DVDPro
+# |
+# | Modified files:
+# |   *	dlls/user32/message.c, dlls/user32/tests/input.c, dlls/winex11.drv/bitblt.c, server/protocol.def, server/window.c
+# |
+if test "$enable_user32_Mouse_Message_Hwnd" -eq 1; then
+	patch_apply user32-Mouse_Message_Hwnd/0001-user32-Try-harder-to-find-a-target-for-mouse-message.patch
+	patch_apply user32-Mouse_Message_Hwnd/0002-user32-tests-Add-tests-for-clicking-through-layered-.patch
+	patch_apply user32-Mouse_Message_Hwnd/0003-user32-tests-Add-tests-for-window-region-of-layered-.patch
+	patch_apply user32-Mouse_Message_Hwnd/0004-user32-tests-Add-tests-for-DC-region.patch
+	patch_apply user32-Mouse_Message_Hwnd/0005-server-Add-support-for-a-layered-window-region.-v2.patch
+	(
+		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Try harder to find a target for mouse messages.", 1 },';
+		printf '%s\n' '+    { "Sebastian Lackner", "user32/tests: Add tests for clicking through layered window.", 1 },';
+		printf '%s\n' '+    { "Sebastian Lackner", "user32/tests: Add tests for window region of layered windows.", 1 },';
+		printf '%s\n' '+    { "Sebastian Lackner", "user32/tests: Add tests for DC region.", 1 },';
+		printf '%s\n' '+    { "Dmitry Timoshkov", "server: Add support for a layered window region.", 3 },';
+	) >> "$patchlist"
+fi
+
+# Patchset user32-GetPointerType
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	user32-Mouse_Message_Hwnd
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45765] Added GetPointerType stub
+# |
+# | Modified files:
+# |   *	dlls/user32/misc.c, dlls/user32/tests/input.c, dlls/user32/user32.spec, include/winuser.h
+# |
+if test "$enable_user32_GetPointerType" -eq 1; then
+	patch_apply user32-GetPointerType/0001-user32-Added-GetPointerType-stub.patch
+	(
+		printf '%s\n' '+    { "Louis Lenders", "user32: Added GetPointerType stub.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset user32-GetSystemMetrics
 # |
 # | This patchset fixes the following Wine bugs:
@@ -6740,29 +6808,7 @@ if test "$enable_user32_ListBox_Size" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset user32-lpCreateParams
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#40303] Fix pointer to custom dialog control data
-# |
-# | Modified files:
-# |   *	dlls/user32/dialog.c, dlls/user32/tests/dialog.c, dlls/user32/tests/resource.rc, tools/wrc/genres.c
-# |
-if test "$enable_user32_lpCreateParams" -eq 1; then
-	patch_apply user32-lpCreateParams/0001-user32-tests-Add-a-test-for-custom-dialog-control-da.patch
-	patch_apply user32-lpCreateParams/0002-tools-wrc-Fix-generation-of-custom-dialog-control-da.patch
-	patch_apply user32-lpCreateParams/0003-user32-Fix-the-pointer-to-custom-dialog-control-data.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add a test for custom dialog control data.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "tools/wrc: Fix generation of custom dialog control data.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Fix the pointer to custom dialog control data.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset user32-MessageBox_WS_EX_TOPMOST
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	user32-lpCreateParams
 # |
 # | Modified files:
 # |   *	dlls/user32/msgbox.c, dlls/user32/tests/dialog.c
@@ -6773,31 +6819,6 @@ if test "$enable_user32_MessageBox_WS_EX_TOPMOST" -eq 1; then
 	(
 		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add some tests to see when MessageBox gains WS_EX_TOPMOST style.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: MessageBox should be topmost when MB_SYSTEMMODAL style is set.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset user32-Mouse_Message_Hwnd
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#22458] Fix issues with inserting symbols by clicking on center in Word 2007 & 2010
-# |   *	[#12007] Fix issues with dragging layers between images in Adobe Photoshop 7.0
-# |   *	[#9512] Make sure popups don't block access to objects underneath in DVDPro
-# |
-# | Modified files:
-# |   *	dlls/user32/message.c, dlls/user32/tests/input.c, dlls/winex11.drv/bitblt.c, server/protocol.def, server/window.c
-# |
-if test "$enable_user32_Mouse_Message_Hwnd" -eq 1; then
-	patch_apply user32-Mouse_Message_Hwnd/0001-user32-Try-harder-to-find-a-target-for-mouse-message.patch
-	patch_apply user32-Mouse_Message_Hwnd/0002-user32-tests-Add-tests-for-clicking-through-layered-.patch
-	patch_apply user32-Mouse_Message_Hwnd/0003-user32-tests-Add-tests-for-window-region-of-layered-.patch
-	patch_apply user32-Mouse_Message_Hwnd/0004-user32-tests-Add-tests-for-DC-region.patch
-	patch_apply user32-Mouse_Message_Hwnd/0005-server-Add-support-for-a-layered-window-region.-v2.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Try harder to find a target for mouse messages.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "user32/tests: Add tests for clicking through layered window.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "user32/tests: Add tests for window region of layered windows.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "user32/tests: Add tests for DC region.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "server: Add support for a layered window region.", 3 },';
 	) >> "$patchlist"
 fi
 
@@ -6843,6 +6864,21 @@ if test "$enable_user32_ShowWindow" -eq 1; then
 	patch_apply user32-ShowWindow/0001-user32-ShowWindow-should-not-send-message-when-windo.patch
 	(
 		printf '%s\n' '+    { "Kimmo Myllyvirta", "user32: ShowWindow should not send message when window is already visible.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset user32-msgbox-Support-WM_COPY-mesg
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#17205] Support WM_COPY in MessageBox dialogs.
+# |
+# | Modified files:
+# |   *	dlls/user32/msgbox.c, dlls/user32/tests/dialog.c
+# |
+if test "$enable_user32_msgbox_Support_WM_COPY_mesg" -eq 1; then
+	patch_apply user32-msgbox-Support-WM_COPY-mesg/0001-user32-msgbox-Support-WM_COPY-Message.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "user32/msgbox: Support WM_COPY Message.", 1 },';
 	) >> "$patchlist"
 fi
 
