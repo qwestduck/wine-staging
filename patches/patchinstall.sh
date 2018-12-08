@@ -52,13 +52,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "ee206a37609f99e9dc024dbe19d4a9b842433813"
+	echo "ae5e029d2227b3a8024f597591f76fe0f37d52e3"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 3.17"
+	echo "Wine Staging 4.0-rc1"
 	echo "Copyright (C) 2014-2018 the Wine Staging project authors."
 	echo "Copyright (C) 2018 Alistair Leslie-Hughes"
 	echo ""
@@ -89,15 +89,15 @@ patch_enable_all ()
 	enable_advapi32_CreateRestrictedToken="$1"
 	enable_advapi32_LsaLookupPrivilegeName="$1"
 	enable_advapi32_LsaLookupSids="$1"
+	enable_advapi32_RegLoadAppKey="$1"
 	enable_advapi32_SetSecurityInfo="$1"
 	enable_advapi32_Token_Integrity_Level="$1"
-	enable_advapi32_WinBuiltinAnyPackageSid="$1"
 	enable_api_ms_win_Stub_DLLs="$1"
+	enable_atl_AtlAxDialogBox="$1"
 	enable_avifil32_IGetFrame_fnSetFormat="$1"
 	enable_avifile_dll16_AVIStreamGetFrame="$1"
 	enable_bcrypt_BCryptDeriveKeyPBKDF2="$1"
 	enable_bcrypt_BCryptGenerateKeyPair="$1"
-	enable_browseui_Progress_Dialog="$1"
 	enable_comctl32_Listview_DrawItem="$1"
 	enable_comdlg32_lpstrFileTitle="$1"
 	enable_configure_Absolute_RPATH="$1"
@@ -105,7 +105,6 @@ patch_enable_all ()
 	enable_crypt32_MS_Root_Certs="$1"
 	enable_d2d1_ID2D1Factory1="$1"
 	enable_d3d11_Deferred_Context="$1"
-	enable_d3d11_Depth_Bias="$1"
 	enable_d3d8_ValidateShader="$1"
 	enable_d3d9_DesktopWindow="$1"
 	enable_d3d9_Tests="$1"
@@ -113,6 +112,7 @@ patch_enable_all ()
 	enable_d3dx9_36_BumpLuminance="$1"
 	enable_d3dx9_36_CloneEffect="$1"
 	enable_d3dx9_36_D3DXDisassembleShader="$1"
+	enable_d3dx9_36_D3DXMatrixTransformation="$1"
 	enable_d3dx9_36_D3DXOptimizeVertices="$1"
 	enable_d3dx9_36_D3DXStubs="$1"
 	enable_d3dx9_36_DDS="$1"
@@ -129,7 +129,6 @@ patch_enable_all ()
 	enable_ddraw_Fix_Typos="$1"
 	enable_ddraw_FlipToGDISurface="$1"
 	enable_ddraw_IDirect3DTexture2_Load="$1"
-	enable_ddraw_Prevent_viewport_crash="$1"
 	enable_ddraw_Rendering_Targets="$1"
 	enable_ddraw_Silence_FIXMEs="$1"
 	enable_ddraw_Write_Vtable="$1"
@@ -140,7 +139,6 @@ patch_enable_all ()
 	enable_dwrite_FontFallback="$1"
 	enable_dxdiagn_Enumerate_DirectSound="$1"
 	enable_dxdiagn_GetChildContainer_Leaf_Nodes="$1"
-	enable_dxgi_GammaRamp="$1"
 	enable_dxgi_MakeWindowAssociation="$1"
 	enable_dxva2_Video_Decoder="$1"
 	enable_explorer_Video_Registry_Key="$1"
@@ -148,10 +146,8 @@ patch_enable_all ()
 	enable_fsutil_Stub_Program="$1"
 	enable_gdi32_Lazy_Font_Initialization="$1"
 	enable_gdi32_MultiMonitor="$1"
-	enable_gdi32_Path_Metafile="$1"
-	enable_gdi32_Symbol_Truetype_Font="$1"
 	enable_gdiplus_Performance_Improvements="$1"
-	enable_hnetcfg_NATUPnP="$1"
+	enable_hid_HidD_FlushQueue="$1"
 	enable_imagehlp_BindImageEx="$1"
 	enable_imagehlp_Cleanup="$1"
 	enable_imagehlp_ImageLoad="$1"
@@ -160,26 +156,22 @@ patch_enable_all ()
 	enable_iphlpapi_System_Ping="$1"
 	enable_iphlpapi_TCP_Table="$1"
 	enable_kernel32_CopyFileEx="$1"
-	enable_kernel32_Cwd_Startup_Info="$1"
 	enable_kernel32_Debugger="$1"
 	enable_kernel32_FindFirstFile="$1"
-	enable_kernel32_GetShortPathName="$1"
 	enable_kernel32_Job_Tests="$1"
 	enable_kernel32_K32GetPerformanceInfo="$1"
 	enable_kernel32_MoveFile="$1"
 	enable_kernel32_NeedCurrentDirectoryForExePath="$1"
+	enable_kernel32_NormalizeString="$1"
 	enable_kernel32_PE_Loader_Fixes="$1"
 	enable_kernel32_Processor_Group="$1"
 	enable_kernel32_Profile="$1"
 	enable_kernel32_SCSI_Sysfs="$1"
-	enable_kernel32_SetFileCompletionNotificationModes="$1"
-	enable_kernelbase_PathCchCombineEx="$1"
 	enable_krnl386_exe16_GDT_LDT_Emulation="$1"
 	enable_krnl386_exe16_Invalid_Console_Handles="$1"
 	enable_krnl386_exe16__lclose16="$1"
 	enable_libs_Debug_Channel="$1"
 	enable_libs_Unicode_Collation="$1"
-	enable_loader_OSX_Preloader="$1"
 	enable_mmsystem_dll16_MIDIHDR_Refcount="$1"
 	enable_mountmgr_DosDevices="$1"
 	enable_mscoree_CorValidateImage="$1"
@@ -213,6 +205,7 @@ patch_enable_all ()
 	enable_ntdll_LdrGetDllHandle="$1"
 	enable_ntdll_LdrInitializeThunk="$1"
 	enable_ntdll_Loader_Machine_Type="$1"
+	enable_ntdll_Manifest_Range="$1"
 	enable_ntdll_NtAccessCheck="$1"
 	enable_ntdll_NtContinue="$1"
 	enable_ntdll_NtDevicePath="$1"
@@ -226,9 +219,7 @@ patch_enable_all ()
 	enable_ntdll_Purist_Mode="$1"
 	enable_ntdll_RtlCaptureStackBackTrace="$1"
 	enable_ntdll_RtlCreateUserThread="$1"
-	enable_ntdll_RtlGetUnloadEventTraceEx="$1"
 	enable_ntdll_RtlQueryPackageIdentity="$1"
-	enable_ntdll_RtlSetUnhandledExceptionFilter="$1"
 	enable_ntdll_Serial_Port_Detection="$1"
 	enable_ntdll_Signal_Handler="$1"
 	enable_ntdll_Stack_Guard_Page="$1"
@@ -246,7 +237,6 @@ patch_enable_all ()
 	enable_ntdll_futex_condition_var="$1"
 	enable_ntdll_set_full_cpu_context="$1"
 	enable_ntoskrnl_Stubs="$1"
-	enable_ntoskrnl_Synchronization="$1"
 	enable_ntoskrnl_exe_Fix_Relocation="$1"
 	enable_nvapi_Stub_DLL="$1"
 	enable_nvcuda_CUDA_Support="$1"
@@ -255,19 +245,15 @@ patch_enable_all ()
 	enable_ole32_HGLOBALStream="$1"
 	enable_ole32_STGPROP="$1"
 	enable_oleaut32_CreateTypeLib="$1"
-	enable_oleaut32_DispCallFunc="$1"
-	enable_oleaut32_ITypeInfo_fnInvoke="$1"
 	enable_oleaut32_Load_Save_EMF="$1"
 	enable_oleaut32_OLEPictureImpl_SaveAsFile="$1"
 	enable_oleaut32_OleLoadPicture="$1"
 	enable_oleaut32_OleLoadPictureFile="$1"
-	enable_oleaut32_TKIND_COCLASS="$1"
-	enable_oleaut32_x86_64_Marshaller="$1"
-	enable_opengl32_glDebugMessageCallback="$1"
 	enable_opengl32_wglChoosePixelFormat="$1"
 	enable_packager_DllMain="$1"
 	enable_quartz_MediaSeeking_Positions="$1"
 	enable_quartz_Silence_FIXMEs="$1"
+	enable_qwave_QOSCreateHandle="$1"
 	enable_riched20_Class_Tests="$1"
 	enable_riched20_IText_Interface="$1"
 	enable_server_ClipCursor="$1"
@@ -286,7 +272,6 @@ patch_enable_all ()
 	enable_server_Stored_ACLs="$1"
 	enable_server_Timestamp_Compat="$1"
 	enable_server_device_manager_destroy="$1"
-	enable_server_send_hardware_message="$1"
 	enable_setupapi_CM_Request_Device_Eject="$1"
 	enable_setupapi_DiskSpaceList="$1"
 	enable_setupapi_Display_Device="$1"
@@ -298,11 +283,12 @@ patch_enable_all ()
 	enable_shdocvw_ParseURLFromOutsideSource_Tests="$1"
 	enable_shell32_ACE_Viewer="$1"
 	enable_shell32_Context_Menu="$1"
+	enable_shell32_IconCache="$1"
 	enable_shell32_NewMenu_Interface="$1"
 	enable_shell32_Progress_Dialog="$1"
 	enable_shell32_SFGAO_HASSUBFOLDER="$1"
-	enable_shell32_SHELL_execute="$1"
 	enable_shell32_SHFileOperation_Move="$1"
+	enable_shell32_SHGetStockIconInfo="$1"
 	enable_shell32_Toolbar_Bitmaps="$1"
 	enable_shell32_UnixFS="$1"
 	enable_shlwapi_AssocGetPerceivedType="$1"
@@ -313,16 +299,14 @@ patch_enable_all ()
 	enable_stdole32_tlb_SLTG_Typelib="$1"
 	enable_taskmgr_Memory_Usage="$1"
 	enable_uianimation_stubs="$1"
-	enable_user32_Auto_Radio_Button="$1"
-	enable_user32_Combobox_WM_SIZE="$1"
 	enable_user32_DM_SETDEFID="$1"
-	enable_user32_Dialog_Focus="$1"
 	enable_user32_Dialog_Paint_Event="$1"
 	enable_user32_DrawMenuItem="$1"
 	enable_user32_DrawTextExW="$1"
 	enable_user32_FlashWindowEx="$1"
 	enable_user32_GetPointerType="$1"
 	enable_user32_GetSystemMetrics="$1"
+	enable_user32_Implement_CascadeWindows="$1"
 	enable_user32_LR_LOADFROMFILE="$1"
 	enable_user32_ListBox_Size="$1"
 	enable_user32_MessageBox_WS_EX_TOPMOST="$1"
@@ -330,18 +314,19 @@ patch_enable_all ()
 	enable_user32_Refresh_MDI_Menus="$1"
 	enable_user32_ScrollWindowEx="$1"
 	enable_user32_ShowWindow="$1"
+	enable_user32_dialog_focus="$1"
 	enable_user32_msgbox_Support_WM_COPY_mesg="$1"
 	enable_uxtheme_CloseThemeClass="$1"
 	enable_uxtheme_GTK_Theming="$1"
 	enable_version_VerFindFileA="$1"
 	enable_version_VerQueryValue="$1"
+	enable_virtdisk_OpenVirtualDisk="$1"
 	enable_widl_SLTG_Typelib_Support="$1"
 	enable_windowscodecs_32bppPRGBA="$1"
 	enable_windowscodecs_GIF_Encoder="$1"
 	enable_windowscodecs_IMILBitmapSource="$1"
 	enable_windowscodecs_IWICPalette_InitializeFromBitmap="$1"
 	enable_windowscodecs_JPEG_Decoder="$1"
-	enable_windowscodecs_Palette_Images="$1"
 	enable_windowscodecs_TIFF_Support="$1"
 	enable_wine_inf_Directory_ContextMenuHandlers="$1"
 	enable_wine_inf_Dummy_CA_Certificate="$1"
@@ -361,11 +346,12 @@ patch_enable_all ()
 	enable_wined3d_DXTn="$1"
 	enable_wined3d_Dual_Source_Blending="$1"
 	enable_wined3d_Indexed_Vertex_Blending="$1"
-	enable_wined3d_QUERY_Stubs="$1"
+	enable_wined3d_Restore_DirectX10_Support="$1"
 	enable_wined3d_Silence_FIXMEs="$1"
 	enable_wined3d_UAV_Counters="$1"
 	enable_wined3d_WINED3DFMT_B8G8R8X8_UNORM="$1"
 	enable_wined3d_WINED3D_RS_COLORWRITEENABLE="$1"
+	enable_wined3d_mesa_texture_download="$1"
 	enable_wined3d_wined3d_guess_gl_vendor="$1"
 	enable_winedbg_Process_Arguments="$1"
 	enable_winedevice_Default_Drivers="$1"
@@ -386,7 +372,6 @@ patch_enable_all ()
 	enable_winex11__NET_ACTIVE_WINDOW="$1"
 	enable_winex11_mouse_movements="$1"
 	enable_winex11_wglShareLists="$1"
-	enable_winhttp_Accept_Headers="$1"
 	enable_winhttp_System_Proxy_Autoconfig="$1"
 	enable_wininet_Cleanup="$1"
 	enable_wininet_Http_Decoding="$1"
@@ -395,6 +380,8 @@ patch_enable_all ()
 	enable_wintab32_improvements="$1"
 	enable_wintrust_WTHelperGetProvCertFromChain="$1"
 	enable_wintrust_WinVerifyTrust="$1"
+	enable_wmvcore_WMCheckURlExtension="$1"
+	enable_wmvcore_WMCreateSyncReaderPriv="$1"
 	enable_wow64cpu_Wow64Transition="$1"
 	enable_wpcap_Dynamic_Linking="$1"
 	enable_ws2_32_APC_Performance="$1"
@@ -408,7 +395,6 @@ patch_enable_all ()
 	enable_wuauserv_Dummy_Service="$1"
 	enable_wusa_MSU_Package_Installer="$1"
 	enable_xaudio2_7_CreateFX_FXEcho="$1"
-	enable_xaudio2_7_OnVoiceProcessingPassStart="$1"
 	enable_xaudio2_7_WMA_support="$1"
 	enable_xaudio2_CommitChanges="$1"
 }
@@ -435,17 +421,20 @@ patch_enable ()
 		advapi32-LsaLookupSids)
 			enable_advapi32_LsaLookupSids="$2"
 			;;
+		advapi32-RegLoadAppKey)
+			enable_advapi32_RegLoadAppKey="$2"
+			;;
 		advapi32-SetSecurityInfo)
 			enable_advapi32_SetSecurityInfo="$2"
 			;;
 		advapi32-Token_Integrity_Level)
 			enable_advapi32_Token_Integrity_Level="$2"
 			;;
-		advapi32-WinBuiltinAnyPackageSid)
-			enable_advapi32_WinBuiltinAnyPackageSid="$2"
-			;;
 		api-ms-win-Stub_DLLs)
 			enable_api_ms_win_Stub_DLLs="$2"
+			;;
+		atl-AtlAxDialogBox)
+			enable_atl_AtlAxDialogBox="$2"
 			;;
 		avifil32-IGetFrame_fnSetFormat)
 			enable_avifil32_IGetFrame_fnSetFormat="$2"
@@ -458,9 +447,6 @@ patch_enable ()
 			;;
 		bcrypt-BCryptGenerateKeyPair)
 			enable_bcrypt_BCryptGenerateKeyPair="$2"
-			;;
-		browseui-Progress_Dialog)
-			enable_browseui_Progress_Dialog="$2"
 			;;
 		comctl32-Listview_DrawItem)
 			enable_comctl32_Listview_DrawItem="$2"
@@ -483,9 +469,6 @@ patch_enable ()
 		d3d11-Deferred_Context)
 			enable_d3d11_Deferred_Context="$2"
 			;;
-		d3d11-Depth_Bias)
-			enable_d3d11_Depth_Bias="$2"
-			;;
 		d3d8-ValidateShader)
 			enable_d3d8_ValidateShader="$2"
 			;;
@@ -506,6 +489,9 @@ patch_enable ()
 			;;
 		d3dx9_36-D3DXDisassembleShader)
 			enable_d3dx9_36_D3DXDisassembleShader="$2"
+			;;
+		d3dx9_36-D3DXMatrixTransformation)
+			enable_d3dx9_36_D3DXMatrixTransformation="$2"
 			;;
 		d3dx9_36-D3DXOptimizeVertices)
 			enable_d3dx9_36_D3DXOptimizeVertices="$2"
@@ -555,9 +541,6 @@ patch_enable ()
 		ddraw-IDirect3DTexture2_Load)
 			enable_ddraw_IDirect3DTexture2_Load="$2"
 			;;
-		ddraw-Prevent_viewport_crash)
-			enable_ddraw_Prevent_viewport_crash="$2"
-			;;
 		ddraw-Rendering_Targets)
 			enable_ddraw_Rendering_Targets="$2"
 			;;
@@ -588,9 +571,6 @@ patch_enable ()
 		dxdiagn-GetChildContainer_Leaf_Nodes)
 			enable_dxdiagn_GetChildContainer_Leaf_Nodes="$2"
 			;;
-		dxgi-GammaRamp)
-			enable_dxgi_GammaRamp="$2"
-			;;
 		dxgi-MakeWindowAssociation)
 			enable_dxgi_MakeWindowAssociation="$2"
 			;;
@@ -612,17 +592,11 @@ patch_enable ()
 		gdi32-MultiMonitor)
 			enable_gdi32_MultiMonitor="$2"
 			;;
-		gdi32-Path_Metafile)
-			enable_gdi32_Path_Metafile="$2"
-			;;
-		gdi32-Symbol_Truetype_Font)
-			enable_gdi32_Symbol_Truetype_Font="$2"
-			;;
 		gdiplus-Performance-Improvements)
 			enable_gdiplus_Performance_Improvements="$2"
 			;;
-		hnetcfg-NATUPnP)
-			enable_hnetcfg_NATUPnP="$2"
+		hid-HidD_FlushQueue)
+			enable_hid_HidD_FlushQueue="$2"
 			;;
 		imagehlp-BindImageEx)
 			enable_imagehlp_BindImageEx="$2"
@@ -648,17 +622,11 @@ patch_enable ()
 		kernel32-CopyFileEx)
 			enable_kernel32_CopyFileEx="$2"
 			;;
-		kernel32-Cwd_Startup_Info)
-			enable_kernel32_Cwd_Startup_Info="$2"
-			;;
 		kernel32-Debugger)
 			enable_kernel32_Debugger="$2"
 			;;
 		kernel32-FindFirstFile)
 			enable_kernel32_FindFirstFile="$2"
-			;;
-		kernel32-GetShortPathName)
-			enable_kernel32_GetShortPathName="$2"
 			;;
 		kernel32-Job_Tests)
 			enable_kernel32_Job_Tests="$2"
@@ -672,6 +640,9 @@ patch_enable ()
 		kernel32-NeedCurrentDirectoryForExePath)
 			enable_kernel32_NeedCurrentDirectoryForExePath="$2"
 			;;
+		kernel32-NormalizeString)
+			enable_kernel32_NormalizeString="$2"
+			;;
 		kernel32-PE_Loader_Fixes)
 			enable_kernel32_PE_Loader_Fixes="$2"
 			;;
@@ -683,12 +654,6 @@ patch_enable ()
 			;;
 		kernel32-SCSI_Sysfs)
 			enable_kernel32_SCSI_Sysfs="$2"
-			;;
-		kernel32-SetFileCompletionNotificationModes)
-			enable_kernel32_SetFileCompletionNotificationModes="$2"
-			;;
-		kernelbase-PathCchCombineEx)
-			enable_kernelbase_PathCchCombineEx="$2"
 			;;
 		krnl386.exe16-GDT_LDT_Emulation)
 			enable_krnl386_exe16_GDT_LDT_Emulation="$2"
@@ -704,9 +669,6 @@ patch_enable ()
 			;;
 		libs-Unicode_Collation)
 			enable_libs_Unicode_Collation="$2"
-			;;
-		loader-OSX_Preloader)
-			enable_loader_OSX_Preloader="$2"
 			;;
 		mmsystem.dll16-MIDIHDR_Refcount)
 			enable_mmsystem_dll16_MIDIHDR_Refcount="$2"
@@ -807,6 +769,9 @@ patch_enable ()
 		ntdll-Loader_Machine_Type)
 			enable_ntdll_Loader_Machine_Type="$2"
 			;;
+		ntdll-Manifest_Range)
+			enable_ntdll_Manifest_Range="$2"
+			;;
 		ntdll-NtAccessCheck)
 			enable_ntdll_NtAccessCheck="$2"
 			;;
@@ -846,14 +811,8 @@ patch_enable ()
 		ntdll-RtlCreateUserThread)
 			enable_ntdll_RtlCreateUserThread="$2"
 			;;
-		ntdll-RtlGetUnloadEventTraceEx)
-			enable_ntdll_RtlGetUnloadEventTraceEx="$2"
-			;;
 		ntdll-RtlQueryPackageIdentity)
 			enable_ntdll_RtlQueryPackageIdentity="$2"
-			;;
-		ntdll-RtlSetUnhandledExceptionFilter)
-			enable_ntdll_RtlSetUnhandledExceptionFilter="$2"
 			;;
 		ntdll-Serial_Port_Detection)
 			enable_ntdll_Serial_Port_Detection="$2"
@@ -906,9 +865,6 @@ patch_enable ()
 		ntoskrnl-Stubs)
 			enable_ntoskrnl_Stubs="$2"
 			;;
-		ntoskrnl-Synchronization)
-			enable_ntoskrnl_Synchronization="$2"
-			;;
 		ntoskrnl.exe-Fix_Relocation)
 			enable_ntoskrnl_exe_Fix_Relocation="$2"
 			;;
@@ -933,12 +889,6 @@ patch_enable ()
 		oleaut32-CreateTypeLib)
 			enable_oleaut32_CreateTypeLib="$2"
 			;;
-		oleaut32-DispCallFunc)
-			enable_oleaut32_DispCallFunc="$2"
-			;;
-		oleaut32-ITypeInfo_fnInvoke)
-			enable_oleaut32_ITypeInfo_fnInvoke="$2"
-			;;
 		oleaut32-Load_Save_EMF)
 			enable_oleaut32_Load_Save_EMF="$2"
 			;;
@@ -951,15 +901,6 @@ patch_enable ()
 		oleaut32-OleLoadPictureFile)
 			enable_oleaut32_OleLoadPictureFile="$2"
 			;;
-		oleaut32-TKIND_COCLASS)
-			enable_oleaut32_TKIND_COCLASS="$2"
-			;;
-		oleaut32-x86_64_Marshaller)
-			enable_oleaut32_x86_64_Marshaller="$2"
-			;;
-		opengl32-glDebugMessageCallback)
-			enable_opengl32_glDebugMessageCallback="$2"
-			;;
 		opengl32-wglChoosePixelFormat)
 			enable_opengl32_wglChoosePixelFormat="$2"
 			;;
@@ -971,6 +912,9 @@ patch_enable ()
 			;;
 		quartz-Silence_FIXMEs)
 			enable_quartz_Silence_FIXMEs="$2"
+			;;
+		qwave-QOSCreateHandle)
+			enable_qwave_QOSCreateHandle="$2"
 			;;
 		riched20-Class_Tests)
 			enable_riched20_Class_Tests="$2"
@@ -1026,9 +970,6 @@ patch_enable ()
 		server-device_manager_destroy)
 			enable_server_device_manager_destroy="$2"
 			;;
-		server-send_hardware_message)
-			enable_server_send_hardware_message="$2"
-			;;
 		setupapi-CM_Request_Device_Eject)
 			enable_setupapi_CM_Request_Device_Eject="$2"
 			;;
@@ -1062,6 +1003,9 @@ patch_enable ()
 		shell32-Context_Menu)
 			enable_shell32_Context_Menu="$2"
 			;;
+		shell32-IconCache)
+			enable_shell32_IconCache="$2"
+			;;
 		shell32-NewMenu_Interface)
 			enable_shell32_NewMenu_Interface="$2"
 			;;
@@ -1071,11 +1015,11 @@ patch_enable ()
 		shell32-SFGAO_HASSUBFOLDER)
 			enable_shell32_SFGAO_HASSUBFOLDER="$2"
 			;;
-		shell32-SHELL_execute)
-			enable_shell32_SHELL_execute="$2"
-			;;
 		shell32-SHFileOperation_Move)
 			enable_shell32_SHFileOperation_Move="$2"
+			;;
+		shell32-SHGetStockIconInfo)
+			enable_shell32_SHGetStockIconInfo="$2"
 			;;
 		shell32-Toolbar_Bitmaps)
 			enable_shell32_Toolbar_Bitmaps="$2"
@@ -1107,17 +1051,8 @@ patch_enable ()
 		uianimation-stubs)
 			enable_uianimation_stubs="$2"
 			;;
-		user32-Auto_Radio_Button)
-			enable_user32_Auto_Radio_Button="$2"
-			;;
-		user32-Combobox_WM_SIZE)
-			enable_user32_Combobox_WM_SIZE="$2"
-			;;
 		user32-DM_SETDEFID)
 			enable_user32_DM_SETDEFID="$2"
-			;;
-		user32-Dialog_Focus)
-			enable_user32_Dialog_Focus="$2"
 			;;
 		user32-Dialog_Paint_Event)
 			enable_user32_Dialog_Paint_Event="$2"
@@ -1136,6 +1071,9 @@ patch_enable ()
 			;;
 		user32-GetSystemMetrics)
 			enable_user32_GetSystemMetrics="$2"
+			;;
+		user32-Implement-CascadeWindows)
+			enable_user32_Implement_CascadeWindows="$2"
 			;;
 		user32-LR_LOADFROMFILE)
 			enable_user32_LR_LOADFROMFILE="$2"
@@ -1158,6 +1096,9 @@ patch_enable ()
 		user32-ShowWindow)
 			enable_user32_ShowWindow="$2"
 			;;
+		user32-dialog_focus)
+			enable_user32_dialog_focus="$2"
+			;;
 		user32-msgbox-Support-WM_COPY-mesg)
 			enable_user32_msgbox_Support_WM_COPY_mesg="$2"
 			;;
@@ -1172,6 +1113,9 @@ patch_enable ()
 			;;
 		version-VerQueryValue)
 			enable_version_VerQueryValue="$2"
+			;;
+		virtdisk-OpenVirtualDisk)
+			enable_virtdisk_OpenVirtualDisk="$2"
 			;;
 		widl-SLTG_Typelib_Support)
 			enable_widl_SLTG_Typelib_Support="$2"
@@ -1190,9 +1134,6 @@ patch_enable ()
 			;;
 		windowscodecs-JPEG_Decoder)
 			enable_windowscodecs_JPEG_Decoder="$2"
-			;;
-		windowscodecs-Palette_Images)
-			enable_windowscodecs_Palette_Images="$2"
 			;;
 		windowscodecs-TIFF_Support)
 			enable_windowscodecs_TIFF_Support="$2"
@@ -1251,8 +1192,8 @@ patch_enable ()
 		wined3d-Indexed_Vertex_Blending)
 			enable_wined3d_Indexed_Vertex_Blending="$2"
 			;;
-		wined3d-QUERY_Stubs)
-			enable_wined3d_QUERY_Stubs="$2"
+		wined3d-Restore-DirectX10-Support)
+			enable_wined3d_Restore_DirectX10_Support="$2"
 			;;
 		wined3d-Silence_FIXMEs)
 			enable_wined3d_Silence_FIXMEs="$2"
@@ -1265,6 +1206,9 @@ patch_enable ()
 			;;
 		wined3d-WINED3D_RS_COLORWRITEENABLE)
 			enable_wined3d_WINED3D_RS_COLORWRITEENABLE="$2"
+			;;
+		wined3d-mesa_texture_download)
+			enable_wined3d_mesa_texture_download="$2"
 			;;
 		wined3d-wined3d_guess_gl_vendor)
 			enable_wined3d_wined3d_guess_gl_vendor="$2"
@@ -1326,9 +1270,6 @@ patch_enable ()
 		winex11-wglShareLists)
 			enable_winex11_wglShareLists="$2"
 			;;
-		winhttp-Accept_Headers)
-			enable_winhttp_Accept_Headers="$2"
-			;;
 		winhttp-System_Proxy_Autoconfig)
 			enable_winhttp_System_Proxy_Autoconfig="$2"
 			;;
@@ -1352,6 +1293,12 @@ patch_enable ()
 			;;
 		wintrust-WinVerifyTrust)
 			enable_wintrust_WinVerifyTrust="$2"
+			;;
+		wmvcore-WMCheckURlExtension)
+			enable_wmvcore_WMCheckURlExtension="$2"
+			;;
+		wmvcore-WMCreateSyncReaderPriv)
+			enable_wmvcore_WMCreateSyncReaderPriv="$2"
 			;;
 		wow64cpu-Wow64Transition)
 			enable_wow64cpu_Wow64Transition="$2"
@@ -1391,9 +1338,6 @@ patch_enable ()
 			;;
 		xaudio2_7-CreateFX-FXEcho)
 			enable_xaudio2_7_CreateFX_FXEcho="$2"
-			;;
-		xaudio2_7-OnVoiceProcessingPassStart)
-			enable_xaudio2_7_OnVoiceProcessingPassStart="$2"
 			;;
 		xaudio2_7-WMA_support)
 			enable_xaudio2_7_WMA_support="$2"
@@ -1756,13 +1700,6 @@ patch_apply()
 }
 
 
-if test "$enable_xaudio2_7_WMA_support" -eq 1; then
-	if test "$enable_xaudio2_7_OnVoiceProcessingPassStart" -gt 1; then
-		abort "Patchset xaudio2_7-OnVoiceProcessingPassStart disabled, but xaudio2_7-WMA_support depends on that."
-	fi
-	enable_xaudio2_7_OnVoiceProcessingPassStart=1
-fi
-
 if test "$enable_ws2_32_WSACleanup" -eq 1; then
 	if test "$enable_server_Desktop_Refcount" -gt 1; then
 		abort "Patchset server-Desktop_Refcount disabled, but ws2_32-WSACleanup depends on that."
@@ -1775,6 +1712,13 @@ if test "$enable_ws2_32_TransmitFile" -eq 1; then
 		abort "Patchset server-Desktop_Refcount disabled, but ws2_32-TransmitFile depends on that."
 	fi
 	enable_server_Desktop_Refcount=1
+fi
+
+if test "$enable_wmvcore_WMCreateSyncReaderPriv" -eq 1; then
+	if test "$enable_wmvcore_WMCheckURlExtension" -gt 1; then
+		abort "Patchset wmvcore-WMCheckURlExtension disabled, but wmvcore-WMCreateSyncReaderPriv depends on that."
+	fi
+	enable_wmvcore_WMCheckURlExtension=1
 fi
 
 if test "$enable_wintrust_WTHelperGetProvCertFromChain" -eq 1; then
@@ -1809,13 +1753,6 @@ if test "$enable_wined3d_Indexed_Vertex_Blending" -eq 1; then
 	enable_wined3d_WINED3D_RS_COLORWRITEENABLE=1
 fi
 
-if test "$enable_wined3d_WINED3D_RS_COLORWRITEENABLE" -eq 1; then
-	if test "$enable_d3d11_Depth_Bias" -gt 1; then
-		abort "Patchset d3d11-Depth_Bias disabled, but wined3d-WINED3D_RS_COLORWRITEENABLE depends on that."
-	fi
-	enable_d3d11_Depth_Bias=1
-fi
-
 if test "$enable_wined3d_CSMT_Main" -eq 1; then
 	if test "$enable_d3d11_Deferred_Context" -gt 1; then
 		abort "Patchset d3d11-Deferred_Context disabled, but wined3d-CSMT_Main depends on that."
@@ -1832,9 +1769,6 @@ if test "$enable_wined3d_CSMT_Main" -eq 1; then
 	if test "$enable_wined3d_Dual_Source_Blending" -gt 1; then
 		abort "Patchset wined3d-Dual_Source_Blending disabled, but wined3d-CSMT_Main depends on that."
 	fi
-	if test "$enable_wined3d_QUERY_Stubs" -gt 1; then
-		abort "Patchset wined3d-QUERY_Stubs disabled, but wined3d-CSMT_Main depends on that."
-	fi
 	if test "$enable_wined3d_Silence_FIXMEs" -gt 1; then
 		abort "Patchset wined3d-Silence_FIXMEs disabled, but wined3d-CSMT_Main depends on that."
 	fi
@@ -1846,7 +1780,6 @@ if test "$enable_wined3d_CSMT_Main" -eq 1; then
 	enable_wined3d_Accounting=1
 	enable_wined3d_DXTn=1
 	enable_wined3d_Dual_Source_Blending=1
-	enable_wined3d_QUERY_Stubs=1
 	enable_wined3d_Silence_FIXMEs=1
 	enable_wined3d_UAV_Counters=1
 fi
@@ -1885,13 +1818,6 @@ if test "$enable_windowscodecs_TIFF_Support" -eq 1; then
 	fi
 	enable_windowscodecs_GIF_Encoder=1
 	enable_windowscodecs_IWICPalette_InitializeFromBitmap=1
-fi
-
-if test "$enable_windowscodecs_GIF_Encoder" -eq 1; then
-	if test "$enable_windowscodecs_Palette_Images" -gt 1; then
-		abort "Patchset windowscodecs-Palette_Images disabled, but windowscodecs-GIF_Encoder depends on that."
-	fi
-	enable_windowscodecs_Palette_Images=1
 fi
 
 if test "$enable_uxtheme_GTK_Theming" -eq 1; then
@@ -2017,11 +1943,7 @@ if test "$enable_ntoskrnl_Stubs" -eq 1; then
 	if test "$enable_Compiler_Warnings" -gt 1; then
 		abort "Patchset Compiler_Warnings disabled, but ntoskrnl-Stubs depends on that."
 	fi
-	if test "$enable_ntoskrnl_Synchronization" -gt 1; then
-		abort "Patchset ntoskrnl-Synchronization disabled, but ntoskrnl-Stubs depends on that."
-	fi
 	enable_Compiler_Warnings=1
-	enable_ntoskrnl_Synchronization=1
 fi
 
 if test "$enable_ntdll_SystemRoot_Symlink" -eq 1; then
@@ -2043,13 +1965,6 @@ if test "$enable_ntdll_WRITECOPY" -eq 1; then
 		abort "Patchset ntdll-User_Shared_Data disabled, but ntdll-WRITECOPY depends on that."
 	fi
 	enable_ntdll_User_Shared_Data=1
-fi
-
-if test "$enable_ntdll_RtlGetUnloadEventTraceEx" -eq 1; then
-	if test "$enable_ntdll_RtlQueryPackageIdentity" -gt 1; then
-		abort "Patchset ntdll-RtlQueryPackageIdentity disabled, but ntdll-RtlGetUnloadEventTraceEx depends on that."
-	fi
-	enable_ntdll_RtlQueryPackageIdentity=1
 fi
 
 if test "$enable_ntdll_RtlCreateUserThread" -eq 1; then
@@ -2099,13 +2014,6 @@ if test "$enable_ntdll_Junction_Points" -eq 1; then
 		abort "Patchset ntdll-NtQueryEaFile disabled, but ntdll-Junction_Points depends on that."
 	fi
 	enable_ntdll_NtQueryEaFile=1
-fi
-
-if test "$enable_ntdll_NtQueryEaFile" -eq 1; then
-	if test "$enable_kernel32_SetFileCompletionNotificationModes" -gt 1; then
-		abort "Patchset kernel32-SetFileCompletionNotificationModes disabled, but ntdll-NtQueryEaFile depends on that."
-	fi
-	enable_kernel32_SetFileCompletionNotificationModes=1
 fi
 
 if test "$enable_ntdll_HashLinks" -eq 1; then
@@ -2158,15 +2066,11 @@ if test "$enable_ntdll_ApiSetMap" -eq 1; then
 	enable_ntdll_ThreadTime=1
 fi
 
-if test "$enable_loader_OSX_Preloader" -eq 1; then
-	if test "$enable_Staging" -gt 1; then
-		abort "Patchset Staging disabled, but loader-OSX_Preloader depends on that."
+if test "$enable_libs_Unicode_Collation" -eq 1; then
+	if test "$enable_kernel32_NormalizeString" -gt 1; then
+		abort "Patchset kernel32-NormalizeString disabled, but libs-Unicode_Collation depends on that."
 	fi
-	if test "$enable_configure_Absolute_RPATH" -gt 1; then
-		abort "Patchset configure-Absolute_RPATH disabled, but loader-OSX_Preloader depends on that."
-	fi
-	enable_Staging=1
-	enable_configure_Absolute_RPATH=1
+	enable_kernel32_NormalizeString=1
 fi
 
 if test "$enable_kernel32_Processor_Group" -eq 1; then
@@ -2437,6 +2341,23 @@ if test "$enable_advapi32_LsaLookupSids" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset advapi32-RegLoadAppKey
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#41591] advapi32: Add RegLoadAppKeyA/RegLoadAppKeyW stubs
+# |
+# | Modified files:
+# |   *	dlls/advapi32/advapi32.spec, dlls/advapi32/registry.c, dlls/api-ms-win-core-registry-l1-1-0/api-ms-win-core-
+# | 	registry-l1-1-0.spec, dlls/api-ms-win-downlevel-advapi32-l1-1-0/api-ms-win-downlevel-advapi32-l1-1-0.spec,
+# | 	dlls/kernelbase/kernelbase.spec, include/winreg.h
+# |
+if test "$enable_advapi32_RegLoadAppKey" -eq 1; then
+	patch_apply advapi32-RegLoadAppKey/0001-advapi32-Add-RegLoadAppKeyA-RegLoadAppKeyW-stubs.patch
+	(
+		printf '%s\n' '+    { "Austin English", "advapi32: Add RegLoadAppKeyA/RegLoadAppKeyW stubs.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset advapi32-SetSecurityInfo
 # |
 # | This patchset fixes the following Wine bugs:
@@ -2464,10 +2385,9 @@ fi
 # |   *	[#39262] Run explorer.exe as unevaluated process
 # |
 # | Modified files:
-# |   *	configure.ac, dlls/advapi32/security.c, dlls/advapi32/tests/Makefile.in, dlls/advapi32/tests/security.c,
-# | 	dlls/kernel32/kernel32.spec, dlls/kernel32/process.c, dlls/kernelbase/kernelbase.spec, dlls/ntdll/loader.c,
-# | 	dlls/ntdll/nt.c, dlls/ntdll/ntdll.spec, dlls/ntdll/ntdll_misc.h, dlls/ntdll/process.c, dlls/shell32/shlexec.c,
-# | 	dlls/user32/win.c, include/winbase.h, programs/runas/Makefile.in, programs/runas/runas.c, programs/runas/runas.h,
+# |   *	configure.ac, dlls/advapi32/tests/Makefile.in, dlls/advapi32/tests/security.c, dlls/kernel32/process.c,
+# | 	dlls/ntdll/loader.c, dlls/ntdll/nt.c, dlls/ntdll/ntdll.spec, dlls/ntdll/ntdll_misc.h, dlls/ntdll/process.c,
+# | 	dlls/shell32/shlexec.c, dlls/user32/win.c, programs/runas/Makefile.in, programs/runas/runas.c, programs/runas/runas.h,
 # | 	programs/runas/runas.rc, server/process.c, server/process.h, server/protocol.def, server/request.c, server/security.h,
 # | 	server/token.c
 # |
@@ -2480,9 +2400,7 @@ if test "$enable_advapi32_Token_Integrity_Level" -eq 1; then
 	patch_apply advapi32-Token_Integrity_Level/0006-ntdll-Add-function-to-create-new-tokens-for-elevatio.patch
 	patch_apply advapi32-Token_Integrity_Level/0007-shell32-Implement-process-elevation-using-runas-verb.patch
 	patch_apply advapi32-Token_Integrity_Level/0008-ntdll-Implement-process-token-elevation-through-mani.patch
-	patch_apply advapi32-Token_Integrity_Level/0009-kernel32-Implement-CreateProcessInternalW.patch
 	patch_apply advapi32-Token_Integrity_Level/0010-server-Implement-support-for-creating-processes-usin.patch
-	patch_apply advapi32-Token_Integrity_Level/0011-advapi32-Use-token-in-CreateProcessAsUserW-and-Creat.patch
 	patch_apply advapi32-Token_Integrity_Level/0012-user32-Start-explorer.exe-using-limited-rights.patch
 	patch_apply advapi32-Token_Integrity_Level/0013-server-Correctly-assign-security-labels-for-tokens.patch
 	patch_apply advapi32-Token_Integrity_Level/0014-programs-runas-Basic-implementation-for-starting-pro.patch
@@ -2496,30 +2414,11 @@ if test "$enable_advapi32_Token_Integrity_Level" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "ntdll: Add function to create new tokens for elevation purposes.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "shell32: Implement process elevation using runas verb.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ntdll: Implement process token elevation through manifests.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "kernel32: Implement CreateProcessInternalW.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "server: Implement support for creating processes using a token.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "advapi32: Use token in CreateProcessAsUserW and CreateProcessWithTokenW.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "user32: Start explorer.exe using limited rights.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "server: Correctly assign security labels for tokens.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "programs/runas: Basic implementation for starting processes with a different trustlevel.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Add semi-stub for TokenLinkedToken info class.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset advapi32-WinBuiltinAnyPackageSid
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#41934] Assigns the AC abbreviation to WinBuiltinAnyPackageSid
-# |
-# | Modified files:
-# |   *	dlls/advapi32/security.c, dlls/advapi32/tests/security.c
-# |
-if test "$enable_advapi32_WinBuiltinAnyPackageSid" -eq 1; then
-	patch_apply advapi32-WinBuiltinAnyPackageSid/0001-advapi32-SDDL-assigns-the-AC-abbreviation-to-WinBuil.patch
-	patch_apply advapi32-WinBuiltinAnyPackageSid/0002-advapi32-tests-Add-a-test-that-compares-a-well-known.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "advapi32: SDDL assigns the \"AC\" abbreviation to WinBuiltinAnyPackageSid.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "advapi32/tests: Add a test that compares a well-known SID to a SID created from a SDDL abbreviation.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -2544,6 +2443,21 @@ if test "$enable_api_ms_win_Stub_DLLs" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-appmodel-usercontext-l1-1-0: Add dll and add stub for UserContextExtInitialize.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "ext-ms-win-xaml-pal-l1-1-0: Add stub for GetThemeServices.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "uiautomationcore: Add dll and stub some functions.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset atl-AtlAxDialogBox
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#32749] atl: Implemented AtlAxDialogBox[A,W]
+# |
+# | Modified files:
+# |   *	dlls/atl/atl_ax.c
+# |
+if test "$enable_atl_AtlAxDialogBox" -eq 1; then
+	patch_apply atl-AtlAxDialogBox/0001-atl-Implement-AtlAxDialogBox-A-W.patch
+	(
+		printf '%s\n' '+    { "Qian Hong", "atl: Implement AtlAxDialogBox[A,W].", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -2579,7 +2493,8 @@ fi
 # |   *	[#42704] Implement BCryptDeriveKeyPBKDF2
 # |
 # | Modified files:
-# |   *	dlls/bcrypt/bcrypt.spec, dlls/bcrypt/bcrypt_main.c, dlls/bcrypt/tests/bcrypt.c, include/bcrypt.h
+# |   *	dlls/bcrypt/bcrypt.spec, dlls/bcrypt/bcrypt_main.c, dlls/bcrypt/tests/bcrypt.c, dlls/ncrypt/ncrypt.spec,
+# | 	include/bcrypt.h
 # |
 if test "$enable_bcrypt_BCryptDeriveKeyPBKDF2" -eq 1; then
 	patch_apply bcrypt-BCryptDeriveKeyPBKDF2/0001-bcrypt-Implement-BCryptDeriveKeyPBKDF2-and-add-test-.patch
@@ -2594,7 +2509,8 @@ fi
 # |   *	[#45312] Fix issue for Assassin's Creed : Syndicate
 # |
 # | Modified files:
-# |   *	dlls/bcrypt/bcrypt.spec, dlls/bcrypt/bcrypt_internal.h, dlls/bcrypt/bcrypt_main.c, include/bcrypt.h
+# |   *	dlls/bcrypt/bcrypt.spec, dlls/bcrypt/bcrypt_internal.h, dlls/bcrypt/bcrypt_main.c, dlls/ncrypt/ncrypt.spec,
+# | 	include/bcrypt.h
 # |
 if test "$enable_bcrypt_BCryptGenerateKeyPair" -eq 1; then
 	patch_apply bcrypt-BCryptGenerateKeyPair/0001-bcrypt-Add-support-for-algorithm-ECDH-P256.patch
@@ -2604,18 +2520,6 @@ if test "$enable_bcrypt_BCryptGenerateKeyPair" -eq 1; then
 		printf '%s\n' '+    { "Maxime Lombard", "bcrypt: Add support for algorithm ECDH P256.", 1 },';
 		printf '%s\n' '+    { "Maxime Lombard", "bcrypt: Add BCryptGenerateKeyPair stub.", 1 },';
 		printf '%s\n' '+    { "Maxime Lombard", "bcrypt: Add BCryptFinalizeKeyPair stub.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset browseui-Progress_Dialog
-# |
-# | Modified files:
-# |   *	dlls/browseui/browseui.rc, dlls/browseui/progressdlg.c, dlls/browseui/resids.h
-# |
-if test "$enable_browseui_Progress_Dialog" -eq 1; then
-	patch_apply browseui-Progress_Dialog/0002-browseui-Implement-PROGDLG_AUTOTIME-flag-for-IProgre.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "browseui: Implement PROGDLG_AUTOTIME flag for IProgressDialog.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -2906,24 +2810,6 @@ if test "$enable_d3d11_Deferred_Context" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset d3d11-Depth_Bias
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#43848] Implement support for depth bias clamping
-# |
-# | Modified files:
-# |   *	dlls/d3d10core/tests/d3d10core.c, dlls/d3d11/device.c, dlls/wined3d/adapter_gl.c, dlls/wined3d/cs.c,
-# | 	dlls/wined3d/state.c, dlls/wined3d/stateblock.c, dlls/wined3d/utils.c, dlls/wined3d/wined3d_gl.h, include/wine/wined3d.h
-# |
-if test "$enable_d3d11_Depth_Bias" -eq 1; then
-	patch_apply d3d11-Depth_Bias/0006-wined3d-Add-support-for-depth-bias-clamping.patch
-	patch_apply d3d11-Depth_Bias/0007-d3d10core-tests-Add-test-for-depth-bias-clamp.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "wined3d: Add support for depth bias clamping.", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "d3d10core/tests: Add test for depth bias clamp.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset d3d8-ValidateShader
 # |
 # | This patchset fixes the following Wine bugs:
@@ -3024,6 +2910,21 @@ if test "$enable_d3dx9_36_D3DXDisassembleShader" -eq 1; then
 		printf '%s\n' '+    { "Christian Costa", "d3dx9_36: Implement D3DXDisassembleShader.", 2 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "d3dx9_36/tests: Add initial tests for D3DXDisassembleShader.", 1 },';
 		printf '%s\n' '+    { "Christian Costa", "d3dx9_36/tests: Add additional tests for special cases.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset d3dx9_36-D3DXMatrixTransformation
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#33456] d3dx9_36: D3DXMatrixTransformation support NULL scaling matrix
+# |
+# | Modified files:
+# |   *	dlls/d3dx9_36/math.c, dlls/d3dx9_36/tests/math.c
+# |
+if test "$enable_d3dx9_36_D3DXMatrixTransformation" -eq 1; then
+	patch_apply d3dx9_36-D3DXMatrixTransformation/0001-d3dx9_36-tests-Fix-D3DXMatrixTransformation-when-the.patch
+	(
+		printf '%s\n' '+    { "David Adam", "d3dx9_36/tests: Fix D3DXMatrixTransformation when the scaling matrix is NULL.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3327,21 +3228,6 @@ if test "$enable_ddraw_IDirect3DTexture2_Load" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ddraw-Prevent_viewport_crash
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#36763] Prevent division by zero in viewport_activate
-# |
-# | Modified files:
-# |   *	dlls/ddraw/viewport.c
-# |
-if test "$enable_ddraw_Prevent_viewport_crash" -eq 1; then
-	patch_apply ddraw-Prevent_viewport_crash/0001-ddraw-Prevent-division-by-zero-in-viewport_acti.patch
-	(
-		printf '%s\n' '+    { "Józef Kucia", "ddraw: Prevent division by zero in viewport_activate.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ddraw-Rendering_Targets
 # |
 # | This patchset fixes the following Wine bugs:
@@ -3496,14 +3382,12 @@ fi
 if test "$enable_dwrite_FontFallback" -eq 1; then
 	patch_apply dwrite-FontFallback/0001-dwrite-Test-IDWriteTextFormat-with-nonexistent-font.patch
 	patch_apply dwrite-FontFallback/0002-dwrite-Test-GetMetrics-with-custom-fontcollection.patch
-	patch_apply dwrite-FontFallback/0003-dwrite-Skip-failing-font-metrics-test-for-Goha.patch
 	patch_apply dwrite-FontFallback/0004-dwrite-Use-font-fallback-when-mapping-characters.patch
 	patch_apply dwrite-FontFallback/0005-dwrite-Use-MapCharacters-for-non-visual-characters.patch
 	patch_apply dwrite-FontFallback/0006-dwrite-Use-MapCharacters-for-dummy-line-metrics.patch
 	(
 		printf '%s\n' '+    { "Lucian Poston", "dwrite: Test IDWriteTextFormat with nonexistent font.", 1 },';
 		printf '%s\n' '+    { "Lucian Poston", "dwrite: Test GetMetrics with custom fontcollection.", 1 },';
-		printf '%s\n' '+    { "Lucian Poston", "dwrite: Skip failing font metrics test for Goha.", 1 },';
 		printf '%s\n' '+    { "Lucian Poston", "dwrite: Use font fallback when mapping characters.", 1 },';
 		printf '%s\n' '+    { "Lucian Poston", "dwrite: Use MapCharacters for non-visual characters.", 1 },';
 		printf '%s\n' '+    { "Lucian Poston", "dwrite: Use MapCharacters for dummy line metrics.", 1 },';
@@ -3540,21 +3424,6 @@ if test "$enable_dxdiagn_GetChildContainer_Leaf_Nodes" -eq 1; then
 	patch_apply dxdiagn-GetChildContainer_Leaf_Nodes/0001-dxdiagn-Calling-GetChildContainer-with-an-empty-stri.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "dxdiagn: Calling GetChildContainer with an empty string on a leaf container returns the object itself.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset dxgi-GammaRamp
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#43584] Implement DXGI GammaControl methods
-# |
-# | Modified files:
-# |   *	dlls/dxgi/output.c, dlls/dxgi/tests/dxgi.c
-# |
-if test "$enable_dxgi_GammaRamp" -eq 1; then
-	patch_apply dxgi-GammaRamp/0001-dxgi-Implement-setting-and-querying-the-gamma-value-.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "dxgi: Implement setting and querying the gamma value of an output.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3697,37 +3566,6 @@ if test "$enable_gdi32_MultiMonitor" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset gdi32-Path_Metafile
-# |
-# | Modified files:
-# |   *	dlls/gdi32/path.c, dlls/gdi32/tests/metafile.c
-# |
-if test "$enable_gdi32_Path_Metafile" -eq 1; then
-	patch_apply gdi32-Path_Metafile/0001-gdi32-tests-Add-some-additional-tests-for-ExtExtOut-.patch
-	patch_apply gdi32-Path_Metafile/0002-gdi32-ExtTextOut-on-a-path-with-bitmap-font-selected.patch
-	patch_apply gdi32-Path_Metafile/0003-gdi32-tests-Explicitly-test-BeginPath-return-value-i.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "gdi32/tests: Add some additional tests for ExtExtOut on a path for an EMF DC.", 2 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "gdi32: ExtTextOut on a path with bitmap font selected shouldn'\''t fail.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "gdi32/tests: Explicitly test BeginPath() return value in the metafile path tests.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset gdi32-Symbol_Truetype_Font
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#33117] Improve detection of symbol charset for old truetype fonts
-# |
-# | Modified files:
-# |   *	dlls/gdi32/freetype.c
-# |
-if test "$enable_gdi32_Symbol_Truetype_Font" -eq 1; then
-	patch_apply gdi32-Symbol_Truetype_Font/0001-gdi32-Improve-detection-of-symbol-charset-for-old-tr.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "gdi32: Improve detection of symbol charset for old truetype fonts.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset gdiplus-Performance-Improvements
 # |
 # | Modified files:
@@ -3746,28 +3584,18 @@ if test "$enable_gdiplus_Performance_Improvements" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset hnetcfg-NATUPnP
+# Patchset hid-HidD_FlushQueue
 # |
 # | This patchset fixes the following Wine bugs:
-# |   *	[#34711] hnetcfg: Add Support for interface UPnPNAT
+# |   *	[#45878] Implement HidD_FlushQueue
 # |
 # | Modified files:
-# |   *	dlls/hnetcfg/Makefile.in, dlls/hnetcfg/apps.c, dlls/hnetcfg/hnetcfg.c, dlls/hnetcfg/hnetcfg_private.h,
-# | 	dlls/hnetcfg/hnetcfg_tlb.idl, dlls/hnetcfg/manager.c, dlls/hnetcfg/port.c, dlls/hnetcfg/tests/policy.c,
-# | 	dlls/uuid/uuid.c, include/Makefile.in, include/natupnp.idl
+# |   *	dlls/hid/hid.spec, dlls/hid/hidd.c
 # |
-if test "$enable_hnetcfg_NATUPnP" -eq 1; then
-	patch_apply hnetcfg-NATUPnP/0001-include-Add-natupnp.idl.patch
-	patch_apply hnetcfg-NATUPnP/0002-hnetcfg-Register-NATUPnP-interface.patch
-	patch_apply hnetcfg-NATUPnP/0003-hnetcfg-Support-IUPnPNAT-interface.patch
-	patch_apply hnetcfg-NATUPnP/0004-hnetcfg-Linked-to-uuid.patch
-	patch_apply hnetcfg-NATUPnP/0005-hnetcfg-tests-Add-IUPnPNAT-interface-tests.patch
+if test "$enable_hid_HidD_FlushQueue" -eq 1; then
+	patch_apply hid-HidD_FlushQueue/0001-hid-Implement-HidD_FlushQueue.patch
 	(
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "include: Add natupnp.idl.", 1 },';
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg: Register NATUPnP interface.", 1 },';
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg: Support IUPnPNAT interface.", 1 },';
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg: Linked to uuid.", 1 },';
-		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hnetcfg/tests: Add IUPnPNAT interface tests.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "hid: Implement HidD_FlushQueue.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -3945,18 +3773,6 @@ if test "$enable_kernel32_CopyFileEx" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset kernel32-Cwd_Startup_Info
-# |
-# | Modified files:
-# |   *	dlls/kernel32/process.c
-# |
-if test "$enable_kernel32_Cwd_Startup_Info" -eq 1; then
-	patch_apply kernel32-Cwd_Startup_Info/0001-kernel32-Allow-non-nullterminated-string-as-working-.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "kernel32: Allow non-nullterminated string as working directory in create_startup_info.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset kernel32-Debugger
 # |
 # | Modified files:
@@ -3983,25 +3799,6 @@ if test "$enable_kernel32_FindFirstFile" -eq 1; then
 	(
 		printf '%s\n' '+    { "Michael Müller", "kernel32: Strip invalid characters from mask in FindFirstFileExW.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "kernel32/tests: Add tests for FindFirstFileA with invalid characters.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset kernel32-GetShortPathName
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#39355] Fix handling of wildcard paths in GetShortPathName and GetLongPathName
-# |
-# | Modified files:
-# |   *	dlls/kernel32/path.c, dlls/kernel32/tests/path.c
-# |
-if test "$enable_kernel32_GetShortPathName" -eq 1; then
-	patch_apply kernel32-GetShortPathName/0001-kernel32-tests-Add-some-tests-for-GetLongPathName-Ge.patch
-	patch_apply kernel32-GetShortPathName/0002-kernel32-GetShortPathName-should-fail-when-called-wi.patch
-	patch_apply kernel32-GetShortPathName/0003-kernel32-GetLongPathName-should-fail-when-called-wit.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32/tests: Add some tests for GetLongPathName/GetShortPathName called with a wildcard.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32: GetShortPathName should fail when called with a wildcard.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32: GetLongPathName should fail when called with a wildcard.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4035,23 +3832,12 @@ fi
 # |   *	[#14901] MoveFile with source == dest should succeed.
 # |
 # | Modified files:
-# |   *	dlls/appwiz.cpl/addons.c, dlls/kernel32/path.c, dlls/kernel32/tests/file.c, dlls/msvcp120/tests/msvcp120.c,
-# | 	dlls/urlmon/tests/url.c, programs/cmd/tests/test_builtins.cmd.exp
+# |   *	dlls/appwiz.cpl/addons.c, dlls/urlmon/tests/url.c
 # |
 if test "$enable_kernel32_MoveFile" -eq 1; then
-	patch_apply kernel32-MoveFile/0001-kernel32-tests-Fix-compilation-with-PSDK.patch
-	patch_apply kernel32-MoveFile/0002-kernel32-tests-Fix-a-bunch-of-access-denied-errors-b.patch
-	patch_apply kernel32-MoveFile/0003-kernel32-tests-Move-the-MoveFile-test-where-it-belon.patch
-	patch_apply kernel32-MoveFile/0004-kernel32-MoveFile-source-source-should-succeed.patch
-	patch_apply kernel32-MoveFile/0005-kernel32-MoveFile-should-make-sure-that-it-has-the-d.patch
 	patch_apply kernel32-MoveFile/0006-urlmon-tests-Add-test-for-opening-cache-file-with-DE.patch
 	patch_apply kernel32-MoveFile/0007-appwiz.cpl-Copy-addons-to-cache-instead-of-moving.patch
 	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32/tests: Fix compilation with PSDK.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32/tests: Fix a bunch of access denied errors by using a dedicated TEMP directory.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32/tests: Move the MoveFile test where it belongs.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32: MoveFile(source, source) should succeed.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "kernel32: MoveFile should make sure that it has the delete access to the source file.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "urlmon/tests: Add test for opening cache file with DELETE access.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "appwiz.cpl: Copy addons to cache instead of moving.", 1 },';
 	) >> "$patchlist"
@@ -4073,6 +3859,28 @@ if test "$enable_kernel32_NeedCurrentDirectoryForExePath" -eq 1; then
 		printf '%s\n' '+    { "Erich E. Hoover", "kernel32: Add SearchPath test demonstrating the priority of the working directory.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "kernel32: NeedCurrentDirectoryForExePath does not use the registry.", 1 },';
 		printf '%s\n' '+    { "Erich E. Hoover", "kernel32: Consider the working directory first when launching executables with CreateProcess.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset kernel32-NormalizeString
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#42734] Implement NormalizeString
+# |
+# | Modified files:
+# |   *	dlls/kernel32/locale.c, dlls/kernel32/tests/locale.c, libs/port/compose.c, libs/port/decompose.c, libs/port/mbtowc.c,
+# | 	tools/make_unicode
+# |
+if test "$enable_kernel32_NormalizeString" -eq 1; then
+	patch_apply kernel32-NormalizeString/0001-tools-make_unicode-Implement-full-Unicode-character-.patch
+	patch_apply kernel32-NormalizeString/0002-tools-make_unicode-Implement-canonical-composition-f.patch
+	patch_apply kernel32-NormalizeString/0003-kernel32-Implement-NormalizeString-API-function.patch
+	patch_apply kernel32-NormalizeString/0004-libs-Generated-make_unicode-files.patch
+	(
+		printf '%s\n' '+    { "Sergio Gómez Del Real", "tools/make_unicode: Implement full Unicode character decomposition.", 1 },';
+		printf '%s\n' '+    { "Sergio Gómez Del Real", "tools/make_unicode: Implement canonical composition for use in normalization.", 1 },';
+		printf '%s\n' '+    { "Sergio Gómez Del Real", "kernel32: Implement NormalizeString API function.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "libs: Generated make_unicode files.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4103,8 +3911,9 @@ fi
 # |   *	api-ms-win-Stub_DLLs
 # |
 # | Modified files:
-# |   *	dlls/api-ms-win-core-kernel32-legacy-l1-1-0/api-ms-win-core-kernel32-legacy-l1-1-0.spec, dlls/kernel32/cpu.c,
-# | 	dlls/kernel32/kernel32.spec, dlls/kernel32/tests/process.c, dlls/kernel32/thread.c, include/winnt.h
+# |   *	dlls/api-ms-win-core-kernel32-legacy-l1-1-0/api-ms-win-core-kernel32-legacy-l1-1-0.spec, dlls/api-ms-win-core-
+# | 	kernel32-legacy-l1-1-1/api-ms-win-core-kernel32-legacy-l1-1-1.spec, dlls/kernel32/cpu.c, dlls/kernel32/kernel32.spec,
+# | 	dlls/kernel32/tests/process.c, dlls/kernel32/thread.c, include/winnt.h
 # |
 if test "$enable_kernel32_Processor_Group" -eq 1; then
 	patch_apply kernel32-Processor_Group/0001-kernel32-Implement-some-processor-group-functions.patch
@@ -4145,50 +3954,6 @@ if test "$enable_kernel32_SCSI_Sysfs" -eq 1; then
 	(
 		printf '%s\n' '+    { "Michael Müller", "kernel32: Convert scsi device type in SCSI_getprocentry.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "kernel32: Add support for reading scsi devices from sysfs.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset kernel32-SetFileCompletionNotificationModes
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#38960] Add support for kernel32.SetFileCompletionNotificationModes
-# |
-# | Modified files:
-# |   *	dlls/kernel32/file.c, dlls/ntdll/file.c, dlls/ntdll/tests/file.c, dlls/ntdll/tests/pipe.c, dlls/ws2_32/socket.c,
-# | 	dlls/ws2_32/tests/sock.c, server/async.c, server/fd.c, server/file.h, server/protocol.def
-# |
-if test "$enable_kernel32_SetFileCompletionNotificationModes" -eq 1; then
-	patch_apply kernel32-SetFileCompletionNotificationModes/0001-ntdll-Implement-FileIoCompletionNotificationInformat.patch
-	patch_apply kernel32-SetFileCompletionNotificationModes/0002-ntdll-Allow-to-query-file-IO-completion-notification.patch
-	patch_apply kernel32-SetFileCompletionNotificationModes/0003-ws2_32-tests-Add-test-for-completion-notification-fl.patch
-	patch_apply kernel32-SetFileCompletionNotificationModes/0004-ntdll-tests-Add-more-tests-for-FileIoCompletionNotif.patch
-	patch_apply kernel32-SetFileCompletionNotificationModes/0006-server-Skip-async-completion-when-possible.patch
-	patch_apply kernel32-SetFileCompletionNotificationModes/0007-ws2_32-Don-t-skip-completion-in-AcceptEx.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Implement FileIoCompletionNotificationInformation info class.", 2 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Allow to query file IO completion notification mode.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "ws2_32/tests: Add test for completion notification flags.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "ntdll/tests: Add more tests for FileIoCompletionNotificationInformation.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "server: Skip async completion when possible.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "ws2_32: Don'\''t skip completion in AcceptEx.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset kernelbase-PathCchCombineEx
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#42474] Implement kernelbase.PathCchCombineEx
-# |
-# | Modified files:
-# |   *	dlls/api-ms-win-core-path-l1-1-0/api-ms-win-core-path-l1-1-0.spec, dlls/kernelbase/Makefile.in,
-# | 	dlls/kernelbase/kernelbase.spec, dlls/kernelbase/path.c, dlls/kernelbase/tests/path.c, include/pathcch.h
-# |
-if test "$enable_kernelbase_PathCchCombineEx" -eq 1; then
-	patch_apply kernelbase-PathCchCombineEx/0001-kernelbase-Add-semi-stub-for-PathCchCombineEx.patch
-	patch_apply kernelbase-PathCchCombineEx/0002-kernelbase-Implement-PathCchRemoveBackslash-PathCchR.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "kernelbase: Add semi-stub for PathCchCombineEx.", 1 },';
-		printf '%s\n' '+    { "Julien Schueller", "kernelbase: Implement PathCchRemoveBackslash()/PathCchRemoveBackslashEx().", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4251,6 +4016,9 @@ fi
 
 # Patchset libs-Unicode_Collation
 # |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	kernel32-NormalizeString
+# |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#10767] Fix comparison of punctuation characters in lstrcmp
 # |   *	[#32490] Graphical issues in Inquisitor
@@ -4262,27 +4030,6 @@ if test "$enable_libs_Unicode_Collation" -eq 1; then
 	patch_apply libs-Unicode_Collation/0001-libs-Fix-most-problems-with-CompareString.patch
 	(
 		printf '%s\n' '+    { "Dmitry Timoshkov", "libs: Fix most problems with CompareString.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset loader-OSX_Preloader
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	Staging, configure-Absolute_RPATH
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#33159] Implement preloader for Mac OS
-# |
-# | Modified files:
-# |   *	Makefile.in, configure.ac, dlls/ntdll/virtual.c, libs/wine/config.c, libs/wine/loader.c, loader/Makefile.in,
-# | 	loader/main.c, loader/preloader.c
-# |
-if test "$enable_loader_OSX_Preloader" -eq 1; then
-	patch_apply loader-OSX_Preloader/0001-libs-wine-Do-not-restrict-base-address-of-main-threa.patch
-	patch_apply loader-OSX_Preloader/0002-loader-Implement-preloader-for-Mac-OS.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "libs/wine: Do not restrict base address of main thread on 64 bit mac os.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "loader: Implement preloader for Mac OS.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -4718,6 +4465,9 @@ fi
 
 # Patchset ntdll-Exception
 # |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44819] Throw second DBG_PRINTEXCEPTION_C when debugging.
+# |
 # | Modified files:
 # |   *	dlls/kernel32/debugger.c, dlls/ntdll/tests/exception.c
 # |
@@ -4833,9 +4583,6 @@ fi
 
 # Patchset ntdll-NtQueryEaFile
 # |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	kernel32-SetFileCompletionNotificationModes
-# |
 # | Modified files:
 # |   *	dlls/ntdll/file.c, dlls/ntdll/tests/file.c
 # |
@@ -4849,7 +4596,7 @@ fi
 # Patchset ntdll-Junction_Points
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	kernel32-SetFileCompletionNotificationModes, ntdll-NtQueryEaFile
+# |   *	ntdll-NtQueryEaFile
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#12401] Support for Junction Points
@@ -4906,6 +4653,21 @@ if test "$enable_ntdll_LdrInitializeThunk" -eq 1; then
 	patch_apply ntdll-LdrInitializeThunk/0001-ntdll-Refactor-LdrInitializeThunk.patch
 	(
 		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Refactor LdrInitializeThunk.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset ntdll-Manifest_Range
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#18889] ntdll: Support ISOLATIONAWARE_MANIFEST_RESOURCE_ID range
+# |
+# | Modified files:
+# |   *	dlls/ntdll/actctx.c
+# |
+if test "$enable_ntdll_Manifest_Range" -eq 1; then
+	patch_apply ntdll-Manifest_Range/0001-ntdll-Support-ISOLATIONAWARE_MANIFEST_RESOURCE_ID-ra.patch
+	(
+		printf '%s\n' '+    { "André Hentschel", "ntdll: Support ISOLATIONAWARE_MANIFEST_RESOURCE_ID range.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5122,39 +4884,6 @@ if test "$enable_ntdll_RtlQueryPackageIdentity" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ntdll-RtlGetUnloadEventTraceEx
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-RtlQueryPackageIdentity
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44897] Implement stub for ntdll.RtlGetUnloadEventTraceEx
-# |
-# | Modified files:
-# |   *	dlls/ntdll/ntdll.spec, dlls/ntdll/rtl.c
-# |
-if test "$enable_ntdll_RtlGetUnloadEventTraceEx" -eq 1; then
-	patch_apply ntdll-RtlGetUnloadEventTraceEx/0001-ntdll-Add-stub-for-RtlGetUnloadEventTraceEx.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "ntdll: Add stub for RtlGetUnloadEventTraceEx.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset ntdll-RtlSetUnhandledExceptionFilter
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45566] League of Legends 8.12+ needs ntdll.RtlSetUnhandledExceptionFilter stub
-# |
-# | Modified files:
-# |   *	dlls/ntdll/exception.c, dlls/ntdll/ntdll.spec
-# |
-if test "$enable_ntdll_RtlSetUnhandledExceptionFilter" -eq 1; then
-	patch_apply ntdll-RtlSetUnhandledExceptionFilter/0001-ntdll-Add-RtlSetUnhandledExceptionFilter-stub.patch
-	(
-		printf '%s\n' '+    { "Andrew Wesie", "ntdll: Add RtlSetUnhandledExceptionFilter stub.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ntdll-Serial_Port_Detection
 # |
 # | This patchset fixes the following Wine bugs:
@@ -5312,7 +5041,7 @@ fi
 # |   *	[#14697] Do not allow interruption of system APC in server_select
 # |
 # | Modified files:
-# |   *	dlls/kernel32/tests/sync.c, dlls/ntdll/server.c
+# |   *	dlls/kernel32/tests/sync.c, dlls/ntdll/ntdll_misc.h, dlls/ntdll/server.c, dlls/ntdll/sync.c
 # |
 if test "$enable_ntdll_Wait_User_APC" -eq 1; then
 	patch_apply ntdll-Wait_User_APC/0001-ntdll-Block-signals-while-executing-system-APCs.patch
@@ -5360,59 +5089,10 @@ if test "$enable_ntdll_set_full_cpu_context" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset ntoskrnl-Synchronization
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44588] Multiple kernel drivers need ntoskrnl.exe.KeWaitForMultipleObjects semi-stub (Franson VSerial service
-# | 	'bizvserialnt.sys')
-# |
-# | Modified files:
-# |   *	dlls/ntoskrnl.exe/Makefile.in, dlls/ntoskrnl.exe/ntoskrnl.c, dlls/ntoskrnl.exe/ntoskrnl.exe.spec,
-# | 	dlls/ntoskrnl.exe/sync.c, dlls/ntoskrnl.exe/tests/driver.c, include/ddk/ntddk.h, include/ddk/wdm.h
-# |
-if test "$enable_ntoskrnl_Synchronization" -eq 1; then
-	patch_apply ntoskrnl-Synchronization/0001-ntoskrnl.exe-Implement-KeWaitForMultipleObjects.patch
-	patch_apply ntoskrnl-Synchronization/0002-ntoskrnl.exe-Implement-KeInitializeEvent.patch
-	patch_apply ntoskrnl-Synchronization/0003-ntoskrnl.exe-Implement-KeSetEvent.patch
-	patch_apply ntoskrnl-Synchronization/0004-ntoskrnl.exe-Implement-KeResetEvent.patch
-	patch_apply ntoskrnl-Synchronization/0005-ntoskrnl.exe-Implement-KeClearEvent.patch
-	patch_apply ntoskrnl-Synchronization/0006-ntoskrnl.exe-Implement-KeWaitForSingleObject.patch
-	patch_apply ntoskrnl-Synchronization/0007-ntoskrnl.exe-tests-Add-some-tests-for-synchronizatio.patch
-	patch_apply ntoskrnl-Synchronization/0008-ntoskrnl.exe-Implement-KeInitializeSemaphore.patch
-	patch_apply ntoskrnl-Synchronization/0009-ntoskrnl.exe-Implement-KeReleaseSemaphore-and-waitin.patch
-	patch_apply ntoskrnl-Synchronization/0010-ntoskrnl.exe-Implement-KeInitializeMutex.patch
-	patch_apply ntoskrnl-Synchronization/0011-ntoskrnl.exe-Implement-KeReleaseMutex-and-waiting-on.patch
-	patch_apply ntoskrnl-Synchronization/0012-ntoskrnl.exe-Implement-KeWaitForMutexObject.patch
-	patch_apply ntoskrnl-Synchronization/0013-ntoskrnl.exe-Implement-KeInitializeTimerEx.patch
-	patch_apply ntoskrnl-Synchronization/0014-ntoskrnl.exe-Implement-KeSetTimerEx-and-waiting-on-t.patch
-	patch_apply ntoskrnl-Synchronization/0015-ntoskrnl.exe-Implement-KeCancelTimer.patch
-	patch_apply ntoskrnl-Synchronization/0016-ntoskrnl.exe-tests-Add-tests-for-waiting-on-timers.patch
-	patch_apply ntoskrnl-Synchronization/0017-ntoskrnl.exe-Implement-KeDelayExecutionThread.patch
-	(
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeWaitForMultipleObjects().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeEvent().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeSetEvent().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeResetEvent().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeClearEvent().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeWaitForSingleObject().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe/tests: Add some tests for synchronization functions.", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeSemaphore().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeReleaseSemaphore() and waiting on semaphores.", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeMutex().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeReleaseMutex() and waiting on mutexes.", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeWaitForMutexObject().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeInitializeTimerEx().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeSetTimerEx() and waiting on timers.", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeCancelTimer().", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe/tests: Add tests for waiting on timers.", 1 },';
-		printf '%s\n' '+    { "Zebediah Figura", "ntoskrnl.exe: Implement KeDelayExecutionThread().", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset ntoskrnl-Stubs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	Compiler_Warnings, ntoskrnl-Synchronization
+# |   *	Compiler_Warnings
 # |
 # | Modified files:
 # |   *	dlls/ntoskrnl.exe/ntoskrnl.c, dlls/ntoskrnl.exe/ntoskrnl.exe.spec, dlls/ntoskrnl.exe/tests/driver.c, include/ddk/wdm.h,
@@ -5541,36 +5221,6 @@ if test "$enable_oleaut32_CreateTypeLib" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset oleaut32-DispCallFunc
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#40160] Fix calling function with instance and VARIANT return type in DispCallFunc
-# |
-# | Modified files:
-# |   *	dlls/oleaut32/tests/typelib.c, dlls/oleaut32/typelib.c
-# |
-if test "$enable_oleaut32_DispCallFunc" -eq 1; then
-	patch_apply oleaut32-DispCallFunc/0001-oleaut32-Fix-calling-function-with-instance-and-VARI.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "oleaut32: Fix calling function with instance and VARIANT return type.", 2 },';
-	) >> "$patchlist"
-fi
-
-# Patchset oleaut32-ITypeInfo_fnInvoke
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#41488] Accept DISP_E_PARAMNOTFOUND for missing optional param in typelib implementation
-# |
-# | Modified files:
-# |   *	dlls/oleaut32/tests/tmarshal.c, dlls/oleaut32/typelib.c
-# |
-if test "$enable_oleaut32_ITypeInfo_fnInvoke" -eq 1; then
-	patch_apply oleaut32-ITypeInfo_fnInvoke/0001-oleaut32-Accept-DISP_E_PARAMNOTFOUND-for-missing-opt.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "oleaut32: Accept DISP_E_PARAMNOTFOUND for missing optional parameters in ITypeInfo::Invoke implementation.", 3 },';
-	) >> "$patchlist"
-fi
-
 # Patchset oleaut32-Load_Save_EMF
 # |
 # | This patchset fixes the following Wine bugs:
@@ -5641,62 +5291,6 @@ if test "$enable_oleaut32_OleLoadPictureFile" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset oleaut32-TKIND_COCLASS
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#19016] Implement marshalling for TKIND_COCLASS
-# |   *	[#39799] Implement ITypeInfo_fnInvoke for TKIND_COCLASS
-# |
-# | Modified files:
-# |   *	dlls/oleaut32/tests/tmarshal.c, dlls/oleaut32/tmarshal.c, dlls/oleaut32/typelib.c
-# |
-if test "$enable_oleaut32_TKIND_COCLASS" -eq 1; then
-	patch_apply oleaut32-TKIND_COCLASS/0001-oleaut32-Pass-a-HREFTYPE-to-get_iface_guid.patch
-	patch_apply oleaut32-TKIND_COCLASS/0002-oleaut32-Implement-ITypeInfo_fnInvoke-for-TKIND_COCL.patch
-	patch_apply oleaut32-TKIND_COCLASS/0003-oleaut32-Handle-TKIND_COCLASS-in-proxy-stub-marshall.patch
-	patch_apply oleaut32-TKIND_COCLASS/0004-oleaut32-tests-Add-a-test-for-TKIND_COCLASS-in-proxy.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Pass a HREFTYPE to get_iface_guid.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Implement ITypeInfo_fnInvoke for TKIND_COCLASS in arguments.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Handle TKIND_COCLASS in proxy/stub marshalling.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32/tests: Add a test for TKIND_COCLASS in proxy/stub marshalling.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset oleaut32-x86_64_Marshaller
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#26768] Implement stubless proxies on x86_64
-# |
-# | Modified files:
-# |   *	dlls/oleaut32/tmarshal.c, dlls/oleaut32/typelib.c, dlls/oleaut32/typelib.h
-# |
-if test "$enable_oleaut32_x86_64_Marshaller" -eq 1; then
-	patch_apply oleaut32-x86_64_Marshaller/0001-oleaut32-Initial-preparation-to-make-marshalling-com.patch
-	patch_apply oleaut32-x86_64_Marshaller/0002-oleaut32-Implement-TMStubImpl_Invoke-on-x86_64.patch
-	patch_apply oleaut32-x86_64_Marshaller/0003-oleaut32-Implement-asm-proxys-for-x86_64.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Initial preparation to make marshalling compatible with x86_64.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Implement TMStubImpl_Invoke on x86_64.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "oleaut32: Implement asm proxys for x86_64.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset opengl32-glDebugMessageCallback
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#38402] Fix calling convention of glDebugMessageCallback callback function
-# |
-# | Modified files:
-# |   *	dlls/opengl32/make_opengl, dlls/opengl32/opengl_ext.c, dlls/opengl32/tests/opengl.c, dlls/opengl32/wgl.c
-# |
-if test "$enable_opengl32_glDebugMessageCallback" -eq 1; then
-	patch_apply opengl32-glDebugMessageCallback/0002-opengl32-Add-wrappers-for-glDebugMessageCallback-to-.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "opengl32: Add wrappers for glDebugMessageCallback to handle calling convention differences.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset opengl32-wglChoosePixelFormat
 # |
 # | This patchset fixes the following Wine bugs:
@@ -5756,6 +5350,21 @@ if test "$enable_quartz_Silence_FIXMEs" -eq 1; then
 	patch_apply quartz-Silence_FIXMEs/0001-quartz-Don-t-print-FIXME-for-IAMFilterMiscFlags-in-p.patch
 	(
 		printf '%s\n' '+    { "Christian Costa", "quartz: Don'\''t print FIXME for IAMFilterMiscFlags in parsers.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset qwave-QOSCreateHandle
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#46174] qwave: Added QOSCreateHandle stub
+# |
+# | Modified files:
+# |   *	dlls/qwave/main.c, dlls/qwave/qwave.spec, include/qos2.h
+# |
+if test "$enable_qwave_QOSCreateHandle" -eq 1; then
+	patch_apply qwave-QOSCreateHandle/0001-qwave-Added-QOSCreateHandle-stub.patch
+	(
+		printf '%s\n' '+    { "Gijs Vermeulen", "qwave: Added QOSCreateHandle stub.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5941,7 +5550,7 @@ fi
 if test "$enable_server_Signal_Thread" -eq 1; then
 	patch_apply server-Signal_Thread/0001-server-Do-not-signal-thread-until-it-is-really-gone.patch
 	(
-		printf '%s\n' '+    { "Sebastian Lackner", "server: Do not signal thread until it is really gone.", 1 },';
+		printf '%s\n' '+    { "Sebastian Lackner", "server: Do not signal violently terminated threads until they are really gone.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -5965,7 +5574,6 @@ if test "$enable_server_Shared_Memory" -eq 1; then
 	patch_apply server-Shared_Memory/0006-ntdll-Only-enable-wineserver-shared-memory-communica.patch
 	patch_apply server-Shared_Memory/0007-server-Store-a-list-of-associated-queues-for-each-th.patch
 	patch_apply server-Shared_Memory/0008-user32-Get-rid-of-wineserver-call-for-GetActiveWindo.patch
-	patch_apply server-Shared_Memory/0009-user32-Cache-the-result-of-GetForegroundWindow.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Implement virtual_map_shared_memory.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "server: Implement support for global and local shared memory blocks based on memfd.", 1 },';
@@ -5975,7 +5583,6 @@ if test "$enable_server_Shared_Memory" -eq 1; then
 		printf '%s\n' '+    { "Sebastian Lackner", "ntdll: Only enable wineserver shared memory communication when a special environment variable is set.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "server: Store a list of associated queues for each thread input.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "user32: Get rid of wineserver call for GetActiveWindow, GetFocus, GetCapture.", 1 },';
-		printf '%s\n' '+    { "Sebastian Lackner", "user32: Cache the result of GetForegroundWindow.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6071,21 +5678,6 @@ if test "$enable_server_device_manager_destroy" -eq 1; then
 	patch_apply server-device_manager_destroy/0001-server-Fix-crash-when-a-device-driver-segfaults-duri.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "server: Fix crash when a device driver segfaults during an open file request.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset server-send_hardware_message
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#43102] Improve handling of hooks for normal (non-injected) hardware messages
-# |
-# | Modified files:
-# |   *	server/queue.c
-# |
-if test "$enable_server_send_hardware_message" -eq 1; then
-	patch_apply server-send_hardware_message/0001-server-Improve-handling-of-hooks-for-normal-non-inje.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "server: Improve handling of hooks for normal (non-injected) hardware messages.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6199,15 +5791,18 @@ fi
 
 # Patchset setupapi-SetupDiGetDeviceInterfaceDetail
 # |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45963] - Add SetupDiInstallDeviceInterfaces/SetupDiRegisterCoDeviceInstallers stubs
+# |
 # | Modified files:
-# |   *	dlls/setupapi/devinst.c, dlls/setupapi/setupapi.spec, dlls/setupapi/tests/devinst.c
+# |   *	dlls/setupapi/devinst.c, dlls/setupapi/setupapi.spec
 # |
 if test "$enable_setupapi_SetupDiGetDeviceInterfaceDetail" -eq 1; then
-	patch_apply setupapi-SetupDiGetDeviceInterfaceDetail/0001-setupapi-Add-spec-file-stub-entry-for-SetupDiInstall.patch
-	patch_apply setupapi-SetupDiGetDeviceInterfaceDetail/0002-setupapi-SetupDiGetDeviceInterfaceDetail-should-fill.patch
+	patch_apply setupapi-SetupDiGetDeviceInterfaceDetail/0001-setupapi-Add-SetupDiInstallDeviceInterfaces.patch
+	patch_apply setupapi-SetupDiGetDeviceInterfaceDetail/0002-setupapi-Add-SetupDiRegisterCoDeviceInstallers-stub.patch
 	(
-		printf '%s\n' '+    { "Michael Müller", "setupapi: Add spec file stub entry for SetupDiInstallDeviceInterfaces and SetupDiRegisterCoDeviceInstallers.", 1 },';
-		printf '%s\n' '+    { "Michael Müller", "setupapi: SetupDiGetDeviceInterfaceDetail should fill out DeviceInfoData even if the buffer for DeviceInterfaceData is too small.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "setupapi: Add SetupDiInstallDeviceInterfaces.", 1 },';
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "setupapi: Add SetupDiRegisterCoDeviceInstallers stub.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6328,6 +5923,21 @@ if test "$enable_shell32_Context_Menu" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset shell32-IconCache
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45696] shell32: Generate icons from available icons if required.
+# |
+# | Modified files:
+# |   *	dlls/shell32/iconcache.c
+# |
+if test "$enable_shell32_IconCache" -eq 1; then
+	patch_apply shell32-IconCache/0001-shell32-iconcache-Generate-icons-from-available-icons-.patch
+	(
+		printf '%s\n' '+    { "Gabriel Ivăncescu", "shell32/iconcache: Generate icons from available icons if some icon sizes failed to load.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset shell32-NewMenu_Interface
 # |
 # | This patchset fixes the following Wine bugs:
@@ -6361,15 +5971,18 @@ if test "$enable_shell32_SFGAO_HASSUBFOLDER" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset shell32-SHELL_execute
+# Patchset shell32-SHGetStockIconInfo
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45868] Improve semi-stub SHGetStockIconInfo
 # |
 # | Modified files:
-# |   *	dlls/shell32/shlexec.c, dlls/shell32/tests/shlexec.c
+# |   *	dlls/shell32/iconcache.c, dlls/shell32/tests/shelllink.c
 # |
-if test "$enable_shell32_SHELL_execute" -eq 1; then
-	patch_apply shell32-SHELL_execute/0001-shell32-Properly-fail-when-a-data-object-cannot-be-i.patch
+if test "$enable_shell32_SHGetStockIconInfo" -eq 1; then
+	patch_apply shell32-SHGetStockIconInfo/0001-shell32-Improve-semi-stub-SHGetStockIconInfo-try-fin.patch
 	(
-		printf '%s\n' '+    { "Mark Jansen", "shell32: Properly fail when a data object cannot be instantiated and expand environment strings in ShellExecute.", 1 },';
+		printf '%s\n' '+    { "Louis Lenders", "shell32: Improve semi-stub SHGetStockIconInfo, try find existing iconhandle.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6473,7 +6086,7 @@ fi
 # Patchset widl-SLTG_Typelib_Support
 # |
 # | Modified files:
-# |   *	dlls/oleaut32/typelib.c, dlls/oleaut32/typelib.h, tools/widl/Makefile.in, tools/widl/typelib.c, tools/widl/typelib.h,
+# |   *	dlls/oleaut32/typelib.c, dlls/oleaut32/typelib.h, tools/widl/Makefile.in, tools/widl/register.c, tools/widl/typelib.h,
 # | 	tools/widl/widl.c, tools/widl/widl.h, tools/widl/write_sltg.c
 # |
 if test "$enable_widl_SLTG_Typelib_Support" -eq 1; then
@@ -6588,45 +6201,6 @@ if test "$enable_uianimation_stubs" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset user32-Auto_Radio_Button
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#42010] Move the auto radio button group logic from BM_SETCHECK to WM_LBUTTONUP handler
-# |   *	[#16845] Add support for navigating a group of radio buttons using a keyboard.
-# |
-# | Modified files:
-# |   *	dlls/user32/button.c, dlls/user32/dialog.c, dlls/user32/tests/msg.c, dlls/user32/tests/resource.rc
-# |
-if test "$enable_user32_Auto_Radio_Button" -eq 1; then
-	patch_apply user32-Auto_Radio_Button/0001-user32-Move-the-auto-radio-button-group-logic-from-B.patch
-	patch_apply user32-Auto_Radio_Button/0002-user32-tests-Add-a-message-test-for-group-of-radio-b.patch
-	patch_apply user32-Auto_Radio_Button/0003-user32-tests-Simplify-the-test-for-BM_CLICK-on-autor.patch
-	patch_apply user32-Auto_Radio_Button/0004-user32-tests-Add-a-test-for-navigating-a-group-of-bu.patch
-	patch_apply user32-Auto_Radio_Button/0005-user32-Add-support-for-navigating-a-group-of-radio-b.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Move the auto radio button group logic from BM_SETCHECK to WM_LBUTTONUP handler.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add a message test for group of radio buttons.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Simplify the test for BM_CLICK on autoradio button by using a dialog.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add a test for navigating a group of buttons using keyboard events.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Add support for navigating a group of radio buttons using a keyboard.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset user32-Combobox_WM_SIZE
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#41404] Don't force a combobox repaint on WM_SIZE
-# |
-# | Modified files:
-# |   *	dlls/user32/combo.c
-# |
-if test "$enable_user32_Combobox_WM_SIZE" -eq 1; then
-	patch_apply user32-Combobox_WM_SIZE/0001-user32-Don-t-force-a-combobox-repaint-on-WM_SIZE.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Don'\''t force a combobox repaint on WM_SIZE.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset user32-DM_SETDEFID
 # |
 # | This patchset fixes the following Wine bugs:
@@ -6643,23 +6217,6 @@ if test "$enable_user32_DM_SETDEFID" -eq 1; then
 		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Do not initialize dialog info for every window passed to DefDlgProc.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: Use root dialog for DM_SETDEFID/DM_GETDEFID in DefDlgProc.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add a bunch of tests for DM_SETDEFID/DM_GETDEFID handling by a DefDlgProc.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset user32-Dialog_Focus
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#5402] Set focus to dialog itself when it has no controls
-# |
-# | Modified files:
-# |   *	dlls/user32/dialog.c, dlls/user32/tests/msg.c
-# |
-if test "$enable_user32_Dialog_Focus" -eq 1; then
-	patch_apply user32-Dialog_Focus/0001-user32-tests-Add-a-focus-test-for-an-empty-dialog-th.patch
-	patch_apply user32-Dialog_Focus/0002-user32-If-there-is-no-dialog-controls-to-set-focus-t.patch
-	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32/tests: Add a focus test for an empty dialog that returns TRUE in WM_INITDIALOG.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "user32: If there is no dialog controls to set focus to then set focus to dialog itself.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6754,7 +6311,8 @@ fi
 # |   *	[#45765] Added GetPointerType stub
 # |
 # | Modified files:
-# |   *	dlls/user32/misc.c, dlls/user32/tests/input.c, dlls/user32/user32.spec, include/winuser.h
+# |   *	dlls/api-ms-win-rtcore-ntuser-wmpointer-l1-1-0/api-ms-win-rtcore-ntuser-wmpointer-l1-1-0.spec, dlls/user32/misc.c,
+# | 	dlls/user32/tests/input.c, dlls/user32/user32.spec, include/winuser.h
 # |
 if test "$enable_user32_GetPointerType" -eq 1; then
 	patch_apply user32-GetPointerType/0001-user32-Added-GetPointerType-stub.patch
@@ -6775,6 +6333,21 @@ if test "$enable_user32_GetSystemMetrics" -eq 1; then
 	patch_apply user32-GetSystemMetrics/0001-user32-Allow-changing-the-tablet-media-center-status.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "user32: Allow changing the tablet / media center status via wine registry key.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset user32-Implement-CascadeWindows
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45968] user32: Implement CascadeWindows
+# |
+# | Modified files:
+# |   *	dlls/user32/mdi.c
+# |
+if test "$enable_user32_Implement_CascadeWindows" -eq 1; then
+	patch_apply user32-Implement-CascadeWindows/0001-user32-Implement-CascadeWindows.patch
+	(
+		printf '%s\n' '+    { "katahiromz", "user32: Implement CascadeWindows.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -6867,6 +6440,21 @@ if test "$enable_user32_ShowWindow" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset user32-dialog_focus
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#46215] File Open Dialog fails to set focus to Filename text box
+# |
+# | Modified files:
+# |   *	dlls/user32/dialog.c
+# |
+if test "$enable_user32_dialog_focus" -eq 1; then
+	patch_apply user32-dialog_focus/0001-user32-Dont-reset-focus-if-current-control-is-a-chil.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "user32: Dont reset focus if current control is a child of our parent.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset user32-msgbox-Support-WM_COPY-mesg
 # |
 # | This patchset fixes the following Wine bugs:
@@ -6956,60 +6544,36 @@ if test "$enable_version_VerQueryValue" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset windowscodecs-Palette_Images
+# Patchset virtdisk-OpenVirtualDisk
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45947] virtdisk: Stub OpenVirtualDisk
 # |
 # | Modified files:
-# |   *	dlls/windowscodecs/bmpdecode.c, dlls/windowscodecs/bmpencode.c, dlls/windowscodecs/imgfactory.c,
-# | 	dlls/windowscodecs/info.c, dlls/windowscodecs/pngformat.c, dlls/windowscodecs/regsvr.c,
-# | 	dlls/windowscodecs/tests/converter.c, dlls/windowscodecs/tests/pngformat.c, dlls/windowscodecs/tiffformat.c
+# |   *	dlls/virtdisk/virtdisk.spec, dlls/virtdisk/virtdisk_main.c, include/virtdisk.h
 # |
-if test "$enable_windowscodecs_Palette_Images" -eq 1; then
-	patch_apply windowscodecs-Palette_Images/0012-windowscodecs-tests-Add-tests-for-encoding-2bpp-4bpp.patch
-	patch_apply windowscodecs-Palette_Images/0013-windowscodecs-Use-V_UI1-instead-of-V_UNION-to-assign.patch
-	patch_apply windowscodecs-Palette_Images/0014-windowscodecs-Add-support-for-palette-image-formats-.patch
-	patch_apply windowscodecs-Palette_Images/0016-windowscodecs-Limit-number-of-colors-in-a-palette-in.patch
-	patch_apply windowscodecs-Palette_Images/0017-windowscodecs-Add-support-for-palette-image-formats-.patch
-	patch_apply windowscodecs-Palette_Images/0020-windowscodecs-find_decoder-should-return-an-error-it.patch
-	patch_apply windowscodecs-Palette_Images/0021-windowscodecs-PNG-decoder-should-return-WINCODEC_ERR.patch
+if test "$enable_virtdisk_OpenVirtualDisk" -eq 1; then
+	patch_apply virtdisk-OpenVirtualDisk/0001-virtdisk-Add-stub-for-OpenVirtualDisk.patch
 	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs/tests: Add tests for encoding 2bpp/4bpp images with a palette.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Use V_UI1() instead of V_UNION() to assign a VT_UI1 variant member.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add support for palette image formats to TIFF encoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Limit number of colors in a palette in BMP decoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add support for palette image formats to BMP encoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Find_decoder() should return an error it received from the decoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: PNG decoder should return WINCODEC_ERR_UNKNOWNIMAGEFORMAT when image loading fails.", 1 },';
+		printf '%s\n' '+    { "Louis Lenders", "virtdisk: Add stub for OpenVirtualDisk.", 1 },';
 	) >> "$patchlist"
 fi
 
 # Patchset windowscodecs-GIF_Encoder
 # |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	windowscodecs-Palette_Images
-# |
 # | Modified files:
-# |   *	dlls/gdiplus/tests/image.c, dlls/windowscodecs/bmpencode.c, dlls/windowscodecs/clsfactory.c,
-# | 	dlls/windowscodecs/converter.c, dlls/windowscodecs/gifformat.c, dlls/windowscodecs/info.c,
-# | 	dlls/windowscodecs/jpegformat.c, dlls/windowscodecs/pngformat.c, dlls/windowscodecs/regsvr.c,
+# |   *	dlls/gdiplus/tests/image.c, dlls/windowscodecs/clsfactory.c, dlls/windowscodecs/converter.c,
+# | 	dlls/windowscodecs/gifformat.c, dlls/windowscodecs/info.c, dlls/windowscodecs/regsvr.c,
 # | 	dlls/windowscodecs/tests/converter.c, dlls/windowscodecs/tiffformat.c, dlls/windowscodecs/wincodecs_private.h,
 # | 	dlls/windowscodecs/windowscodecs_wincodec.idl
 # |
 if test "$enable_windowscodecs_GIF_Encoder" -eq 1; then
-	patch_apply windowscodecs-GIF_Encoder/0001-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
-	patch_apply windowscodecs-GIF_Encoder/0002-windowscodecs-Implement-IWICBitmapEncoderInfo-GetFil.patch
-	patch_apply windowscodecs-GIF_Encoder/0004-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
-	patch_apply windowscodecs-GIF_Encoder/0006-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
 	patch_apply windowscodecs-GIF_Encoder/0007-windowscodecs-tests-Add-IWICBitmapEncoderInfo-test.patch
 	patch_apply windowscodecs-GIF_Encoder/0008-windowscodecs-Add-initial-implementation-of-the-GIF-.patch
 	patch_apply windowscodecs-GIF_Encoder/0010-windowscodecs-Initialize-empty-property-bag-in-GIF-e.patch
-	patch_apply windowscodecs-GIF_Encoder/0011-windowscodecs-Add-registration-for-GUID_WICPixelForm.patch
-	patch_apply windowscodecs-GIF_Encoder/0012-windowscodecs-Implement-IWICBitmapDecoder-GetMetadat.patch
 	patch_apply windowscodecs-GIF_Encoder/0014-windowscodecs-Fix-the-buffer-size-check-in-the-TIFF-.patch
 	patch_apply windowscodecs-GIF_Encoder/0015-windowscodecs-Add-support-for-converting-to-8bppInde.patch
 	patch_apply windowscodecs-GIF_Encoder/0016-windowscodecs-WICConvertBitmapSource-should-ask-IWIC.patch
-	patch_apply windowscodecs-GIF_Encoder/0017-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
-	patch_apply windowscodecs-GIF_Encoder/0018-windowscodecs-Implement-IWICBitmapEncoder-GetEncoder.patch
-	patch_apply windowscodecs-GIF_Encoder/0019-windowscodecs-Improve-stub-for-IWICBitmapDecoder-Get.patch
 	patch_apply windowscodecs-GIF_Encoder/0020-windowscodecs-Add-registration-of-the-GIF-encoder.patch
 	patch_apply windowscodecs-GIF_Encoder/0021-windowscodecs-Fix-IWICBitmapDecoder-CopyPalette-for-.patch
 	patch_apply windowscodecs-GIF_Encoder/0022-windowscodecs-Better-follow-the-GIF-spec-and-don-t-s.patch
@@ -7020,21 +6584,12 @@ if test "$enable_windowscodecs_GIF_Encoder" -eq 1; then
 	patch_apply windowscodecs-GIF_Encoder/0027-windowscodecs-tests-Add-a-missing-check-for-IWICBitm.patch
 	patch_apply windowscodecs-GIF_Encoder/0028-windowscodecs-Correctly-indicate-that-the-global-inf.patch
 	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoder::GetEncoderInfo in BMP encoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoderInfo::GetFileExtensions.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoder::GetEncoderInfo in JPEG encoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoder::GetEncoderInfo in TIFF encoder.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "windowscodecs/tests: Add IWICBitmapEncoderInfo test.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add initial implementation of the GIF encoder.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Initialize empty property bag in GIF encoder'\''s CreateNewFrame implementation.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add registration for GUID_WICPixelFormat32bppGrayFloat pixel format.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapDecoder::GetMetadataQueryReader in the TIFF decoder.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Fix the buffer size check in the TIFF decoder'\''s IWICBitmapFrameDecode::CopyPixels implementation.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add support for converting to 8bppIndexed format to IWICFormatConverter.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: WICConvertBitmapSource should ask IWICFormatConverter::Initialize to use an optimized palette.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoder::GetEncoderInfo in the JPEG encoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICBitmapEncoder::GetEncoderInfo in the PNG encoder.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Improve stub for IWICBitmapDecoder::GetMetadataQueryReader in the PNG decoder.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Add registration of the GIF encoder.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Fix IWICBitmapDecoder::CopyPalette for a not initialized case in the GIF decoder.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Better follow the GIF spec and don'\''t specify the local color table size if there is no local palette.", 1 },';
@@ -7057,12 +6612,10 @@ fi
 # | 	dlls/windowscodecs/tests/palette.c, include/gdiplusflat.h
 # |
 if test "$enable_windowscodecs_IWICPalette_InitializeFromBitmap" -eq 1; then
-	patch_apply windowscodecs-IWICPalette_InitializeFromBitmap/0001-windowscodecs-tests-Add-some-tests-for-IWICPalette-I.patch
 	patch_apply windowscodecs-IWICPalette_InitializeFromBitmap/0002-windowscodecs-Implement-IWICPalette-InitializeFromBi.patch
 	patch_apply windowscodecs-IWICPalette_InitializeFromBitmap/0003-gdiplus-Implement-GdipInitializePalette.-v2.patch
 	patch_apply windowscodecs-IWICPalette_InitializeFromBitmap/0004-gdiplus-tests-Add-some-tests-for-GdipInitializePalet.patch
 	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs/tests: Add some tests for IWICPalette::InitializeFromBitmap.", 2 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "windowscodecs: Implement IWICPalette::InitializeFromBitmap.", 5 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "gdiplus: Implement GdipInitializePalette.", 2 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "gdiplus/tests: Add some tests for GdipInitializePalette.", 2 },';
@@ -7072,7 +6625,7 @@ fi
 # Patchset windowscodecs-TIFF_Support
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	windowscodecs-Palette_Images, windowscodecs-GIF_Encoder, windowscodecs-IWICPalette_InitializeFromBitmap
+# |   *	windowscodecs-GIF_Encoder, windowscodecs-IWICPalette_InitializeFromBitmap
 # |
 # | Modified files:
 # |   *	dlls/gdiplus/image.c, dlls/gdiplus/tests/image.c, dlls/windowscodecs/metadatahandler.c, dlls/windowscodecs/regsvr.c,
@@ -7118,8 +6671,7 @@ fi
 # Patchset windowscodecs-32bppPRGBA
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	windowscodecs-Palette_Images, windowscodecs-GIF_Encoder, windowscodecs-IWICPalette_InitializeFromBitmap, windowscodecs-
-# | 	TIFF_Support
+# |   *	windowscodecs-GIF_Encoder, windowscodecs-IWICPalette_InitializeFromBitmap, windowscodecs-TIFF_Support
 # |
 # | Modified files:
 # |   *	dlls/windowscodecs/converter.c, dlls/windowscodecs/info.c, dlls/windowscodecs/regsvr.c,
@@ -7422,32 +6974,15 @@ if test "$enable_wined3d_Dual_Source_Blending" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset wined3d-QUERY_Stubs
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#20776] Add stubs for QUERY_TYPE_SO_STATISTICS and QUERY_TYPE_SO_OVERFLOW
-# |
-# | Modified files:
-# |   *	dlls/d3d10core/tests/d3d10core.c, dlls/d3d11/tests/d3d11.c, dlls/wined3d/query.c
-# |
-if test "$enable_wined3d_QUERY_Stubs" -eq 1; then
-	patch_apply wined3d-QUERY_Stubs/0001-wined3d-Add-stubs-for-QUERY_TYPE_SO_STATISTICS-and-Q.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "wined3d: Add stubs for QUERY_TYPE_SO_STATISTICS and QUERY_TYPE_SO_OVERFLOW.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset wined3d-Silence_FIXMEs
 # |
 # | Modified files:
-# |   *	dlls/wined3d/resource.c, dlls/wined3d/surface.c, dlls/wined3d/texture.c
+# |   *	dlls/wined3d/surface.c, dlls/wined3d/texture.c
 # |
 if test "$enable_wined3d_Silence_FIXMEs" -eq 1; then
-	patch_apply wined3d-Silence_FIXMEs/0003-wined3d-Silence-repeated-resource_check_usage-FIXME.patch
 	patch_apply wined3d-Silence_FIXMEs/0004-wined3d-Print-FIXME-only-once-in-surface_cpu_blt.patch
 	patch_apply wined3d-Silence_FIXMEs/0006-wined3d-Silence-extremely-noisy-FIXME-in-wined3d_tex.patch
 	(
-		printf '%s\n' '+    { "Erich E. Hoover", "wined3d: Silence repeated resource_check_usage FIXME.", 2 },';
 		printf '%s\n' '+    { "Christian Costa", "wined3d: Print FIXME only once in surface_cpu_blt.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Silence extremely noisy FIXME in wined3d_texture_add_dirty_region.", 1 },';
 	) >> "$patchlist"
@@ -7469,27 +7004,21 @@ fi
 # |
 # | This patchset has the following (direct or indirect) dependencies:
 # |   *	nvcuda-CUDA_Support, nvapi-Stub_DLL, d3d11-Deferred_Context, d3d9-Tests, wined3d-Accounting, wined3d-
-# | 	WINED3DFMT_B8G8R8X8_UNORM, wined3d-DXTn, wined3d-Dual_Source_Blending, wined3d-QUERY_Stubs, wined3d-Silence_FIXMEs,
-# | 	wined3d-UAV_Counters
+# | 	WINED3DFMT_B8G8R8X8_UNORM, wined3d-DXTn, wined3d-Dual_Source_Blending, wined3d-Silence_FIXMEs, wined3d-UAV_Counters
 # |
 # | Modified files:
-# |   *	dlls/wined3d/cs.c, dlls/wined3d/device.c, dlls/wined3d/view.c, dlls/wined3d/wined3d_private.h
+# |   *	dlls/wined3d/cs.c, dlls/wined3d/device.c, dlls/wined3d/wined3d_private.h
 # |
 if test "$enable_wined3d_CSMT_Main" -eq 1; then
-	patch_apply wined3d-CSMT_Main/0001-wined3d-Add-additional-synchronization-CS-ops.patch
 	patch_apply wined3d-CSMT_Main/0042-wined3d-Reset-context-before-destruction.patch
 	patch_apply wined3d-CSMT_Main/0045-wined3d-Improve-wined3d_cs_emit_update_sub_resource.patch
 	(
-		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Add additional synchronization CS ops.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Reset context before destruction.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Improve wined3d_cs_emit_update_sub_resource.", 1 },';
 	) >> "$patchlist"
 fi
 
 # Patchset wined3d-WINED3D_RS_COLORWRITEENABLE
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	d3d11-Depth_Bias
 # |
 # | Modified files:
 # |   *	dlls/d3d11/device.c, dlls/d3d11/state.c, dlls/wined3d/context.c, dlls/wined3d/device.c, dlls/wined3d/state.c,
@@ -7506,7 +7035,7 @@ fi
 # Patchset wined3d-Indexed_Vertex_Blending
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	d3d11-Depth_Bias, wined3d-WINED3D_RS_COLORWRITEENABLE
+# |   *	wined3d-WINED3D_RS_COLORWRITEENABLE
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#39057] Support for indexed vertex blending
@@ -7535,6 +7064,36 @@ if test "$enable_wined3d_Indexed_Vertex_Blending" -eq 1; then
 		printf '%s\n' '+    { "Michael Müller", "d3d9/tests: Check MaxVertexBlendMatrixIndex capability.", 1 },';
 		printf '%s\n' '+    { "Michael Müller", "wined3d: Report correct number of blend matrices when software vertex processing is used.", 1 },';
 		printf '%s\n' '+    { "Sebastian Lackner", "wined3d: Track updates of vertex blend matrices separately.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wined3d-Restore-DirectX10-Support
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45975] Allow Direct 10 to work with legacy nVidia drivers.
+# |
+# | Modified files:
+# |   *	dlls/wined3d/adapter_gl.c
+# |
+if test "$enable_wined3d_Restore_DirectX10_Support" -eq 1; then
+	patch_apply wined3d-Restore-DirectX10-Support/0001-wined3d-Remove-check-for-Polygon-offset-clamping.patch
+	(
+		printf '%s\n' '+    { "Alistair Leslie-Hughes", "wined3d: Remove check for Polygon offset clamping.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wined3d-mesa_texture_download
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#45901] Avoid GPU synchronization due to GPU-CPU transfer (Overwatch)
+# |
+# | Modified files:
+# |   *	dlls/wined3d/texture.c
+# |
+if test "$enable_wined3d_mesa_texture_download" -eq 1; then
+	patch_apply wined3d-mesa_texture_download/0001-wined3d-Use-glReadPixels-for-RT-texture-download.patch
+	(
+		printf '%s\n' '+    { "Andrew Wesie", "wined3d: Use glReadPixels for RT texture download.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7568,7 +7127,7 @@ fi
 # Patchset winedevice-Default_Drivers
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	dxva2-Video_Decoder, Compiler_Warnings, ntoskrnl-Synchronization, ntoskrnl-Stubs
+# |   *	dxva2-Video_Decoder, Compiler_Warnings, ntoskrnl-Stubs
 # |
 # | Modified files:
 # |   *	configure.ac, dlls/dxgkrnl.sys/Makefile.in, dlls/dxgkrnl.sys/dxgkrnl.sys.spec, dlls/dxgkrnl.sys/main.c,
@@ -7654,6 +7213,10 @@ fi
 
 # Patchset winepulse-PulseAudio_Support
 # |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#37042] Implement exclusive mode in PulseAudio backend
+# |   *	[#28282] Sound constantly crackling in a lot of games
+# |
 # | Modified files:
 # |   *	dlls/winepulse.drv/Makefile.in, dlls/winepulse.drv/mmdevdrv.c
 # |
@@ -7668,6 +7231,9 @@ if test "$enable_winepulse_PulseAudio_Support" -eq 1; then
 	patch_apply winepulse-PulseAudio_Support/0008-winepulse-Fix-up-recording.patch
 	patch_apply winepulse-PulseAudio_Support/0009-winepulse.drv-Fix-getting-the-same-timing-info.patch
 	patch_apply winepulse-PulseAudio_Support/0010-winepulse-Update-last-time-on-underrun.patch
+	patch_apply winepulse-PulseAudio_Support/0011-winepulse-account-for-PA-devices-that-fall-way-behin.patch
+	patch_apply winepulse-PulseAudio_Support/0012-winepulse-Fix-local-buffer-offset-wrapping.patch
+	patch_apply winepulse-PulseAudio_Support/0013-winepulse-Don-t-fake-being-one-period-behind-in-GetP.patch
 	(
 		printf '%s\n' '+    { "Sebastian Lackner", "winepulse.drv: Use a separate mainloop and ctx for pulse_test_connect.", 1 },';
 		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Don'\''t rely on pulseaudio callbacks for timing.", 1 },';
@@ -7679,6 +7245,9 @@ if test "$enable_winepulse_PulseAudio_Support" -eq 1; then
 		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Fix up recording.", 1 },';
 		printf '%s\n' '+    { "Zhiyi Zhang", "winepulse.drv: Fix getting the same timing info.", 1 },';
 		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Update last time on underrun.", 1 },';
+		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Account for PA devices that fall way behind.", 1 },';
+		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Fix local buffer offset wrapping.", 1 },';
+		printf '%s\n' '+    { "Andrew Eikum", "winepulse: Don'\''t fake being one period behind in GetPosition.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7866,18 +7435,6 @@ if test "$enable_winex11_wglShareLists" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset winhttp-Accept_Headers
-# |
-# | Modified files:
-# |   *	dlls/winhttp/request.c, dlls/winhttp/session.c, dlls/winhttp/winhttp_private.h
-# |
-if test "$enable_winhttp_Accept_Headers" -eq 1; then
-	patch_apply winhttp-Accept_Headers/0001-winhttp-Fix-handling-of-Accept-headers.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "winhttp: Fix handling of Accept headers.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset winhttp-System_Proxy_Autoconfig
 # |
 # | Modified files:
@@ -8013,6 +7570,39 @@ if test "$enable_wintrust_WTHelperGetProvCertFromChain" -eq 1; then
 	patch_apply wintrust-WTHelperGetProvCertFromChain/0001-wintrust-Add-parameter-check-in-WTHelperGetProvCertF.patch
 	(
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "wintrust: Add parameter check in WTHelperGetProvCertFromChain.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wmvcore-WMCheckURlExtension
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44300] wmvcore: Add stub for WMCheckURlExtension
+# |
+# | Modified files:
+# |   *	dlls/wmvcore/wmvcore.spec, dlls/wmvcore/wmvcore_main.c, include/wmsdkidl.idl
+# |
+if test "$enable_wmvcore_WMCheckURlExtension" -eq 1; then
+	patch_apply wmvcore-WMCheckURlExtension/0001-wmvcore-Add-stub-for-WMCheckURlExtension.patch
+	(
+		printf '%s\n' '+    { "Vijay Kiran Kamuju", "wmvcore: Add stub for WMCheckURlExtension.", 1 },';
+	) >> "$patchlist"
+fi
+
+# Patchset wmvcore-WMCreateSyncReaderPriv
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	wmvcore-WMCheckURlExtension
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#37327] wmvcore: Implement WMCreateSyncReaderPriv
+# |
+# | Modified files:
+# |   *	dlls/wmvcore/wmvcore.spec, dlls/wmvcore/wmvcore_main.c
+# |
+if test "$enable_wmvcore_WMCreateSyncReaderPriv" -eq 1; then
+	patch_apply wmvcore-WMCreateSyncReaderPriv/0001-wmvcore-Implement-WMCreateSyncReaderPriv.patch
+	(
+		printf '%s\n' '+    { "Andrey Gusev", "wmvcore: Implement WMCreateSyncReaderPriv.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -8204,25 +7794,7 @@ if test "$enable_xaudio2_7_CreateFX_FXEcho" -eq 1; then
 	) >> "$patchlist"
 fi
 
-# Patchset xaudio2_7-OnVoiceProcessingPassStart
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#43358] Use assembly wrapper to call OnVoiceProcessingPassStart callback
-# |
-# | Modified files:
-# |   *	dlls/xaudio2_7/xaudio_dll.c
-# |
-if test "$enable_xaudio2_7_OnVoiceProcessingPassStart" -eq 1; then
-	patch_apply xaudio2_7-OnVoiceProcessingPassStart/0001-xaudio2_7-Use-assembly-wrapper-to-call-OnVoiceProces.patch
-	(
-		printf '%s\n' '+    { "Sebastian Lackner", "xaudio2_7: Use assembly wrapper to call OnVoiceProcessingPassStart callback.", 1 },';
-	) >> "$patchlist"
-fi
-
 # Patchset xaudio2_7-WMA_support
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	xaudio2_7-OnVoiceProcessingPassStart
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#39402] Use ffmpeg 4.x to convert WMA format

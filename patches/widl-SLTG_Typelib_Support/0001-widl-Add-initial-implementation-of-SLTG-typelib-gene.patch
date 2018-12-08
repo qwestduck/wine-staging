@@ -1,19 +1,18 @@
-From e7c54c4bc539e61088115e283e22932e423aa346 Mon Sep 17 00:00:00 2001
+From dd2e4e6f027c1517870cf678c954351ab79c9510 Mon Sep 17 00:00:00 2001
 From: Dmitry Timoshkov <dmitry@baikal.ru>
 Date: Wed, 23 Dec 2015 19:37:37 +0800
-Subject: widl: Add initial implementation of SLTG typelib generator.
+Subject: [PATCH] widl: Add initial implementation of SLTG typelib generator.
 
 ---
  tools/widl/Makefile.in  |   3 +-
- tools/widl/typelib.c    |   5 +-
  tools/widl/typelib.h    |   1 +
- tools/widl/widl.c       |   8 +-
- tools/widl/write_sltg.c | 558 ++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 572 insertions(+), 3 deletions(-)
+ tools/widl/widl.c       |   6 +
+ tools/widl/write_sltg.c | 557 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 566 insertions(+), 1 deletion(-)
  create mode 100644 tools/widl/write_sltg.c
 
 diff --git a/tools/widl/Makefile.in b/tools/widl/Makefile.in
-index b47a170e4ca..8eaedc3732e 100644
+index e06d6cc5..e7a41c30 100644
 --- a/tools/widl/Makefile.in
 +++ b/tools/widl/Makefile.in
 @@ -14,7 +14,8 @@ C_SRCS = \
@@ -26,55 +25,37 @@ index b47a170e4ca..8eaedc3732e 100644
  
  LEX_SRCS   = parser.l
  BISON_SRCS = parser.y
-diff --git a/tools/widl/typelib.c b/tools/widl/typelib.c
-index 6ac748f4041..aa3305c5e52 100644
---- a/tools/widl/typelib.c
-+++ b/tools/widl/typelib.c
-@@ -249,7 +249,10 @@ void end_typelib(void)
- {
-     if (!typelib) return;
- 
--    create_msft_typelib(typelib);
-+    if (do_typelib == 2)
-+        create_sltg_typelib(typelib);
-+    else
-+        create_msft_typelib(typelib);
- }
- 
- static void tlb_read(int fd, void *buf, int count)
 diff --git a/tools/widl/typelib.h b/tools/widl/typelib.h
-index 18e6cdbcc56..31f4a5a859f 100644
+index 7df7d290..5d9f45a7 100644
 --- a/tools/widl/typelib.h
 +++ b/tools/widl/typelib.h
-@@ -85,4 +85,5 @@ enum VARENUM {
+@@ -83,4 +83,5 @@ enum VARENUM {
  extern unsigned short get_type_vt(type_t *t);
  
  extern int create_msft_typelib(typelib_t *typelib);
 +extern int create_sltg_typelib(typelib_t *typelib);
  #endif
 diff --git a/tools/widl/widl.c b/tools/widl/widl.c
-index a38f9170ead..1180e65f009 100644
+index 410efb4c..2e980bf8 100644
 --- a/tools/widl/widl.c
 +++ b/tools/widl/widl.c
-@@ -163,7 +163,8 @@ enum {
-     WIN64_OPTION,
-     WIN32_ALIGN_OPTION,
-     WIN64_ALIGN_OPTION,
--    APP_CONFIG_OPTION
-+    APP_CONFIG_OPTION,
-+    OLD_TYPELIB_OPTION
- };
- 
- static const char short_options[] =
-@@ -185,6 +186,7 @@ static const struct option long_options[] = {
-     { "win32-align", 1, NULL, WIN32_ALIGN_OPTION },
-     { "win64-align", 1, NULL, WIN64_ALIGN_OPTION },
-     { "app_config", 0, NULL, APP_CONFIG_OPTION },
+@@ -158,6 +158,7 @@ enum {
+     DLLDATA_OPTION,
+     DLLDATA_ONLY_OPTION,
+     LOCAL_STUBS_OPTION,
++    OLD_TYPELIB_OPTION,
+     PREFIX_ALL_OPTION,
+     PREFIX_CLIENT_OPTION,
+     PREFIX_SERVER_OPTION,
+@@ -182,6 +183,7 @@ static const struct option long_options[] = {
+     { "local-stubs", 1, NULL, LOCAL_STUBS_OPTION },
+     { "ns_prefix", 0, NULL, RT_NS_PREFIX },
+     { "oldnames", 0, NULL, OLDNAMES_OPTION },
 +    { "oldtlb", 0, NULL, OLD_TYPELIB_OPTION },
-     { NULL, 0, NULL, 0 }
- };
- 
-@@ -679,6 +681,10 @@ int main(int argc,char *argv[])
+     { "output", 0, NULL, 'o' },
+     { "prefix-all", 1, NULL, PREFIX_ALL_OPTION },
+     { "prefix-client", 1, NULL, PREFIX_CLIENT_OPTION },
+@@ -697,6 +699,10 @@ int main(int argc,char *argv[])
        do_everything = 0;
        do_typelib = 1;
        break;
@@ -87,10 +68,10 @@ index a38f9170ead..1180e65f009 100644
        break;
 diff --git a/tools/widl/write_sltg.c b/tools/widl/write_sltg.c
 new file mode 100644
-index 00000000000..45cac801e7f
+index 00000000..c4ddaed9
 --- /dev/null
 +++ b/tools/widl/write_sltg.c
-@@ -0,0 +1,558 @@
+@@ -0,0 +1,557 @@
 +/*
 + * Typelib (SLTG) generation
 + *
@@ -619,7 +600,6 @@ index 00000000000..45cac801e7f
 +            sprintf(typelib_id, "#%d", expr->cval);
 +        add_output_to_resources("TYPELIB", typelib_id);
 +        output_typelib_regscript(typelib->typelib);
-+        flush_output_resources(typelib_name);
 +    }
 +    else flush_output_buffer(typelib_name);
 +}
@@ -650,5 +630,5 @@ index 00000000000..45cac801e7f
 +    return 1;
 +}
 -- 
-2.11.0
+2.19.1
 
