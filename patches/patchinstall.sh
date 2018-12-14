@@ -52,7 +52,7 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "ae5e029d2227b3a8024f597591f76fe0f37d52e3"
+	echo "f760079a717042d436a693df59fa1d4416a0e352"
 }
 
 # Show version information
@@ -169,7 +169,6 @@ patch_enable_all ()
 	enable_kernel32_SCSI_Sysfs="$1"
 	enable_krnl386_exe16_GDT_LDT_Emulation="$1"
 	enable_krnl386_exe16_Invalid_Console_Handles="$1"
-	enable_krnl386_exe16__lclose16="$1"
 	enable_libs_Debug_Channel="$1"
 	enable_libs_Unicode_Collation="$1"
 	enable_mmsystem_dll16_MIDIHDR_Refcount="$1"
@@ -370,6 +369,7 @@ patch_enable_all ()
 	enable_winex11_Window_Style="$1"
 	enable_winex11_XEMBED="$1"
 	enable_winex11__NET_ACTIVE_WINDOW="$1"
+	enable_winex11_key_translation="$1"
 	enable_winex11_mouse_movements="$1"
 	enable_winex11_wglShareLists="$1"
 	enable_winhttp_System_Proxy_Autoconfig="$1"
@@ -660,9 +660,6 @@ patch_enable ()
 			;;
 		krnl386.exe16-Invalid_Console_Handles)
 			enable_krnl386_exe16_Invalid_Console_Handles="$2"
-			;;
-		krnl386.exe16-_lclose16)
-			enable_krnl386_exe16__lclose16="$2"
 			;;
 		libs-Debug_Channel)
 			enable_libs_Debug_Channel="$2"
@@ -1263,6 +1260,9 @@ patch_enable ()
 			;;
 		winex11-_NET_ACTIVE_WINDOW)
 			enable_winex11__NET_ACTIVE_WINDOW="$2"
+			;;
+		winex11-key_translation)
+			enable_winex11_key_translation="$2"
 			;;
 		winex11-mouse-movements)
 			enable_winex11_mouse_movements="$2"
@@ -3984,21 +3984,6 @@ if test "$enable_krnl386_exe16_Invalid_Console_Handles" -eq 1; then
 	patch_apply krnl386.exe16-Invalid_Console_Handles/0001-krnl386.exe16-Really-translate-all-invalid-console-h.patch
 	(
 		printf '%s\n' '+    { "Michael Müller", "krnl386.exe16: Really translate all invalid console handles into usable DOS handles.", 1 },';
-	) >> "$patchlist"
-fi
-
-# Patchset krnl386.exe16-_lclose16
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#19184] Do not reassign default handles after they got closed
-# |
-# | Modified files:
-# |   *	dlls/krnl386.exe16/file.c
-# |
-if test "$enable_krnl386_exe16__lclose16" -eq 1; then
-	patch_apply krnl386.exe16-_lclose16/0001-krnl386.exe16-Do-not-reassign-default-handles-after-.patch
-	(
-		printf '%s\n' '+    { "Michael Müller", "krnl386.exe16: Do not reassign default handles after they got closed.", 1 },';
 	) >> "$patchlist"
 fi
 
@@ -7193,18 +7178,13 @@ fi
 # |   *	[#4836] Various improvements for wineps.drv for Adobe PageMaker compatibility
 # |
 # | Modified files:
-# |   *	dlls/gdi32/printdrv.c, dlls/gdi32/tests/dc.c, dlls/wineps.drv/download.c, dlls/wineps.drv/escape.c,
-# | 	dlls/wineps.drv/psdrv.h
+# |   *	dlls/gdi32/tests/dc.c, dlls/wineps.drv/download.c, dlls/wineps.drv/escape.c, dlls/wineps.drv/psdrv.h
 # |
 if test "$enable_wineps_drv_PostScript_Fixes" -eq 1; then
-	patch_apply wineps.drv-PostScript_Fixes/0001-gdi32-tests-Add-a-simple-test-for-printing-to-a-Post.patch
-	patch_apply wineps.drv-PostScript_Fixes/0002-gdi32-Trace-full-contents-of-DOCINFO-in-StartDoc.patch
 	patch_apply wineps.drv-PostScript_Fixes/0003-wineps.drv-Add-stubs-for-escapes-required-by-Adobe-P.patch
 	patch_apply wineps.drv-PostScript_Fixes/0004-wineps.drv-Add-support-for-GETFACENAME-and-DOWNLOADF.patch
 	patch_apply wineps.drv-PostScript_Fixes/0005-wineps.drv-PostScript-header-should-be-written-by-St.patch
 	(
-		printf '%s\n' '+    { "Dmitry Timoshkov", "gdi32/tests: Add a simple test for printing to a PostScript device.", 1 },';
-		printf '%s\n' '+    { "Dmitry Timoshkov", "gdi32: Trace full contents of DOCINFO in StartDoc.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "wineps.drv: Add stubs for escapes required by Adobe PageMaker.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "wineps.drv: Add support for GETFACENAME and DOWNLOADFACE escapes.", 1 },';
 		printf '%s\n' '+    { "Dmitry Timoshkov", "wineps.drv: PostScript header should be written by StartDoc instead of StartPage.", 1 },';
@@ -7404,6 +7384,25 @@ if test "$enable_winex11_XEMBED" -eq 1; then
 	) >> "$patchlist"
 fi
 
+# Patchset winex11-key_translation
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#30984] Improve key translation.
+# |
+# | Modified files:
+# |   *	dlls/winex11.drv/keyboard.c
+# |
+if test "$enable_winex11_key_translation" -eq 1; then
+	patch_apply winex11-key_translation/0001-winex11-Match-keyboard-in-Unicode.patch
+	patch_apply winex11-key_translation/0002-winex11-Fix-more-key-translation.patch
+	patch_apply winex11-key_translation/0003-winex11.drv-Fix-main-Russian-keyboard-layout.patch
+	(
+		printf '%s\n' '+    { "Ken Thomases", "winex11: Match keyboard in Unicode.", 1 },';
+		printf '%s\n' '+    { "Philippe Valembois", "winex11: Fix more key translation.", 1 },';
+		printf '%s\n' '+    { "Ondrej Kraus", "winex11.drv: Fix main Russian keyboard layout.", 1 },';
+	) >> "$patchlist"
+fi
+
 # Patchset winex11-mouse-movements
 # |
 # | This patchset fixes the following Wine bugs:
@@ -7525,12 +7524,14 @@ if test "$enable_wintab32_improvements" -eq 1; then
 	patch_apply wintab32-improvements/0003-winex11-Handle-negative-orAltitude-values.patch
 	patch_apply wintab32-improvements/0004-winex11.drv-Support-multiplex-categories-WTI_DSCTXS-.patch
 	patch_apply wintab32-improvements/0005-winex11-Support-WTI_STATUS-in-WTInfo.patch
+	patch_apply wintab32-improvements/0006-winex11-Use-active-owner-when-sending-messages.patch
 	(
 		printf '%s\n' '+    { "Eriks Dobelis", "winex11: Implement PK_CHANGE for wintab.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "wintab32: Set lcSysExtX/Y for the first index of WTI_DDCTXS.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11: Handle negative orAltitude values.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11.drv: Support multiplex categories WTI_DSCTXS and WTI_DDCTXS.", 1 },';
 		printf '%s\n' '+    { "Alistair Leslie-Hughes", "winex11: Support WTI_STATUS in WTInfo.", 1 },';
+		printf '%s\n' '+    { "Robert Walker", "winex11: Use active owner when sending messages.", 1 },';
 	) >> "$patchlist"
 fi
 
